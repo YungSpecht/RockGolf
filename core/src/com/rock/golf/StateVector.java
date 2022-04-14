@@ -25,7 +25,7 @@ public class StateVector {
         return XSpeed;
     }
 
-    public double getYSPeed(){
+    public double getYSpeed(){
         return YSpeed;
     }
 
@@ -41,7 +41,7 @@ public class StateVector {
         this.XSpeed = XSpeed;
     }
 
-    public void setYSPeed(double YSpeed){
+    public void setYSpeed(double YSpeed){
         this.YSpeed = YSpeed;
     }
 }
