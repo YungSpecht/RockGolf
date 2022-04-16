@@ -1,38 +1,24 @@
 package com.rock.golf;
 
 public class RK2 {
-    final double h = 1;
+    final static double H = 1;
+    final static double G = 9.81;
+    
+    static double uK = 0.1;
+    static double uS = 0.2;
 
     //y(t + h) ≈ y(t) + hf(t + h/2, y(t) + h/2 f(t, y(t))).
 
     public static StateVector runge_kutta_two(StateVector current){
-        StateVector wZero = calc_wZero(current);
-
-
-        return null;
-    }
-
-    private static StateVector calc_wZero(StateVector vector){
-        //TODO: calculate the second argument (stateVector)
-        return null;
-    }
-
-    private static StateVector add(StateVector one, StateVector two){
-        double first = one.getXPos() + two.getXPos();
-        double second = one.getYPos() + two.getYPos();
-        double third = one.getXSpeed() + two.getXSpeed();
-        double fourth = one.getYSpeed() + two.getYSpeed();
-        return new StateVector(first, second, third, fourth);
-    }
-
-    private static StateVector multiply(StateVector a, double b){
-        return new StateVector(a.getXPos() * b, a.getYPos() * b, a.getXSpeed() * b, a.getYSpeed() * b);
+        StateVector temp = StateVector.add(current, euler(current, H/2));
+        return StateVector.add(current, euler(temp, H));
     }
 
     private static StateVector euler(StateVector vector, double timeStep){
-        //TODO: reimplement euler using the new stateVector class
-
-        return null;
-    }
-    
+        double xSlope = 1;
+        double ySlope = 1;
+        double formulaX = -G * xSlope - uK  * G * (vector.getXSpeed() / Math.sqrt(Math.pow(xSlope, 2) + Math.pow(ySlope, 2)));
+        double formulaY = -G * ySlope - uK  * G * (vector.getYSpeed() / Math.sqrt(Math.pow(xSlope, 2) + Math.pow(ySlope, 2)));
+        return StateVector.add(vector, StateVector.multiply(new StateVector(vector.getXSpeed(), vector.getYSpeed(), formulaX, formulaY), H));
+    }  
 }

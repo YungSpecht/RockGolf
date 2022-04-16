@@ -44,5 +44,17 @@ public class StateVector {
     public void setYSpeed(double YSpeed){
         this.YSpeed = YSpeed;
     }
+
+    public static StateVector add(StateVector one, StateVector two){
+        double first = one.getXPos() + two.getXPos();
+        double second = one.getYPos() + two.getYPos();
+        double third = one.getXSpeed() + two.getXSpeed();
+        double fourth = one.getYSpeed() + two.getYSpeed();
+        return new StateVector(first, second, third, fourth);
+    }
+
+    public static StateVector multiply(StateVector a, double b){
+        return new StateVector(a.getXPos() * b, a.getYPos() * b, a.getXSpeed() * b, a.getYSpeed() * b);
+    }
 }
 
