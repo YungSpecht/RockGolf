@@ -56,5 +56,9 @@ public class StateVector {
     public static StateVector multiply(StateVector a, double b){
         return new StateVector(a.getXPos() * b, a.getYPos() * b, a.getXSpeed() * b, a.getYSpeed() * b);
     }
+
+    public String toString(){
+        return "X Position: " + XPos + "\nY Position: " + YPos + "\nX Velocity: " + XSpeed + "\nY Velocity: " + YSpeed;
+    }
 }
 

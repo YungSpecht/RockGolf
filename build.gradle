@@ -57,6 +57,6 @@ project(":core") {
 
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
-        
+        implementation 'org.mariuszgromada.math:MathParser.org-mXparser:4.4.2'
     }
 }
