@@ -1,54 +1,64 @@
 package com.rock.golf;
 
+import org.mariuszgromada.math.mxparser.Function;
+
 public class RK4Solver{
 
-    private final double h =0.01;
-    
+    private final double h;
+    private final double uK, uS;
+    private final Function f;
+    private final static double G = 9.81;
+
+
+    public RK4Solver(Function f, double h, double uK, double uS){
+        this.f = f;
+        this.h = h;
+        this.uK = uK;
+        this.uS = uS;
+    }
+
     //TODO: add distinction between motion due to velocity vs. motion due to sloped surface
-    //TODO: add acceleration formulas
-    //TODO: modify f(t,w) method call/use in RK4 formula to include yslope/xslope  and xVelocity/ yVelocity (based on the acceleration formula)
+   
 
     /**
      * 
-     * use RK4 formula to calculate accelatartion (first derivateive of velocity) in both x direction and y direction at given time t
+     * use RK4 formula to calculate accelatartion (first derivateive of velocity) at given time t
      *
      * @param stateVector 
-     * @param xSlope 
-     * @param ySlope
      * @param t
      * @return updated state vector
      */
-    public StateVector RK4(StateVector stateVector, double xSlope, double ySlope, double t){
-        //fX() = function for acceleration in x direction at the current time and velocity 
-        //fy() = function for acceleration in y direction at the current time and velocity 
-        double wX = stateVector.getXSpeed();
-        double wY = stateVector.getYSpeed();
+    public StateVector RK4(StateVector stateVector, double t){
+        
 
-        double k1X = h*fx(t,wX);
-        double k2X = h*fx(t + 1/2*h, wX+1/2*k1X);
-        double k3X = h*fx(t + 1/2*h, wX+1/2*k2X);
-        double k4X = h*fx(t + h, wX+k3X);
-        wX = wX + 1/6*(k1X+2*k2X+2*k3X+k4X);
+        StateVector k1 = StateVector.multiply(function(stateVector),h);
+        StateVector k2 = StateVector.multiply(function(StateVector.add(stateVector,StateVector.multiply(k1, 1/2))),h);
+        StateVector k3 = StateVector.multiply(function(StateVector.add(stateVector,StateVector.multiply(k2, 1/2))),h);
+        StateVector k4 = StateVector.multiply(function(StateVector.add(stateVector,k3)),h);
 
-        double k1Y = h*fy(t,wY);
-        double k2Y = h*fy(t + 1/2*h, wY+1/2*k1Y);
-        double k3Y = h*fy(t + 1/2*h, wY+1/2*k2Y);
-        double k4Y = h*fy(t + h, wY+k3Y);
-        wY = wY + 1/6*(k1Y+2*k2Y+2*k3Y+k4Y);
 
-        return new StateVector(stateVector.getXSpeed(), stateVector.getYSpeed(), wX, wY);
+        //w(i+1) = w(i) + 1/6*(k1+2*k2+2*k3+k4) - final formula for RK4 
+       return StateVector.add(stateVector,StateVector.multiply(StateVector.add(StateVector.add(StateVector.multiply(k2,2),StateVector.multiply(k3,2)),StateVector.add(k1,k4)), 1/6));
+
+    
 
     }
 
-    private double fx(double t, double w){
-        //formula for acceleration
-        return 0.0;
+    /**
+     * 
+     * @param stateVector
+     * @return stateVector after one function evaluation
+     */
+    private StateVector function(StateVector stateVector){
+        
+        double xSlope = Derivation.derivativeX(stateVector.getXPos(), stateVector.getYPos(), f);
+        double ySlope = Derivation.derivativeY(stateVector.getXPos(), stateVector.getYPos(), f);
+        double formulaX = (-G * xSlope) - uK  * G * (stateVector.getXSpeed() / Math.sqrt(Math.pow(stateVector.getXSpeed(), 2) + Math.pow(stateVector.getYSpeed(), 2)));
+        double formulaY = (-G * ySlope) - uK  * G * (stateVector.getYSpeed() / Math.sqrt(Math.pow(stateVector.getXSpeed(), 2) + Math.pow(stateVector.getYSpeed(), 2)));
+
+        return new StateVector(stateVector.getXSpeed(), stateVector.getYSpeed(), formulaX, formulaY);
     }
 
-    private double fy(double t, double w){
-        //formula for acceleration
-        return 0.0;
-
-    }
+    
     
 }
