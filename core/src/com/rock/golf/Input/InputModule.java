@@ -40,4 +40,22 @@ public class InputModule {
             e.printStackTrace();
         }
     }
+
+    public static double[] get_velocity(){
+        double[] result = new double[2];
+        FileReader reader;
+        try {
+            reader = new FileReader("./core/src/com/crazyputting/game/Input/Velocity.txt");
+            Scanner in = new Scanner(reader);
+            for(int i = 0; i < 2; i++){
+                String inputLine = in.nextLine();
+                result[i] = Double.parseDouble(inputLine.substring(inputLine.indexOf(' ')));
+            }
+            in.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        
+        return result;
+    }
 }
