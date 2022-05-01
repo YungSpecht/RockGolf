@@ -43,9 +43,6 @@ public class InputModule {
         }
     }
 
-<<<<<<< HEAD
-
-=======
     public static Function get_profile(){
         FileReader reader;
         try {
@@ -60,5 +57,4 @@ public class InputModule {
         
         return new Function(" ");
     }
->>>>>>> 8a914524c7b09234559e3a686364302e68226870
 }
