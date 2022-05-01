@@ -1,8 +1,5 @@
 package com.rock.golf;
 
-import java.util.Arrays;
-
-import com.badlogic.gdx.utils.Array;
 import com.rock.golf.Input.InputModule;
 import com.rock.golf.Math.Derivation;
 import com.rock.golf.Math.RK2Solver;
@@ -13,14 +10,13 @@ public class PhysicsEngine implements Runnable{
 
     //constants
     public static final double g = 9.81;
-    public static final double h = 0.1;
+    public static final double h = 0.01;
     public final double ballRadius = 0.05;
     private final double Epsilon = 0.01;
 
     //fields
     private double uK, uS;
     private double targetX, targetY, targetRadius;
-    private StateVector currentVector;
     private Function golfCourse;
     private StateVector vector;
     private double[] input;
@@ -49,7 +45,8 @@ public class PhysicsEngine implements Runnable{
                 checkpoint = System.currentTimeMillis();
             }
         }
-        InputModule.set_new_position(vector.getXPos(), vector.getYPos());
+        RockGolf.shotCounter++;
+        //InputModule.set_new_position(vector.getXPos(), vector.getYPos());
     }
 
     private void set_variables(){

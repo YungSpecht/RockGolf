@@ -11,38 +11,40 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.rock.golf.Input.*;
 import com.rock.golf.Math.Derivation;
+
+import org.mariuszgromada.math.mxparser.Function;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class RockGolf extends ApplicationAdapter {
-    float ballRadius;
-    float targetRadius;
-    final static float originX = 400;
-    final static float originY = 400;
-    static float xPosition;
-    static float yPosition;
-    float targetxPosition;
-    float targetyPosition;
-    ShapeRenderer shape;
-    ShapeRenderer target;
-    ShapeRenderer shapeRenderer;
-    ArrayList<float[]> map = new ArrayList<>();
-	ArrayList<float[]> color = new ArrayList<>();
-    double[] input;
-    Runnable engine;
-    public static ExecutorService executor;
-    SpriteBatch position, shot;
-    BitmapFont font;
+    private float ballRadius;
+    private float targetRadius;
+    private final static float originX = 400;
+    private final static float originY = 400;
+    private static float xPosition;
+    private static float yPosition;
+    private float targetxPosition;
+    private float targetyPosition;
+    private ShapeRenderer ball;
+    private ShapeRenderer target;
+    private ShapeRenderer shapeRenderer;
+    private ArrayList<float[]> map = new ArrayList<>();
+	private ArrayList<float[]> color = new ArrayList<>();
+    private double[] input;
+    private Runnable engine;
+    private ExecutorService executor;
+    private SpriteBatch position, shot;
+    private BitmapFont font;
     public static int shotCounter;
 
     @Override
     public void create () {
-        shape = new ShapeRenderer();
+        ball = new ShapeRenderer();
         target = new ShapeRenderer();
         engine = new PhysicsEngine();
-        input = ((PhysicsEngine) engine).get_input();
         executor = Executors.newFixedThreadPool(1);
         position = new SpriteBatch();
         shot = new SpriteBatch();
@@ -61,9 +63,8 @@ public class RockGolf extends ApplicationAdapter {
         createMap();
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)  ){
             
-            
-            executor.execute(engine); 
             prepare_new_shot();
+            executor.execute(engine); 
         }
 
         target.begin(ShapeRenderer.ShapeType.Filled);
@@ -71,9 +72,9 @@ public class RockGolf extends ApplicationAdapter {
         target.circle(targetxPosition, targetyPosition, targetRadius * 100);
         target.end();
 
-        shape.begin(ShapeRenderer.ShapeType.Filled);
-        shape.circle(xPosition, yPosition, ballRadius * 100);
-        shape.end();
+        ball.begin(ShapeRenderer.ShapeType.Filled);
+        ball.circle(xPosition, yPosition, ballRadius * 100);
+        ball.end();
 
         position.begin();
         font.draw(position, "X: " + (xPosition-originX) + " Y: " + (yPosition-originY), 20 , 775);
@@ -108,6 +109,7 @@ public class RockGolf extends ApplicationAdapter {
     }
 
     private void generateField() { 
+		Function profile = InputModule.get_profile();
 
 		int sizeX = Gdx.graphics.getWidth();
 		int sizeY = Gdx.graphics.getHeight();
@@ -117,7 +119,7 @@ public class RockGolf extends ApplicationAdapter {
                 float y = j / 100;
 				//float n = (float) (0.1*x - 1);
 				float n = 0;
-					n = (float) Derivation.compute(x-4, y-4, InputModule.get_profile());
+					n = (float) Derivation.compute(x-4, y-4, profile);
 				if(n < 0) {
 					if (Math.abs(n) < 0.3f) {
 						color.add(new float[]{0, 0, 0.3f, 1});
