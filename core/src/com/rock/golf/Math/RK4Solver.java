@@ -1,4 +1,6 @@
-package com.rock.golf;
+package com.rock.golf.Math;
+
+import com.rock.golf.StateVector;
 
 import org.mariuszgromada.math.mxparser.Function;
 

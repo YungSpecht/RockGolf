@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Scanner;
 
+import org.mariuszgromada.math.mxparser.Function;
+
 public class InputModule {
     public static double[] get_input(){
         double[] result = new double[9];
@@ -41,5 +43,22 @@ public class InputModule {
         }
     }
 
+<<<<<<< HEAD
 
+=======
+    public static Function get_profile(){
+        FileReader reader;
+        try {
+            reader = new FileReader("core/src/com/rock/golf/Input/Input.txt");
+            Scanner in = new Scanner(reader);
+            String inputLine = in.nextLine();
+            in.close();
+            return new Function(inputLine.substring(inputLine.indexOf(' ')));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        
+        return new Function(" ");
+    }
+>>>>>>> 8a914524c7b09234559e3a686364302e68226870
 }

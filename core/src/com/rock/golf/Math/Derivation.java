@@ -1,4 +1,4 @@
-package com.rock.golf;
+package com.rock.golf.Math;
 
 import org.mariuszgromada.math.mxparser.*;
 import org.mariuszgromada.math.mxparser.mathcollection.*;
