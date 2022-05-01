@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Scanner;
 
+import org.mariuszgromada.math.mxparser.Function;
+
 public class InputModule {
     public static double[] get_input(){
         double[] result = new double[9];
@@ -41,21 +43,18 @@ public class InputModule {
         }
     }
 
-    public static double[] get_velocity(){
-        double[] result = new double[2];
+    public static Function get_profile(){
         FileReader reader;
         try {
-            reader = new FileReader("./core/src/com/crazyputting/game/Input/Velocity.txt");
+            reader = new FileReader("core/src/com/rock/golf/Input/Input.txt");
             Scanner in = new Scanner(reader);
-            for(int i = 0; i < 2; i++){
-                String inputLine = in.nextLine();
-                result[i] = Double.parseDouble(inputLine.substring(inputLine.indexOf(' ')));
-            }
+            String inputLine = in.nextLine();
             in.close();
+            return new Function(inputLine.substring(inputLine.indexOf(' ')));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         
-        return result;
+        return new Function(" ");
     }
 }
