@@ -21,11 +21,12 @@ import main.com.rock.golf.StateVector;
  */
 
 public class RK2Solver {
+    
     // y(t + h) ≈ y(t) + hf(t + h/2, y(t) + h/2 f(t, y(t)))
 
-    private static double uK;
+    private double uK;
     private double uS;
-    private static Function golfCourse;
+    private Function golfCourse;
 
     public RK2Solver(double uK, double uS, Function golfCourse) {
         this.uK = uK;
@@ -33,12 +34,12 @@ public class RK2Solver {
         this.golfCourse = golfCourse;
     }
 
-    public static StateVector runge_kutta_two(StateVector current) {
+    public StateVector runge_kutta_two(StateVector current) {
         StateVector temp = StateVector.add(current, euler(current, PhysicsEngine.h / 2));
         return StateVector.add(current, euler(temp, PhysicsEngine.h));
     }
 
-    private static StateVector euler(StateVector vector, double timeStep) {
+    private StateVector euler(StateVector vector, double timeStep) {
         double xSlope = Derivation.derivativeX(vector.getXPos(), vector.getYPos(), golfCourse);
         double ySlope = Derivation.derivativeY(vector.getXPos(), vector.getYPos(), golfCourse);
         double formulaX = (-PhysicsEngine.g * xSlope) - uK * PhysicsEngine.g

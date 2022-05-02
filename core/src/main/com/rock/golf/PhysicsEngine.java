@@ -21,8 +21,11 @@ public class PhysicsEngine implements Runnable{
     private StateVector vector;
     private double[] input;
 
+    public static boolean abort;
+
     public PhysicsEngine(){
         input = InputModule.get_input();
+        abort = false;
     }
 
 
@@ -32,6 +35,7 @@ public class PhysicsEngine implements Runnable{
     }
 
     private void new_shot(){
+        RockGolf.shotCounter++;
         set_variables();
         RK2Solver solve = new RK2Solver(uK, uS, golfCourse);
         Double step = h * 1000;
@@ -44,9 +48,11 @@ public class PhysicsEngine implements Runnable{
                 RockGolf.update_position(vector);
                 checkpoint = System.currentTimeMillis();
             }
+            if(abort){
+                return;
+            }
         }
-        RockGolf.shotCounter++;
-        //InputModule.set_new_position(vector.getXPos(), vector.getYPos());
+        InputModule.set_new_position(vector.getXPos(), vector.getYPos());
     }
 
     private void set_variables(){

@@ -106,7 +106,9 @@ public class RockGolf extends ApplicationAdapter {
 
     @Override
     public void dispose(){
+        PhysicsEngine.abort = true;
         executor.shutdown();
+        executor.shutdownNow();
     }
 
     private void generateField() { 
