@@ -11,11 +11,13 @@ import java.util.Scanner;
 import org.mariuszgromada.math.mxparser.Function;
 
 public class InputModule {
+    
     public static double[] get_input(){
         double[] result = new double[9];
         FileReader reader;
         try {
             reader = new FileReader("core/src/com/rock/golf/Input/Input.txt");
+            
             Scanner in = new Scanner(reader);
             in.nextLine();
             for(int i = 0; i < 9; i++){

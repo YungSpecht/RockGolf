@@ -9,6 +9,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.rock.golf.Bot.HillClimbingAlgorithm;
 import com.rock.golf.Input.*;
 import com.rock.golf.Math.Derivation;
 
@@ -39,7 +40,8 @@ public class RockGolf extends ApplicationAdapter {
     private SpriteBatch position, shot;
     private BitmapFont font;
     public static int shotCounter;
-
+   
+    
     @Override
     public void create () {
         ball = new ShapeRenderer();

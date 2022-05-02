@@ -4,6 +4,7 @@ import com.rock.golf.Input.InputModule;
 
 public class HillClimbingAlgorithm {
 
+
     private double targetX, targetY, ballPositionX, ballPositionY;
     double[] input= InputModule.get_input();
 
@@ -43,13 +44,7 @@ public class HillClimbingAlgorithm {
 
     }
 
-    // private boolean ball_in_target(){
-    //     targetRadius = input[4];
-    //     ballRadius = 0.5;
-    //     boolean xCheck = ballPositionX + ballRadius < targetX + targetRadius && ballPositionX - ballRadius > targetX - targetRadius;
-    //     boolean yCheck = ballPositionY + ballRadius < targetY + targetRadius && ballPositionY - ballRadius > targetY - targetRadius;
-    //     return xCheck && yCheck;
-    // }
+
 }
 
    
