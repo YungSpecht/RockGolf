@@ -1,4 +1,4 @@
-package main.com.rock.golf;
+package com.rock.golf;
 
 public class StateVector {
     private double XPos;
@@ -6,46 +6,46 @@ public class StateVector {
     private double XSpeed;
     private double YSpeed;
 
-    public StateVector(double XPos, double YPos, double XSpeed, double YSpeed){
+    public StateVector(double XPos, double YPos, double XSpeed, double YSpeed) {
         this.XPos = XPos;
         this.YPos = YPos;
         this.XSpeed = XSpeed;
         this.YSpeed = YSpeed;
     }
 
-    public double getXPos(){
+    public double getXPos() {
         return XPos;
     }
 
-    public double getYPos(){
+    public double getYPos() {
         return YPos;
     }
 
-    public double getXSpeed(){
+    public double getXSpeed() {
         return XSpeed;
     }
 
-    public double getYSpeed(){
+    public double getYSpeed() {
         return YSpeed;
     }
 
-    public void setXPos(double XPos){
+    public void setXPos(double XPos) {
         this.XPos = XPos;
     }
 
-    public void setYPos(double YPos){
+    public void setYPos(double YPos) {
         this.YPos = YPos;
     }
 
-    public void setXSpeed(double XSpeed){
+    public void setXSpeed(double XSpeed) {
         this.XSpeed = XSpeed;
     }
 
-    public void setYSpeed(double YSpeed){
+    public void setYSpeed(double YSpeed) {
         this.YSpeed = YSpeed;
     }
 
-    public static StateVector add(StateVector one, StateVector two){
+    public static StateVector add(StateVector one, StateVector two) {
         double first = one.getXPos() + two.getXPos();
         double second = one.getYPos() + two.getYPos();
         double third = one.getXSpeed() + two.getXSpeed();
@@ -53,12 +53,11 @@ public class StateVector {
         return new StateVector(first, second, third, fourth);
     }
 
-    public static StateVector multiply(StateVector a, double b){
+    public static StateVector multiply(StateVector a, double b) {
         return new StateVector(a.getXPos() * b, a.getYPos() * b, a.getXSpeed() * b, a.getYSpeed() * b);
     }
 
-    public String toString(){
+    public String toString() {
         return "X Position: " + XPos + "\nY Position: " + YPos + "\nX Velocity: " + XSpeed + "\nY Velocity: " + YSpeed;
     }
 }
-

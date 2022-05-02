@@ -1,5 +1,5 @@
 buildscript {
-    
+
 
     repositories {
         mavenLocal()
@@ -9,7 +9,6 @@ buildscript {
         google()
     }
     dependencies {
-        
 
     }
 }
@@ -47,16 +46,27 @@ project(":desktop") {
         implementation project(":core")
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        
+
     }
 }
 
 project(":core") {
     apply plugin: "java-library"
 
+    test {
+       workingDir = new File("")
+    }
 
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         implementation 'org.mariuszgromada.math:MathParser.org-mXparser:4.4.2'
+        testImplementation "junit:junit:4.13.2"
+        testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        testImplementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
     }
+
+    
 }
