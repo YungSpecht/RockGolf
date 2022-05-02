@@ -1,8 +1,8 @@
-package main.com.rock.golf.Math;
+package com.rock.golf.Math;
 
 import org.mariuszgromada.math.mxparser.Function;
 
-import main.com.rock.golf.StateVector;
+import com.rock.golf.StateVector;
 
 public class RK4Solver {
 

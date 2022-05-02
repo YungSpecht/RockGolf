@@ -1,4 +1,4 @@
-package main.com.rock.golf.Input;
+package com.rock.golf.Input;
 
 import java.io.File;
 import java.io.FileNotFoundException;

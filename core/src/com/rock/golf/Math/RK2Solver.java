@@ -1,9 +1,9 @@
-package main.com.rock.golf.Math;
+package com.rock.golf.Math;
 
 import org.mariuszgromada.math.mxparser.*;
 
-import main.com.rock.golf.PhysicsEngine;
-import main.com.rock.golf.StateVector;
+import com.rock.golf.PhysicsEngine;
+import com.rock.golf.StateVector;
 
 /**
  * runge_kutta_two()

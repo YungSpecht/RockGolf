@@ -1,4 +1,4 @@
-package main.com.rock.golf;
+package com.rock.golf;
 
 public class StateVector {
     private double XPos;
