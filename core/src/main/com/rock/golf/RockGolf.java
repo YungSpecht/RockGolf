@@ -40,6 +40,7 @@ public class RockGolf extends ApplicationAdapter {
     private SpriteBatch position, shot;
     private BitmapFont font;
     public static int shotCounter;
+    public static boolean shotActive;
 
     @Override
     public void create () {
@@ -56,14 +57,14 @@ public class RockGolf extends ApplicationAdapter {
         xPosition = convert(input[5]) * 100 + originX;
         yPosition = convert(input[6]) * 100 + originY;
         generateField();
+        shotActive = false;
     }
 
     @Override
     public void render () {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         createMap();
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)  ){
-            
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && !shotActive){
             prepare_new_shot();
             executor.execute(engine); 
         }
@@ -106,7 +107,7 @@ public class RockGolf extends ApplicationAdapter {
 
     @Override
     public void dispose(){
-        PhysicsEngine.abort = true;
+        ((PhysicsEngine)engine).abort();
         executor.shutdown();
         executor.shutdownNow();
     }

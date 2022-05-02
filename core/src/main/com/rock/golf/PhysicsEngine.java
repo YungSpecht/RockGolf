@@ -20,8 +20,7 @@ public class PhysicsEngine implements Runnable{
     private Function golfCourse;
     private StateVector vector;
     private double[] input;
-
-    public static boolean abort;
+    private boolean abort;
 
     public PhysicsEngine(){
         input = InputModule.get_input();
@@ -35,6 +34,7 @@ public class PhysicsEngine implements Runnable{
     }
 
     private void new_shot(){
+        RockGolf.shotActive = true;
         RockGolf.shotCounter++;
         set_variables();
         RK2Solver solve = new RK2Solver(uK, uS, golfCourse);
@@ -53,6 +53,7 @@ public class PhysicsEngine implements Runnable{
             }
         }
         InputModule.set_new_position(vector.getXPos(), vector.getYPos());
+        RockGolf.shotActive = false;
     }
 
     private void set_variables(){
@@ -95,4 +96,7 @@ public class PhysicsEngine implements Runnable{
         return uS <= Math.sqrt(Math.pow(xSlope, 2) + Math.pow(ySlope, 2));
     }
 
+    public void abort(){
+        abort = true;
+    }
 }
