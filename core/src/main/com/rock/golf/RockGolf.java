@@ -1,4 +1,4 @@
-package com.rock.golf;
+package main.com.rock.golf;
 
 import java.lang.Thread.State;
 import java.util.ArrayList;
@@ -9,10 +9,11 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.rock.golf.Input.*;
-import com.rock.golf.Math.Derivation;
 
 import org.mariuszgromada.math.mxparser.Function;
+
+import main.com.rock.golf.Input.*;
+import main.com.rock.golf.Math.Derivation;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;

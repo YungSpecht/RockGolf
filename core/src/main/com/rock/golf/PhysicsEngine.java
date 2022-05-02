@@ -1,10 +1,10 @@
-package com.rock.golf;
-
-import com.rock.golf.Input.InputModule;
-import com.rock.golf.Math.Derivation;
-import com.rock.golf.Math.RK2Solver;
+package main.com.rock.golf;
 
 import org.mariuszgromada.math.mxparser.Function;
+
+import main.com.rock.golf.Input.InputModule;
+import main.com.rock.golf.Math.Derivation;
+import main.com.rock.golf.Math.RK2Solver;
 
 public class PhysicsEngine implements Runnable{
 

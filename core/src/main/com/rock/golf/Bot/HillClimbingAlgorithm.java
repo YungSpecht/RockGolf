@@ -1,6 +1,6 @@
-package com.rock.golf.Bot;
+package main.com.rock.golf.Bot;
 
-import com.rock.golf.Input.InputModule;
+import main.com.rock.golf.Input.InputModule;
 
 public class HillClimbingAlgorithm {
 
