@@ -1,16 +1,16 @@
 package com.rock.golf;
 
+import org.mariuszgromada.math.mxparser.Function;
+
 import com.rock.golf.Input.InputModule;
 import com.rock.golf.Math.Derivation;
 import com.rock.golf.Math.RK2Solver;
-
-import org.mariuszgromada.math.mxparser.Function;
 
 public class PhysicsEngine implements Runnable{
 
     //constants
     public static final double g = 9.81;
-    public static final double h = 0.01;
+    public static final double h = 0.005;
     public final double ballRadius = 0.05;
     private final double Epsilon = 0.01;
 
@@ -20,9 +20,12 @@ public class PhysicsEngine implements Runnable{
     private Function golfCourse;
     private StateVector vector;
     private double[] input;
+    private boolean abort;
 
+    //constructor
     public PhysicsEngine(){
         input = InputModule.get_input();
+        abort = false;
     }
 
 
@@ -31,7 +34,12 @@ public class PhysicsEngine implements Runnable{
         new_shot();
     }
 
+    /**
+	 * This method starts a new golf shot based on the current parameters that are set in the Input.txt file.
+	 */
     private void new_shot(){
+        RockGolf.shotActive = true;
+        RockGolf.shotCounter++;
         set_variables();
         RK2Solver solve = new RK2Solver(uK, uS, golfCourse);
         Double step = h * 1000;
@@ -44,11 +52,18 @@ public class PhysicsEngine implements Runnable{
                 RockGolf.update_position(vector);
                 checkpoint = System.currentTimeMillis();
             }
+            if(abort){
+                return;
+            }
         }
-        RockGolf.shotCounter++;
-        //InputModule.set_new_position(vector.getXPos(), vector.getYPos());
+        InputModule.set_new_position(vector.getXPos(), vector.getYPos());
+        RockGolf.shotActive = false;
     }
 
+    /**
+	 * This method reads in all the parameters from the Input.txt file and updates the fields
+     * of the physics engine accordingly.
+	 */
     private void set_variables(){
         double[] variables = InputModule.get_input();
         uK = variables[0]; uS = variables[1];
@@ -61,6 +76,12 @@ public class PhysicsEngine implements Runnable{
         return input;
     }
 
+    /**
+	 * This method determines wether the ball is currently moving by checking wether both the 
+     * x and y velocities are in a range of error epsilon of 0.
+     * 
+     * @return Boolean value: true if ball is moving, false if not.
+	 */
     private boolean ball_is_moving(){
         boolean xCheck = true;
         boolean yCheck = true;
@@ -77,16 +98,34 @@ public class PhysicsEngine implements Runnable{
         return xCheck || yCheck;
     }
 
+    /**
+	 * This method determines wether the ball is currently inside the target based on the position and
+     * radius of the ball as well as the target.
+     * 
+     * @return Boolean value: true if ball is inside target, false if not.
+	 */
     private boolean ball_in_target(){
         boolean xCheck = vector.getXPos() + ballRadius < targetX + targetRadius && vector.getXPos() - ballRadius > targetX - targetRadius;
         boolean yCheck = vector.getYPos() + ballRadius < targetY + targetRadius && vector.getYPos() - ballRadius > targetY - targetRadius;
         return xCheck && yCheck;
     }
 
+    /**
+	 * This method determines wether the downhillforce acting upon the golf ball in rest is
+     * greater than the static friction, which would cause it to start rolling again.
+     * 
+     * @return Boolean value: true if ball is about to start rolling again, false if not.
+	 */
     private boolean hill_is_steep(){
         double xSlope = Derivation.derivativeX(vector.getXPos(), vector.getYPos(), golfCourse);
         double ySlope = Derivation.derivativeY(vector.getXPos(), vector.getYPos(), golfCourse);
         return uS <= Math.sqrt(Math.pow(xSlope, 2) + Math.pow(ySlope, 2));
     }
 
+    /**
+	 * This method aborts a golf ball shot in case of closing the program.
+	 */
+    public void abort(){
+        abort = true;
+    }
 }

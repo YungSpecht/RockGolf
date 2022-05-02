@@ -1,6 +1,5 @@
 package com.rock.golf;
 
-import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,22 +8,30 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+<<<<<<< HEAD
 import com.rock.golf.Bot.HillClimbingAlgorithm;
 import com.rock.golf.Input.*;
 import com.rock.golf.Math.Derivation;
 
 import org.mariuszgromada.math.mxparser.Function;
 
+=======
+>>>>>>> 8858767d9f8057a9b0c871c19b7311e2f09e30b5
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import org.mariuszgromada.math.mxparser.Function;
+
+import com.rock.golf.Input.*;
+import com.rock.golf.Math.Derivation;
+
 public class RockGolf extends ApplicationAdapter {
     private float ballRadius;
     private float targetRadius;
-    private final static float originX = 400;
-    private final static float originY = 400;
+    private static float originX;
+    private static float originY;
     private static float xPosition;
     private static float yPosition;
     private float targetxPosition;
@@ -40,10 +47,13 @@ public class RockGolf extends ApplicationAdapter {
     private SpriteBatch position, shot;
     private BitmapFont font;
     public static int shotCounter;
-   
-    
+    public static boolean shotActive;
+
+
     @Override
     public void create () {
+        originX = Gdx.graphics.getWidth() / 2;
+        originY = Gdx.graphics.getHeight() / 2;
         ball = new ShapeRenderer();
         target = new ShapeRenderer();
         engine = new PhysicsEngine();
@@ -57,14 +67,14 @@ public class RockGolf extends ApplicationAdapter {
         xPosition = convert(input[5]) * 100 + originX;
         yPosition = convert(input[6]) * 100 + originY;
         generateField();
+        shotActive = false;
     }
 
     @Override
     public void render () {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         createMap();
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)  ){
-            
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && !shotActive){
             prepare_new_shot();
             executor.execute(engine); 
         }
@@ -79,24 +89,44 @@ public class RockGolf extends ApplicationAdapter {
         ball.end();
 
         position.begin();
-        font.draw(position, "X: " + (xPosition-originX) + " Y: " + (yPosition-originY), 20 , 775);
+        font.draw(position, "X: " + (xPosition-originX) + " Y: " + (yPosition-originY), 20 , Gdx.graphics.getHeight() - 20);
         position.end();
 
         shot.begin();
-        font.draw(shot, "Shots: " + shotCounter, 700, 775);
+        font.draw(shot, "Shots: " + shotCounter, Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 20);
         shot.end();
     }
 
+    /**
+	 * This method is used to update the display of the x- and y- position in the UI.
+     * It is called from the PhysicsEngine.java class.
+     * 
+     * @param vector The state vector containing the updated x- and y- position.
+	 */
     public static void  update_position(StateVector vector){
         xPosition = originX + convert(vector.getXPos()) * 100;
         yPosition = originY + convert(vector.getYPos()) * 100;
     }
 
+    /**
+	 * This method converts a double value into a float value. This is needed because values
+     * from the PhysicsEngine.java class arrive as double values and the UI works with float
+     * values.
+     * 
+     * @param d A double value
+     * @return The double value converted to float
+	 */
     private static float convert(double d){
         Double tmp = Double.valueOf(d);
         return tmp.floatValue();
     }
 
+    
+    /**
+	 * This method is used to update the UI before a new shot is started in case
+     * the user decided to change the position and size of the target or the size
+     * of the ball.
+	 */
     private void prepare_new_shot(){
         input = ((PhysicsEngine) engine).get_input();
         targetxPosition = convert(input[2]) * 100 + originX;
@@ -107,9 +137,15 @@ public class RockGolf extends ApplicationAdapter {
 
     @Override
     public void dispose(){
+        ((PhysicsEngine)engine).abort();
         executor.shutdown();
+        executor.shutdownNow();
     }
 
+    /**
+	 * This method calculates the coloration of the course based on the height
+     * of the course in every position. (?)
+	 */
     private void generateField() { 
 		Function profile = InputModule.get_profile();
 
@@ -137,20 +173,16 @@ public class RockGolf extends ApplicationAdapter {
 					}
 				}
 				map.add(new float[]{ i,  j, 20,20});
-        		}
-			}
+        	}
 		}
-
+	}
+    
 	/** 
 	 *
 	 * Create the map from the generation every frame
 	 *
 	 */
-
-	
-
-	
-	private void createMap() {
+    private void createMap() {
 		int sizeX = Gdx.graphics.getWidth();
 		int sizeY = Gdx.graphics.getHeight();
 		int counter = 0;

@@ -19,6 +19,6 @@ public class Derivation {
     }
 
     public static double compute(double x, double y, Function f) {
-        return f.calculate(x,y);
+        return f.calculate(x, y);
     }
 }
