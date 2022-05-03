@@ -29,6 +29,10 @@ public class PhysicsEngine implements Runnable{
     }
 
 
+    public StateVector getVector() {
+        return vector;
+    }
+
     @Override
     public void run() {
         new_shot();
@@ -82,7 +86,7 @@ public class PhysicsEngine implements Runnable{
      * 
      * @return Boolean value: true if ball is moving, false if not.
 	 */
-    private boolean ball_is_moving(){
+    public boolean ball_is_moving(){
         boolean xCheck = true;
         boolean yCheck = true;
         if(vector.getXSpeed() < Epsilon && vector.getXSpeed() > 0 - Epsilon){
