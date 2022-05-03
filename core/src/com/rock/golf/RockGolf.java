@@ -155,13 +155,14 @@ public class RockGolf extends ApplicationAdapter {
 
 		int sizeX = Gdx.graphics.getWidth();
 		int sizeY = Gdx.graphics.getHeight();
-        for(float i = 0; i <= sizeX; i+= 20) {
-            for(float j = 0; j <= sizeY; j+= 20) {
-                float x = i / 100;
-                float y = j / 100;
-				//float n = (float) (0.1*x - 1);
-				float n = 0;
-					n = (float) Derivation.compute(x, y, profile);
+
+        for(float i = 0; i <= sizeX; i+= 10) {
+            for(float j = 0; j <= sizeY; j += 10) {
+                float x = (i - originX) / 100;
+                float y = (j - originY) / 100;
+
+				float n = (float) Derivation.compute(x, y, profile);
+
 				if(n < 0) {
 					if (Math.abs(n) < 0.3f) {
 						color.add(new float[]{0, 0, 0.3f, 1});
@@ -177,7 +178,7 @@ public class RockGolf extends ApplicationAdapter {
 						color.add(new float[]{0, n, 0, 1});
 					}
 				}
-				map.add(new float[]{ i,  j, 20,20});
+				map.add(new float[]{ i,  j, 10,10});
         	}
 		}
 	}
@@ -191,8 +192,8 @@ public class RockGolf extends ApplicationAdapter {
 		int sizeX = Gdx.graphics.getWidth();
 		int sizeY = Gdx.graphics.getHeight();
 		int counter = 0;
-		for(int i = 0; i < sizeX; i+=20) {
-			for(int j = 0; j <= sizeY; j+=20) {
+		for(int i = 0; i < sizeX; i+=10) {
+			for(int j = 0; j <= sizeY; j+=10) {
 				try {
 				shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 				shapeRenderer.setColor(color.get(counter)[0], color.get(counter)[1], color.get(counter)[2], color.get(counter)[3]);
