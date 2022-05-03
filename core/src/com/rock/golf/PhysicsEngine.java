@@ -2,6 +2,9 @@ package com.rock.golf;
 
 import org.mariuszgromada.math.mxparser.Function;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.rock.golf.Input.InputModule;
 import com.rock.golf.Math.Derivation;
 import com.rock.golf.Math.RK2Solver;
@@ -10,7 +13,7 @@ public class PhysicsEngine implements Runnable{
 
     //constants
     public static final double g = 9.81;
-    public static final double h = 0.06;
+    public static final double h = 0.001;
     public final double ballRadius = 0.05;
     private final double Epsilon = 0.01;
 
@@ -20,12 +23,17 @@ public class PhysicsEngine implements Runnable{
     private Function golfCourse;
     private StateVector vector;
     private double[] input;
+    private boolean isInWater;
+    private List<Sandpit> sandpits;
     private boolean abort;
 
     //constructor
     public PhysicsEngine(){
         input = InputModule.get_input();
+        set_variables();
         abort = false;
+        sandpits = new ArrayList<Sandpit>();
+        isInWater = is_in_water();
     }
 
 
@@ -46,7 +54,11 @@ public class PhysicsEngine implements Runnable{
         long timestep = step.longValue();
         long checkpoint = System.currentTimeMillis();
         while(ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()){
+            isInWater = is_in_water();
             long currentTime = System.currentTimeMillis();
+            if(isInWater){
+                break;
+            }
             if(currentTime - checkpoint > timestep){
                 vector = solve.runge_kutta_two(vector);
                 RockGolf.update_position(vector);
@@ -120,6 +132,19 @@ public class PhysicsEngine implements Runnable{
         double xSlope = Derivation.derivativeX(vector.getXPos(), vector.getYPos(), golfCourse);
         double ySlope = Derivation.derivativeY(vector.getXPos(), vector.getYPos(), golfCourse);
         return uS <= Math.sqrt(Math.pow(xSlope, 2) + Math.pow(ySlope, 2));
+    }
+
+    /**
+	 * This method determines wether the ball has fallen into water by evaluating the golf course
+     * function at the current position of the bal
+     * 
+     * @return Boolean value: true if ball is currently in water, false if not.
+	 */
+    public boolean is_in_water(){
+        if(Derivation.compute(vector.getXPos(), vector.getYPos(), golfCourse) < 0){
+            return true;
+        }
+        return false;
     }
 
     /**

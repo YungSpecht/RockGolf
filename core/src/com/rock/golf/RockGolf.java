@@ -154,7 +154,7 @@ public class RockGolf extends ApplicationAdapter {
                 float y = j / 100;
 				//float n = (float) (0.1*x - 1);
 				float n = 0;
-					n = (float) Derivation.compute(x-4, y-4, profile);
+					n = (float) Derivation.compute(x, y, profile);
 				if(n < 0) {
 					if (Math.abs(n) < 0.3f) {
 						color.add(new float[]{0, 0, 0.3f, 1});
