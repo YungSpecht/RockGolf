@@ -44,7 +44,7 @@ public class RK2Solver {
         double formulaX;
         double formulaY;
 
-        if(vector.getXSpeed() == 0 && vector.getYPos() == 0){
+        if(vector.getXSpeed() == 0 && vector.getYSpeed() == 0){
             formulaX = (-PhysicsEngine.g * xSlope) - uK * PhysicsEngine.g * (xSlope / Math.sqrt(Math.pow(xSlope, 2) + Math.pow(ySlope, 2)));
             formulaY = (-PhysicsEngine.g * ySlope) - uK * PhysicsEngine.g * (ySlope / Math.sqrt(Math.pow(xSlope, 2) + Math.pow(ySlope, 2)));
         }

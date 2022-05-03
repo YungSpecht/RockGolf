@@ -110,10 +110,14 @@ public class PhysicsEngine implements Runnable{
      * @return Boolean value: true if ball is inside target, false if not.
 	 */
     private boolean ball_in_target(){
-        boolean xCheck = vector.getXPos() + ballRadius < targetX + targetRadius && vector.getXPos() - ballRadius > targetX - targetRadius;
-        boolean yCheck = vector.getYPos() + ballRadius < targetY + targetRadius && vector.getYPos() - ballRadius > targetY - targetRadius;
-        RockGolf.newShotPossible = !(xCheck && yCheck);
-        return xCheck && yCheck;
+
+        //((x - circle_x) * (x - circle_x) + (y - circle_y) * (y - circle_y) <= rad * rad);
+
+        if(Math.pow(vector.getXPos() - targetX, 2) + Math.pow(vector.getYPos() - targetY, 2) <= Math.pow(targetRadius, 2)){
+            RockGolf.newShotPossible = false;
+            return true;
+        }
+        return false;
     }
 
     /**
