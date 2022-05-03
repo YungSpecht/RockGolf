@@ -46,6 +46,19 @@ public class InputModule {
         }
     }
 
+    public static void set_new_velocity(double xSpeed, double ySpeed){
+        try {
+            File file = new File("core/src/com/rock/golf/Input/Input.txt");
+            List<String> lines = Files.readAllLines(file.toPath());
+            lines.set(8, "x-velocity: " + xSpeed);
+            Files.write(file.toPath(), lines);
+            lines.set(9, "y-velocity: " + ySpeed);
+            Files.write(file.toPath(), lines);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static Function get_profile(){
         FileReader reader;
         try {
