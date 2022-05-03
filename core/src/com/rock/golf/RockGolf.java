@@ -255,7 +255,6 @@ public class RockGolf extends ApplicationAdapter {
 
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-            InputModule.set_new_velocity(0, 0);
             this.downX = screenX;
             this.downY = screenY;
             return false;
@@ -263,8 +262,8 @@ public class RockGolf extends ApplicationAdapter {
 
         @Override
         public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-            this.distanceX = (downX - screenX) / 60;
-            this.distanceY = (screenY - downY) / 60;
+            this.distanceX = (downX - screenX) / 40;
+            this.distanceY = (screenY - downY) / 40;
             finalVelocity = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
 
             while(finalVelocity > 5) {

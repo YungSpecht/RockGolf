@@ -111,8 +111,6 @@ public class PhysicsEngine implements Runnable{
             vector.setXSpeed(0);
             vector.setYSpeed(0);
         }
-        System.out.println(vector.getXSpeed());
-        System.out.println(vector.getYSpeed());
         return xCheck || yCheck;
     }
 
