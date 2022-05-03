@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.swing.JOptionPane;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -233,6 +235,9 @@ public class RockGolf extends ApplicationAdapter {
         @Override
         public boolean keyDown(int keycode) {
             if(keycode == Input.Keys.ENTER && !shotActive){
+                String x = JOptionPane.showInputDialog("Insert x speed:");
+                String y = JOptionPane.showInputDialog("Insert x speed:");
+                InputModule.set_new_velocity(Double.parseDouble(x), Double.parseDouble(y));
                 prepare_new_shot();
                 executor.execute(engine); 
             }
