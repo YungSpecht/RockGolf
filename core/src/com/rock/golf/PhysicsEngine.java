@@ -107,10 +107,12 @@ public class PhysicsEngine implements Runnable{
         if(vector.getYSpeed() < Epsilon && vector.getYSpeed() > 0 - Epsilon){
             yCheck = false;
         }
-        if(xCheck == false && yCheck == false){
+        if(xCheck == false && yCheck == false) {
             vector.setXSpeed(0);
             vector.setYSpeed(0);
         }
+        System.out.println(vector.getXSpeed());
+        System.out.println(vector.getYSpeed());
         return xCheck || yCheck;
     }
 

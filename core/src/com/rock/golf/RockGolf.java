@@ -51,6 +51,7 @@ public class RockGolf extends ApplicationAdapter {
 
     @Override
     public void create () {
+        InputModule.set_new_velocity(0, 0);
         originX = Gdx.graphics.getWidth() / 2;
         originY = Gdx.graphics.getHeight() / 2;
         ball = new ShapeRenderer();
@@ -223,8 +224,8 @@ public class RockGolf extends ApplicationAdapter {
     public class InputHandling implements InputProcessor {
         private int downX;
         private int downY;
-        public int distanceX;
-        public int distanceY;
+        public double distanceX;
+        public double distanceY;
         public double finalVelocity;
         public int finalVectorX;
         public int finalVectorY;
@@ -250,6 +251,7 @@ public class RockGolf extends ApplicationAdapter {
 
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+            InputModule.set_new_velocity(0, 0);
             this.downX = screenX;
             this.downY = screenY;
             return false;
@@ -257,26 +259,37 @@ public class RockGolf extends ApplicationAdapter {
 
         @Override
         public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-            this.distanceX = (downX - screenX) / 100;
-            this.distanceY = (screenY - downX) / 100;
+            this.distanceX = (downX - screenX) / 60;
+            this.distanceY = (screenY - downY) / 60;
             finalVelocity = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
 
-            while(finalVelocity >= 5) {
-                distanceX -= 0.1;
-                distanceY -= 0.1;
+            while(finalVelocity > 5) {
+                if(distanceX > 0) distanceX = distanceX - 0.1;
+                else distanceX = distanceX + 0.1;
+                
+                if(distanceY > 0) distanceY = distanceY - 0.1;
+                else distanceY = distanceY + 0.1;
+
                 finalVelocity = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
             }
 
+            if(!((PhysicsEngine) engine).ball_is_moving()) {
+                InputModule.set_new_velocity(distanceX, distanceY);
+                prepare_new_shot();
+                executor.execute(engine);
+            }
+            finalVectorX = 0;
+            finalVectorY = 0;             
             return false; 
         }
 
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
-            if(((PhysicsEngine) engine).getVector() == null || !((PhysicsEngine) engine).ball_is_moving()) {
+            if(!((PhysicsEngine) engine).ball_is_moving()) {
                 finalVectorX = screenX;
                 finalVectorY = screenY;
             }
-
+            
             return false;
         }
 
