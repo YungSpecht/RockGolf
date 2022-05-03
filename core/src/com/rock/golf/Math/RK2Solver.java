@@ -41,9 +41,18 @@ public class RK2Solver {
     private StateVector euler(StateVector vector, double timeStep) {
         double xSlope = Derivation.derivativeX(vector.getXPos(), vector.getYPos(), golfCourse);
         double ySlope = Derivation.derivativeY(vector.getXPos(), vector.getYPos(), golfCourse);
+        double formulaX;
+        double formulaY;
 
-        double formulaX = (-PhysicsEngine.g * xSlope) - uK * PhysicsEngine.g * (vector.getXSpeed() / Math.sqrt(Math.pow(vector.getXSpeed(), 2) + Math.pow(vector.getYSpeed(), 2)));
-        double formulaY = (-PhysicsEngine.g * ySlope) - uK * PhysicsEngine.g * (vector.getYSpeed() / Math.sqrt(Math.pow(vector.getXSpeed(), 2) + Math.pow(vector.getYSpeed(), 2)));
+        if(vector.getXSpeed() == 0 && vector.getYPos() == 0){
+            formulaX = (-PhysicsEngine.g * xSlope) - uK * PhysicsEngine.g * (xSlope / Math.sqrt(Math.pow(xSlope, 2) + Math.pow(ySlope, 2)));
+            formulaY = (-PhysicsEngine.g * ySlope) - uK * PhysicsEngine.g * (ySlope / Math.sqrt(Math.pow(xSlope, 2) + Math.pow(ySlope, 2)));
+        }
+        else{
+            formulaX = (-PhysicsEngine.g * xSlope) - uK * PhysicsEngine.g * (vector.getXSpeed() / Math.sqrt(Math.pow(vector.getXSpeed(), 2) + Math.pow(vector.getYSpeed(), 2)));
+            formulaY = (-PhysicsEngine.g * ySlope) - uK * PhysicsEngine.g * (vector.getYSpeed() / Math.sqrt(Math.pow(vector.getXSpeed(), 2) + Math.pow(vector.getYSpeed(), 2)));
+        }
+
         return StateVector.multiply(new StateVector(vector.getXSpeed(), vector.getYSpeed(), formulaX, formulaY), timeStep);
     }
 }

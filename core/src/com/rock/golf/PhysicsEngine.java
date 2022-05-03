@@ -13,7 +13,7 @@ public class PhysicsEngine implements Runnable{
 
     //constants
     public static final double g = 9.81;
-    public static final double h = 0.001;
+    public static final double h = 0.03;
     public final double ballRadius = 0.05;
     private final double Epsilon = 0.01;
 
@@ -112,6 +112,7 @@ public class PhysicsEngine implements Runnable{
     private boolean ball_in_target(){
         boolean xCheck = vector.getXPos() + ballRadius < targetX + targetRadius && vector.getXPos() - ballRadius > targetX - targetRadius;
         boolean yCheck = vector.getYPos() + ballRadius < targetY + targetRadius && vector.getYPos() - ballRadius > targetY - targetRadius;
+        RockGolf.newShotPossible = !(xCheck && yCheck);
         return xCheck && yCheck;
     }
 
@@ -135,6 +136,7 @@ public class PhysicsEngine implements Runnable{
 	 */
     public boolean is_in_water(){
         if(Derivation.compute(vector.getXPos(), vector.getYPos(), golfCourse) < 0){
+            RockGolf.newShotPossible = false;
             return true;
         }
         return false;

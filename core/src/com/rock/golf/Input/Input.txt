@@ -4,7 +4,7 @@ friction-coefficient-static: 0.2
 target-x-position: 3.0
 target-y-position: 3.0
 target-radius: 0.25
-ball-x-position: -0.5307740339749375
-ball-y-position: 0.7487762214735092
-x-velocity: 1.0
-y-velocity: -1.0
+ball-x-position: 0.7318016026996575
+ball-y-position: 0.5392339212959949
+x-velocity: 2.0
+y-velocity: 2.0

@@ -49,6 +49,7 @@ public class RockGolf extends ApplicationAdapter {
     private BitmapFont font;
     public static int shotCounter;
     public static boolean shotActive;
+    public static boolean newShotPossible;
     public InputHandling in = new InputHandling();
 
     @Override
@@ -71,6 +72,7 @@ public class RockGolf extends ApplicationAdapter {
         yPosition = metersToPixel(convert(input[6])) + originY;
         generateField();
         shotActive = false;
+        newShotPossible = true;
     }
 
     @Override
@@ -234,7 +236,7 @@ public class RockGolf extends ApplicationAdapter {
 
         @Override
         public boolean keyDown(int keycode) {
-            if(keycode == Input.Keys.ENTER && !shotActive){
+            if(keycode == Input.Keys.ENTER && !shotActive && newShotPossible){
                 String x = JOptionPane.showInputDialog("Insert x speed:");
                 String y = JOptionPane.showInputDialog("Insert y speed:");
                 InputModule.set_new_velocity(Double.parseDouble(x), Double.parseDouble(y));
@@ -277,7 +279,7 @@ public class RockGolf extends ApplicationAdapter {
                 finalVelocity = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
             }
 
-            if(!shotActive) {
+            if(!shotActive && newShotPossible) {
                 InputModule.set_new_velocity(distanceX, distanceY);
                 prepare_new_shot();
                 executor.execute(engine);
