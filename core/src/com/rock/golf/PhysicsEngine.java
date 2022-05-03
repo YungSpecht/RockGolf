@@ -54,22 +54,11 @@ public class PhysicsEngine implements Runnable{
         RockGolf.shotCounter++;
         set_variables();
         RK2Solver solve = new RK2Solver(uK, uS, golfCourse);
-        Double step = h * 1000;
-        long timestep = step.longValue();
-        long checkpoint = System.currentTimeMillis();
-        while(ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()){
-            isInWater = is_in_water();
-            long currentTime = System.currentTimeMillis();
-            if(isInWater){
-                break;
-            }
-            if(currentTime - checkpoint > timestep){
-                vector = solve.runge_kutta_two(vector);
-                RockGolf.update_position(vector);
-                checkpoint = System.currentTimeMillis();
-            }
+        while((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !is_in_water()){
+            vector = solve.runge_kutta_two(vector);
+            RockGolf.update_position(vector);
             if(abort){
-                return;
+                break;
             }
         }
         InputModule.set_new_position(vector.getXPos(), vector.getYPos());
