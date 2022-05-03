@@ -17,8 +17,6 @@ public class InputModule {
         FileReader reader;
         try {
 
-            reader = new FileReader("core/src/com/rock/golf/Input/Input.txt");
-
             reader = new FileReader("Input.txt");
 
             Scanner in = new Scanner(reader);

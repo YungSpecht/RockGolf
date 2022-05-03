@@ -10,7 +10,7 @@ public class PhysicsEngine implements Runnable{
 
     //constants
     public static final double g = 9.81;
-    public static final double h = 0.005;
+    public static final double h = 0.06;
     public final double ballRadius = 0.05;
     private final double Epsilon = 0.01;
 
