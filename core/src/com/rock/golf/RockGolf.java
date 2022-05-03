@@ -8,15 +8,12 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-<<<<<<< HEAD
 import com.rock.golf.Bot.HillClimbingAlgorithm;
 import com.rock.golf.Input.*;
 import com.rock.golf.Math.Derivation;
 
 import org.mariuszgromada.math.mxparser.Function;
 
-=======
->>>>>>> 8858767d9f8057a9b0c871c19b7311e2f09e30b5
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
