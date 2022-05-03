@@ -53,7 +53,6 @@ public class RockGolf extends ApplicationAdapter {
 
     @Override
     public void create () {
-        InputModule.set_new_velocity(0, 0);
         originX = Gdx.graphics.getWidth() / 2;
         originY = Gdx.graphics.getHeight() / 2;
         ball = new ShapeRenderer();
@@ -278,7 +277,7 @@ public class RockGolf extends ApplicationAdapter {
                 finalVelocity = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
             }
 
-            if(!((PhysicsEngine) engine).ball_is_moving()) {
+            if(!shotActive) {
                 InputModule.set_new_velocity(distanceX, distanceY);
                 prepare_new_shot();
                 executor.execute(engine);
@@ -290,7 +289,7 @@ public class RockGolf extends ApplicationAdapter {
 
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
-            if(!((PhysicsEngine) engine).ball_is_moving()) {
+            if(!shotActive) {
                 finalVectorX = screenX;
                 finalVectorY = screenY;
             }
