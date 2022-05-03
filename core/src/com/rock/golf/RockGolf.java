@@ -236,7 +236,7 @@ public class RockGolf extends ApplicationAdapter {
         public boolean keyDown(int keycode) {
             if(keycode == Input.Keys.ENTER && !shotActive){
                 String x = JOptionPane.showInputDialog("Insert x speed:");
-                String y = JOptionPane.showInputDialog("Insert x speed:");
+                String y = JOptionPane.showInputDialog("Insert y speed:");
                 InputModule.set_new_velocity(Double.parseDouble(x), Double.parseDouble(y));
                 prepare_new_shot();
                 executor.execute(engine); 
