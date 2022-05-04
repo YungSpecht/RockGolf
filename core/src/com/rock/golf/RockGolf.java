@@ -245,7 +245,7 @@ public class RockGolf extends ApplicationAdapter {
                 prepare_new_shot();
                 executor.execute(engine); 
             } else if (keycode == Input.Keys.ALT_RIGHT) {
-                bot = new StochasticBot((PhysicsEngine) engine, 2);
+                bot = new StochasticBot((PhysicsEngine) engine, 50);
                 double[] vel = bot.getBestMove();
                 InputModule.set_new_velocity(vel[0],vel[1]);
                 prepare_new_shot();

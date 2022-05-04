@@ -54,5 +54,6 @@ public class RK2Solver {
         }
 
         return StateVector.multiply(new StateVector(vector.getXSpeed(), vector.getYSpeed(), formulaX, formulaY), timeStep);
+        
     }
 }

@@ -15,7 +15,7 @@ public class PhysicsEngine implements Runnable{
     public static final double g = 9.81;
     public static final double h = 0.03;
     public final double ballRadius = 0.05;
-    private final double Epsilon = 0.01;
+    private final double Epsilon = 0.03;
 
     //fields
     private double uK, uS;
@@ -93,13 +93,16 @@ public class PhysicsEngine implements Runnable{
         if(vector.getXSpeed() < Epsilon && vector.getXSpeed() > 0 - Epsilon){
             xCheck = false;
         }
+
         if(vector.getYSpeed() < Epsilon && vector.getYSpeed() > 0 - Epsilon){
             yCheck = false;
         }
+
         if(xCheck == false && yCheck == false) {
             vector.setXSpeed(0);
             vector.setYSpeed(0);
         }
+
         return xCheck || yCheck;
     }
 

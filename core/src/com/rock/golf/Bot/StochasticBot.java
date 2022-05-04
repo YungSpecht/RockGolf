@@ -29,7 +29,8 @@ public class StochasticBot {
 
             finalVelocity = Math.sqrt(Math.pow(velX, 2) + Math.pow(velY, 2));
         }
-
+        System.out.println(velX);
+        System.out.println(velY);
         return new double[]{velX, velY};
     }
 
@@ -38,7 +39,6 @@ public class StochasticBot {
         double[] best = new double[]{0,0};
         double previousFitness = Integer.MAX_VALUE;
         double[] vel = getVelocities();
-
         for(int i = 0; i < iterations; i++) {
             System.out.println("iteration " + (i+1));
             double[] ballPos = engine.get_shot(vel[0], vel[1]);
