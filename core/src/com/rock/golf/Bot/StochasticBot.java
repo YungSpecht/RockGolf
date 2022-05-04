@@ -15,8 +15,8 @@ public class StochasticBot {
     }
 
     public double[] getVelocities() {
-        double velX = rand.nextDouble() * 5;
-        double velY = rand.nextDouble() * 5;
+        double velX = (rand.nextDouble() * 10) - 5;
+        double velY = (rand.nextDouble() * 10) - 5;
 
         double finalVelocity = Math.sqrt(Math.pow(velX, 2) + Math.pow(velY, 2));
 
