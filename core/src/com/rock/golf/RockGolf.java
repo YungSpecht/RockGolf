@@ -12,6 +12,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.rock.golf.Bot.HillClimbingAlgorithm;
+import com.rock.golf.Bot.StochasticBot;
 import com.rock.golf.Input.*;
 import com.rock.golf.Math.Derivation;
 
@@ -44,6 +45,7 @@ public class RockGolf extends ApplicationAdapter {
 	private ArrayList<float[]> color = new ArrayList<>();
     private double[] input;
     private Runnable engine;
+    private StochasticBot bot;
     private ExecutorService executor;
     private SpriteBatch position, shot;
     private BitmapFont font;
@@ -133,7 +135,7 @@ public class RockGolf extends ApplicationAdapter {
      * the user decided to change the position and size of the target or the size
      * of the ball.
 	 */
-    private void prepare_new_shot(){
+    public void prepare_new_shot(){
         input = ((PhysicsEngine) engine).get_input();
         targetxPosition =  metersToPixel(convert(input[2])) + originX;
         targetyPosition = metersToPixel(convert(input[3])) + originY;
@@ -242,6 +244,14 @@ public class RockGolf extends ApplicationAdapter {
                 InputModule.set_new_velocity(Double.parseDouble(x), Double.parseDouble(y));
                 prepare_new_shot();
                 executor.execute(engine); 
+            } else if (keycode == Input.Keys.ALT_RIGHT) {
+                bot = new StochasticBot((PhysicsEngine) engine, 2);
+                double[] vel = bot.getBestMove();
+                InputModule.set_new_velocity(vel[0],vel[1]);
+                prepare_new_shot();
+                executor.execute(engine);
+                System.out.println("Shot! Distance from target: " + vel[2]);
+                
             }
             return false;
         }

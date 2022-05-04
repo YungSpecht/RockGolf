@@ -146,6 +146,23 @@ public class PhysicsEngine implements Runnable{
         return false;
     }
 
+    public double[] get_shot(double velX, double velY){
+        double[] variables = InputModule.get_input();
+        uK = variables[0]; uS = variables[1];
+        targetX = variables[2]; targetY = variables[3]; targetRadius = variables[4];
+        vector = new StateVector(variables[5], variables[6], velX, velY);
+        golfCourse = InputModule.get_profile();
+        RK2Solver solve = new RK2Solver(uK, uS, golfCourse);
+        while((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !is_in_water()){
+            vector = solve.runge_kutta_two(vector);
+            if(abort){
+                break;
+            }
+        }
+        return new double[]{vector.getXPos(), vector.getYPos()};
+    }
+
+
     /**
 	 * This method aborts a golf ball shot in case of closing the program.
 	 */
