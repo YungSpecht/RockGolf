@@ -1,46 +1,66 @@
 package com.rock.golf.Bot;
 
+import javax.swing.undo.StateEdit;
+
+import com.rock.golf.PhysicsEngine;
+import com.rock.golf.StateVector;
 import com.rock.golf.Input.InputModule;
 
 public class HillClimbingAlgorithm {
 
 
-    private double targetX, targetY, ballPositionX, ballPositionY;
-    double[] input= InputModule.get_input();
+    private double targetX, targetY, ballPositionX, ballPositionY, xVelocity, yVelocity;
+    double[] input;
 
-    public double getHeuristics(){
-        
-        targetX = input[2];
+    public HillClimbingAlgorithm(){
+        input = InputModule.get_input();
         targetX = input[3];
         ballPositionX = input[5];
         ballPositionY = input[6];
+        xVelocity = input[7];
+        yVelocity = input[8];
+    }
 
-        double distance = Math.sqrt(Math.pow((targetX - ballPositionX), 2) + Math.pow((targetY - ballPositionY),2));
-        
-        return distance;
+    private double getHeuristics(){
+        return Math.sqrt(Math.pow((targetX - ballPositionX), 2) + Math.pow((targetY - ballPositionY),2));
     }
 
 
-    private double currentStateShot(){
-        ballPositionX = input[5] * getHeuristics();
-        ballPositionY = input[6] * getHeuristics();
-        double distance = Math.sqrt(Math.pow((targetX - ballPositionX), 2) + Math.pow((targetY - ballPositionY),2));
-        return distance;
+    private StateVector currentStateShot(){
+        ballPositionX *= getHeuristics();
+        ballPositionY *= getHeuristics();
+        return new StateVector(ballPositionX, ballPositionY, xVelocity, yVelocity);
     }
 
-    
-    public double getTrajectoryWithHillClimb(){
-        //TODO, If ball gets stuck in local minima, aka water
-        double currentState = getHeuristics();
-        double newState = currentStateShot();
+    private StateVector ball_in_target(){
+        return null;
+    }
 
-        while(currentState != 0){
-            if(newState < currentState){
-                currentState = newState;
-            }
-            newState *= 0.1;
+
+    private StateVector update_state(){
+        StateVector newState = currentStateShot();
+        double xPos = newState.getXPos();
+        double yPos = newState.getYPos();
+        if((targetX - xPos) < (targetX - ballPositionX) && (targetY - yPos) < (targetY - ballPositionY)){
+            ballPositionX = xPos;
+            ballPositionY = yPos;
         }
+        return new StateVector(ballPositionX, ballPositionY, xVelocity, yVelocity);
+    }
+    
+    public StateVector getTrajectoryWithHillClimb(){
+        //TODO, If ball gets stuck in local minima, aka water
+        StateVector currentState = new StateVector(ballPositionX, ballPositionY, xVelocity, yVelocity);
+        StateVector newState = currentStateShot();
+
+        while(newState != ball_in_target()){
+            currentState = update_state();
+        }
+
+        xVelocity = 0;
+        yVelocity = 0;
         return currentState;
+        
 
     }
 
