@@ -7,14 +7,14 @@ public class HillClimb {
     PhysicsEngine engine;
     double[] targetPos = new double[]{InputModule.get_input()[2], InputModule.get_input()[3]};
     double[] currentPos = new double[]{InputModule.get_input()[5], InputModule.get_input()[6]};
-
+    double targetRadius = InputModule.get_input()[4];
     public HillClimb(PhysicsEngine engine) {
         this.engine = engine;
     }
 
     public double[] isMoveGoal(double[] velocities) {
         double[] ballPos = engine.get_shot(velocities[0], velocities[1]);
-        boolean isGoal = (getFitness(ballPos, targetPos) < 1);
+        boolean isGoal = (getFitness(ballPos, targetPos) <= Math.pow(targetRadius, 2));
         if(isGoal) return velocities;
         else return null;
     }
