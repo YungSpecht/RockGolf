@@ -80,6 +80,11 @@ public class PhysicsEngine implements Runnable{
         return xIn && yIn;
     }
 
+    public boolean ball_in_screen(double[] ballPos) {
+        boolean xIn = ballPos[0] < 4.5 && ballPos[0] > -4.5;
+        boolean yIn = ballPos[1] < 3.5 && ballPos[1] > -3.5;
+        return xIn && yIn;
+    }
 
     /**
 	 * This method reads in all the parameters from the Input.txt file and updates the fields
@@ -165,6 +170,13 @@ public class PhysicsEngine implements Runnable{
         return false;
     }
 
+    public boolean is_in_water(double[] ballPos){
+        if(Derivation.compute(ballPos[0], ballPos[1], golfCourse) < 0){
+            RockGolf.newShotPossible = false;
+            return true;
+        }
+        return false;
+    }
     public double[] get_shot(double velX, double velY){
         double[] variables = InputModule.get_input();
         uK = variables[0]; uS = variables[1];
