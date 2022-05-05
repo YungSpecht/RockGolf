@@ -255,7 +255,7 @@ public class RockGolf extends ApplicationAdapter {
                 System.out.println("Shot! Distance from target: " + vel[2]);
                 
             } else if (keycode == Input.Keys.CONTROL_RIGHT) {
-                hillClimb = new HillClimb(new PhysicsEngine(0.05));
+                hillClimb = new HillClimb(new PhysicsEngine(0.1));
                 double[] vel = hillClimb.getMove(1);
                 InputModule.set_new_velocity(vel[0],vel[1]);
                 prepare_new_shot();

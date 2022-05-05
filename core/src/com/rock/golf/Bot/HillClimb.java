@@ -29,7 +29,7 @@ public class HillClimb {
                 }
             }
         }
-        return getMove(precision - 0.1);
+        return getMove(precision - (precision/10));
     }
 
     private double getFitness(double[] ballPos, double[] targetPos) {
