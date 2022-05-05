@@ -11,6 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.rock.golf.Bot.HillClimb;
 import com.rock.golf.Bot.HillClimbingAlgorithm;
 import com.rock.golf.Bot.StochasticBot;
 import com.rock.golf.Input.*;
@@ -45,7 +46,8 @@ public class RockGolf extends ApplicationAdapter {
 	private ArrayList<float[]> color = new ArrayList<>();
     private double[] input;
     private Runnable engine;
-    private StochasticBot bot;
+    private StochasticBot stochasticBot;
+    private HillClimb hillClimb;
     private ExecutorService executor;
     private SpriteBatch position, shot;
     private BitmapFont font;
@@ -245,12 +247,20 @@ public class RockGolf extends ApplicationAdapter {
                 prepare_new_shot();
                 executor.execute(engine); 
             } else if (keycode == Input.Keys.ALT_RIGHT) {
-                bot = new StochasticBot((PhysicsEngine) engine, 50);
-                double[] vel = bot.getBestMove();
+                stochasticBot = new StochasticBot((PhysicsEngine) engine, 50);
+                double[] vel = stochasticBot.getBestMove();
                 InputModule.set_new_velocity(vel[0],vel[1]);
                 prepare_new_shot();
                 executor.execute(engine);
                 System.out.println("Shot! Distance from target: " + vel[2]);
+                
+            } else if (keycode == Input.Keys.CONTROL_RIGHT) {
+                hillClimb = new HillClimb(new PhysicsEngine(0.05));
+                double[] vel = hillClimb.getMove(1);
+                InputModule.set_new_velocity(vel[0],vel[1]);
+                prepare_new_shot();
+                executor.execute(engine);
+                System.out.println("Goal!");
                 
             }
             return false;
