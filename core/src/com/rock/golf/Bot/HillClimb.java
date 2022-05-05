@@ -14,7 +14,7 @@ public class HillClimb {
 
     public double[] isMoveGoal(double[] velocities) {
         double[] ballPos = engine.get_shot(velocities[0], velocities[1]);
-        boolean isGoal = (getFitness(ballPos, targetPos) <= Math.pow(targetRadius, 2));
+        boolean isGoal = Math.pow(ballPos[0] - targetPos[0], 2) + Math.pow(ballPos[1] - targetPos[1], 2) <= Math.pow(targetRadius, 2);
         if(isGoal) return velocities;
         else return null;
     }
@@ -31,9 +31,4 @@ public class HillClimb {
         }
         return getMove(precision - (precision/10));
     }
-
-    private double getFitness(double[] ballPos, double[] targetPos) {
-        return Math.sqrt(Math.pow((targetPos[0] - ballPos[0]), 2) + Math.pow((targetPos[1] - ballPos[1]),2));
-    }
-
 }
