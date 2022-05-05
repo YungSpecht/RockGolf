@@ -13,9 +13,9 @@ public class PhysicsEngine implements Runnable{
 
     //constants
     public static final double g = 9.81;
-    public static final double h = 0.03;
+    public static double h = 0.01;
     public final double ballRadius = 0.05;
-    private final double Epsilon = 0.03;
+    private double Epsilon = 0.01;
 
     //fields
     private double uK, uS;
@@ -28,6 +28,16 @@ public class PhysicsEngine implements Runnable{
     private boolean abort;
 
     //constructor
+    public PhysicsEngine(double h){
+        input = InputModule.get_input();
+        set_variables();
+        abort = false;
+        sandpits = new ArrayList<Sandpit>();
+        isInWater = is_in_water();
+        this.h = h;
+        this.Epsilon = h;
+    }
+
     public PhysicsEngine(){
         input = InputModule.get_input();
         set_variables();
@@ -35,7 +45,6 @@ public class PhysicsEngine implements Runnable{
         sandpits = new ArrayList<Sandpit>();
         isInWater = is_in_water();
     }
-
 
     public StateVector getVector() {
         return vector;
@@ -54,7 +63,7 @@ public class PhysicsEngine implements Runnable{
         RockGolf.shotCounter++;
         set_variables();
         RK2Solver solve = new RK2Solver(uK, uS, golfCourse);
-        while((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !is_in_water()){
+        while((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !is_in_water() && ball_in_screen()){
             vector = solve.runge_kutta_two(vector);
             RockGolf.update_position(vector);
             if(abort){
@@ -63,6 +72,18 @@ public class PhysicsEngine implements Runnable{
         }
         InputModule.set_new_position(vector.getXPos(), vector.getYPos());
         RockGolf.shotActive = false;
+    }
+
+    private boolean ball_in_screen() {
+        boolean xIn = vector.getXPos() < 4.5 && vector.getXPos() > -4.5;
+        boolean yIn = vector.getYPos() < 3.5 && vector.getYPos() > -3.5;
+        return xIn && yIn;
+    }
+
+    public boolean ball_in_screen(double[] ballPos) {
+        boolean xIn = ballPos[0] < 4.5 && ballPos[0] > -4.5;
+        boolean yIn = ballPos[1] < 3.5 && ballPos[1] > -3.5;
+        return xIn && yIn;
     }
 
     /**
@@ -149,6 +170,13 @@ public class PhysicsEngine implements Runnable{
         return false;
     }
 
+    public boolean is_in_water(double[] ballPos){
+        if(Derivation.compute(ballPos[0], ballPos[1], golfCourse) < 0){
+            RockGolf.newShotPossible = false;
+            return true;
+        }
+        return false;
+    }
     public double[] get_shot(double velX, double velY){
         double[] variables = InputModule.get_input();
         uK = variables[0]; uS = variables[1];

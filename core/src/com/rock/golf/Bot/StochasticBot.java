@@ -8,6 +8,7 @@ public class StochasticBot {
     int iterations;
     Random rand = new Random();
     double[] targetPos = new double[]{InputModule.get_input()[2], InputModule.get_input()[3]};
+    double targetRadius = InputModule.get_input()[4];
 
     public StochasticBot(PhysicsEngine engine, int i) {
         this.engine = engine;
@@ -29,8 +30,6 @@ public class StochasticBot {
 
             finalVelocity = Math.sqrt(Math.pow(velX, 2) + Math.pow(velY, 2));
         }
-        System.out.println(velX);
-        System.out.println(velY);
         return new double[]{velX, velY};
     }
 
@@ -43,10 +42,10 @@ public class StochasticBot {
             System.out.println("iteration " + (i+1));
             double[] ballPos = engine.get_shot(vel[0], vel[1]);
             double fitness = getFitness(ballPos, targetPos);
-
             if(fitness < previousFitness) {
                 previousFitness = fitness;
                 best = vel;
+                if(fitness == 0) break;
             }
 
             vel = getVelocities();
@@ -56,6 +55,8 @@ public class StochasticBot {
     }
 
     private double getFitness(double[] ballPos, double[] targetPos) {
+        if(engine.is_in_water(ballPos) || !engine.ball_in_screen(ballPos)) return Integer.MAX_VALUE;
+        if(Math.pow(ballPos[0] - targetPos[0], 2) + Math.pow(ballPos[1] - targetPos[1], 2) <= Math.pow(targetRadius, 2)) return 0;
         return Math.sqrt(Math.pow((targetPos[0] - ballPos[0]), 2) + Math.pow((targetPos[1] - ballPos[1]),2));
     }
 
