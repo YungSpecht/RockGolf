@@ -19,8 +19,6 @@ public class InputModule {
 
             reader = new FileReader("core/src/com/rock/golf/Input/Input.txt");
 
-            reader = new FileReader("Input.txt");
-
             Scanner in = new Scanner(reader);
             in.nextLine();
             for(int i = 0; i < 9; i++){
@@ -37,7 +35,7 @@ public class InputModule {
 
     public static void set_new_position(double xPos, double yPos){
         try {
-            File file = new File("Input.txt");
+            File file = new File("core/src/com/rock/golf/Input/Input.txt");
             List<String> lines = Files.readAllLines(file.toPath());
             lines.set(6, "ball-x-position: " + xPos);
             Files.write(file.toPath(), lines);
@@ -48,10 +46,23 @@ public class InputModule {
         }
     }
 
+    public static void set_new_velocity(double xSpeed, double ySpeed){
+        try {
+            File file = new File("core/src/com/rock/golf/Input/Input.txt");
+            List<String> lines = Files.readAllLines(file.toPath());
+            lines.set(8, "x-velocity: " + xSpeed);
+            Files.write(file.toPath(), lines);
+            lines.set(9, "y-velocity: " + ySpeed);
+            Files.write(file.toPath(), lines);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static Function get_profile(){
         FileReader reader;
         try {
-            reader = new FileReader("Input.txt");
+            reader = new FileReader("core/src/com/rock/golf/Input/Input.txt");
             Scanner in = new Scanner(reader);
             String inputLine = in.nextLine();
             in.close();

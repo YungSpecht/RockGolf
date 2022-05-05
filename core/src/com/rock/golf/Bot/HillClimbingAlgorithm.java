@@ -12,8 +12,29 @@ public class HillClimbingAlgorithm {
     private double targetX, targetY, ballPositionX, ballPositionY, xVelocity, yVelocity;
     double[] input;
 
+
     public HillClimbingAlgorithm(){
         input = InputModule.get_input();
+
+    public double getTrajectoryWithHillClimb(){
+        //TODO, If ball gets stuck in local minima, aka water
+        double currentState = getHeuristics();
+        double newState = currentStateShot();
+
+        while(currentState != 0){
+            if(newState < currentState){
+                currentState = newState;
+            }
+            newState *= 0.1;
+        }
+        return currentState;
+
+    }
+
+    public double getHeuristics(){
+        
+        targetX = input[2];
+
         targetX = input[3];
         ballPositionX = input[5];
         ballPositionY = input[6];
@@ -32,6 +53,7 @@ public class HillClimbingAlgorithm {
         return new StateVector(ballPositionX, ballPositionY, xVelocity, yVelocity);
     }
 
+<<<<<<< HEAD
     private StateVector ball_in_target(){
         return null;
     }
@@ -64,6 +86,8 @@ public class HillClimbingAlgorithm {
 
     }
 
+=======
+>>>>>>> 2145fa193bac8a54099897857e3af095f3887a36
 
 }
 
