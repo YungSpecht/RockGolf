@@ -194,6 +194,7 @@ public class PhysicsEngine implements Runnable{
     }
 
 
+
     /**
 	 * This method aborts a golf ball shot in case of closing the program.
 	 */
