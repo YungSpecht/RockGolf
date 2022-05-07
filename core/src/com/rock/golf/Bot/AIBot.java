@@ -59,6 +59,14 @@ public class AIBot {
 
     }
 
+    private double[][] perform_shot(double[] shot){
+        double theta = Math.atan2(currentState.getYPos(), currentState.getXPos());
+        double[][] result = new double[4][2];
+        result[0] = new double[]{shot[0] * theta * 1.1, shot[1]};
+        result[1] = new double[]{shot[0] * theta * 0.9, shot[1]};
+        return result;
+    }
+
     private double[][] generate_shots(double[] shot) {
         double[][] result = new double[4][2];
         result[0] = new double[]{shot[0] * 1.1, shot[1]};
