@@ -18,24 +18,35 @@ public class AIBot {
         targetRad = input[4];
     }
 
+    /**
+	 * This method ist the one that gets called from outside to find x and y velocities that will result
+     * in the ball going into the target.
+     * 
+     * @return A double array of length 2 where the first index is the x velocity and the second
+     * index is the y velocity
+	 */
     public double[] get_shot() {
+        // variables to keep track of the best shot so far
+        double[] currentBestShot;
+        double[] currentBestShotCoords;
+        double distanceToTarget;
+        
+        // here we find out the x and y distance from the ball's current position to the target
         double xDistance = targetX - currentState.getXPos();
         double yDistance = targetY - currentState.getYPos();
 
-        double[] currentBestShot = new double[2];
-        double[] currentBestShotCoords = new double[2];
-
+        // based on the previously calculated distances we calculate the angle to the target
         double angleAtTarget = Math.atan2(xDistance, yDistance);
-        double distanceToTarget = Double.MAX_VALUE;
 
         do{
-            System.out.println("ITERATION");
+            // here we gerate two shots that diverge from the angle to the target slightly and we see where they end up
             double[][] shots = generate_shots(angleAtTarget);
             double[] shotOne = engine.get_shot(shots[0][0], shots[0][1]);
             double[] shotTwo = engine.get_shot(shots[1][0], shots[1][1]);
-            double distOne = euclidian_distance(engine.get_shot(shots[0][0], shots[0][1]));
-            double distTwo = euclidian_distance(engine.get_shot(shots[1][0], shots[1][1]));
+            double distOne = euclidian_distance(shotOne);
+            double distTwo = euclidian_distance(shotTwo);
 
+            // here we see which of the shots ended up closest to the target and set the variables accordingly
             if(distOne < distTwo){
                 currentBestShot = shots[0];
                 currentBestShotCoords = shotOne;
@@ -46,6 +57,9 @@ public class AIBot {
                 currentBestShotCoords = shotTwo;
                 distanceToTarget = distTwo;
             }
+
+            // since we now have a new best shot we calculate the angle of that shot as the new reference angle for
+            // our next two shots
             xDistance = targetX - currentBestShotCoords[0];
             yDistance = targetY - currentBestShotCoords[1];
             angleAtTarget = Math.atan2(xDistance, yDistance);
@@ -53,6 +67,13 @@ public class AIBot {
         return currentBestShot;
     }
 
+    /**
+	 * This method will scale a velocity consisting of x and y component such that the resulting velocity will be
+     * 5 meters per second.
+     * 
+     * @param velocities A double array containing the unscaled velocity array
+     * @return A double array containing the scaled velocities such that the resulting velocity is 5 m/s
+	 */
     public static double[] scale_velocity(double[] velocities) {
         double currentVel = Math.sqrt(Math.pow(velocities[0], 2) + Math.pow(velocities[1], 2));
         double scalar = 5 / currentVel;
@@ -60,6 +81,14 @@ public class AIBot {
 
     }
 
+    /**
+	 * Based on an angle that is given as a reference this method will generate two shots, where one shot
+     * is performed at a slightly bigger and the other shot at a slightly smaller angle.
+     * 
+     * @param angle An angle that is given as a reference, usually the angle of the previously best shot.
+     * @return A double array containing two shots that slightly diverge in both directions from the reference
+     * angle
+	 */
     private double[][] generate_shots(double angle) {
         double[][] result = new double[2][2];
 
@@ -72,14 +101,14 @@ public class AIBot {
         return result;
     }
 
+    /**
+	 * This method can be viewed as the heuristic function as it calculates the euclidian distance between the
+     * position of the ball and the target position.
+     * 
+     * @param position A double array of length 2 containing the x and y position of the ball.
+     * @return A double that describes the euclidian distance of the ball to the target.
+	 */
     private double euclidian_distance(double[] position) {
         return Math.sqrt(Math.pow((targetX - position[0]), 2) + Math.pow((targetY - position[1]), 2));
-    }
-
-    private boolean ball_in_target(double[] position){
-        if(Math.pow(position[0] - targetX, 2) + Math.pow(position[1] - targetY, 2) <= Math.pow(targetRad, 2)){
-            return true;
-        }
-        return false;
     }
 }
