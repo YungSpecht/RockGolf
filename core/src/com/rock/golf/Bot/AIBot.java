@@ -7,76 +7,79 @@ import com.rock.golf.Input.InputModule;
 public class AIBot {
     private PhysicsEngine engine;
     private StateVector currentState;
-    private double targetX, targetY, targetRad, xVel, yVel;
+    private double targetX, targetY, targetRad;
 
-    public AIBot(PhysicsEngine engine, StateVector currentState) {
+    public AIBot(PhysicsEngine engine) {
         double[] input = InputModule.get_input();
         this.engine = engine;
-        this.currentState = currentState;
-        targetX = input[3];
-        targetY = input[4];
-        targetRad = input[5];
-        xVel = input[7]; // if we need it
-        yVel = input[8]; // if we need it
+        this.currentState = new StateVector(input[5], input[6], input[7], input[8]);
+        targetX = input[2];
+        targetY = input[3];
+        targetRad = input[4];
     }
 
-    public StateVector get_shot() {
+    public double[] get_shot() {
         double xDistance = targetX - currentState.getXPos();
         double yDistance = targetY - currentState.getYPos();
-        double[] shotAtTarget = scale_velocity(new double[] { xDistance, yDistance });
-        while(true){
-            double[][] shots = generate_shots(shotAtTarget);
-            double comparison = Double.MAX_VALUE;
-            int bestShot = 99999;
-            for(int i = 0; i < shots.length; i++){
-                double[] position = engine.get_shot(shots[i][0], shots[i][1]);
-                double distance = euclidian_distance(position);
-                if(distance < comparison){
-                    comparison = distance;
-                    bestShot = i;
-                }
+
+        double[] currentBestShot = new double[2];
+        double[] currentBestShotCoords = new double[2];
+
+        double angleAtTarget = Math.atan2(xDistance, yDistance);
+        double distanceToTarget = Double.MAX_VALUE;
+
+        do{
+            System.out.println("ITERATION");
+            double[][] shots = generate_shots(angleAtTarget);
+            double[] shotOne = engine.get_shot(shots[0][0], shots[0][1]);
+            double[] shotTwo = engine.get_shot(shots[1][0], shots[1][1]);
+            double distOne = euclidian_distance(engine.get_shot(shots[0][0], shots[0][1]));
+            double distTwo = euclidian_distance(engine.get_shot(shots[1][0], shots[1][1]));
+
+            if(distOne < distTwo){
+                currentBestShot = shots[0];
+                currentBestShotCoords = shotOne;
+                distanceToTarget = distOne;
             }
-            shotAtTarget = shots[bestShot];
-        }
+            else{
+                currentBestShot = shots[1];
+                currentBestShotCoords = shotTwo;
+                distanceToTarget = distTwo;
+            }
+            xDistance = targetX - currentBestShotCoords[0];
+            yDistance = targetY - currentBestShotCoords[1];
+            angleAtTarget = Math.atan2(xDistance, yDistance);
+        }while(distanceToTarget >= targetRad);
+        return currentBestShot;
+    }
+
+    public static double[] scale_velocity(double[] velocities) {
+        double currentVel = Math.sqrt(Math.pow(velocities[0], 2) + Math.pow(velocities[1], 2));
+        double scalar = 5 / currentVel;
+        return new double[]{velocities[0] * scalar, velocities[1] * scalar};
 
     }
 
-    private double[] scale_velocity(double[] velocities) {
-        if (Math.sqrt(Math.pow(velocities[0], 2) + Math.pow(velocities[1], 2)) < 5) {
-            while (Math.sqrt(Math.pow(velocities[0], 2) + Math.pow(velocities[1], 2)) < 5) {
-                velocities[0] *= 1.1;
-                velocities[1] *= 1.1;
-            }
-            return velocities;
-        } else if (Math.sqrt(Math.pow(velocities[0], 2) + Math.pow(velocities[1], 2)) > 5) {
-            while (Math.sqrt(Math.pow(velocities[0], 2) + Math.pow(velocities[1], 2)) > 5) {
-                velocities[0] *= 0.9;
-                velocities[1] *= 0.9;
-            }
-            return velocities;
-        }
-        return velocities;
+    private double[][] generate_shots(double angle) {
+        double[][] result = new double[2][2];
 
-    }
+        result[0] = new double[]{Math.cos(angle - 0.3), Math.sin(angle - 0.3)};
+        result[1] = new double[]{Math.cos(angle + 0.3), Math.sin(angle + 0.3)};
 
-    private double[][] perform_shot(double[] shot){
-        double theta = Math.atan2(currentState.getYPos(), currentState.getXPos());
-        double[][] result = new double[4][2];
-        result[0] = new double[]{shot[0] * theta * 1.1, shot[1]};
-        result[1] = new double[]{shot[0] * theta * 0.9, shot[1]};
-        return result;
-    }
+        result[0] = scale_velocity(result[0]);
+        result[1] = scale_velocity(result[1]);
 
-    private double[][] generate_shots(double[] shot) {
-        double[][] result = new double[4][2];
-        result[0] = new double[]{shot[0] * 1.1, shot[1]};
-        result[1] = new double[]{shot[0] * 0.9, shot[1]};
-        result[2] = new double[]{shot[0], shot[1] * 1.1};
-        result[3] = new double[]{shot[0], shot[1] * 0.9};
         return result;
     }
 
     private double euclidian_distance(double[] position) {
         return Math.sqrt(Math.pow((targetX - position[0]), 2) + Math.pow((targetY - position[1]), 2));
+    }
+
+    private boolean ball_in_target(double[] position){
+        if(Math.pow(position[0] - targetX, 2) + Math.pow(position[1] - targetY, 2) <= Math.pow(targetRad, 2)){
+            return true;
+        }
+        return false;
     }
 }
