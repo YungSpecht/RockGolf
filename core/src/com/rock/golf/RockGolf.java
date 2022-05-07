@@ -11,6 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.rock.golf.Bot.AIBot;
 import com.rock.golf.Bot.HillClimb;
 import com.rock.golf.Bot.HillClimbingAlgorithm;
 import com.rock.golf.Bot.StochasticBot;
@@ -48,6 +49,7 @@ public class RockGolf extends ApplicationAdapter {
     private Runnable engine;
     private StochasticBot stochasticBot;
     private HillClimb hillClimb;
+    private AIBot veryDumbBot;
     private ExecutorService executor;
     private SpriteBatch position, shot;
     private BitmapFont font;
@@ -263,6 +265,13 @@ public class RockGolf extends ApplicationAdapter {
                 executor.execute(botEngine);
                 System.out.println("Goal!");
                 
+            }
+            else if(keycode == Input.Keys.TAB){
+                veryDumbBot = new AIBot(botEngine);
+                double[] shot = veryDumbBot.get_shot();
+                InputModule.set_new_velocity(shot[0], shot[1]);
+                prepare_new_shot();
+                executor.execute(engine);
             }
             return false;
         }
