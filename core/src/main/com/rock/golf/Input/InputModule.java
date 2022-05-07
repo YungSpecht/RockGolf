@@ -51,7 +51,9 @@ public class InputModule {
         String s = currentRelativePath.toAbsolutePath().toString();
         System.out.println("Current absolute path is: " + s);
         try {
-            reader = new FileReader("core/src/main/com/rock/golf/Input/Input.txt");
+            reader = new FileReader("C:/Users/liann/OneDrive/Documenten/GitHub/RockGolf/core/src/main/com/rock/golf/Input/Input.txt");
+            // core/src/main/com/rock/golf/Input/Input.txt
+            
             Scanner in = new Scanner(reader);
             String inputLine = in.nextLine();
             in.close();
