@@ -69,5 +69,4 @@ public class RK4Solver {
 
                 return new StateVector(stateVector.getXSpeed(), stateVector.getYSpeed(), formulaX, formulaY);
         }
-
 }
