@@ -25,22 +25,23 @@ public class AIBot {
      * @return A double array of length 2 where the first index is the x velocity and the second
      * index is the y velocity
 	 */
-    public double[] get_shot() {
-        // variables to keep track of the best shot so far
-        double[] currentBestShot;
-        double[] currentBestShotCoords;
-        double distanceToTarget;
-        
-        // here we find out the x and y distance from the ball's current position to the target
+    public double[] get_shot() {// here we find out the x and y distance from the ball's current position to the target
         double xDistance = targetX - currentState.getXPos();
         double yDistance = targetY - currentState.getYPos();
 
         // based on the previously calculated distances we calculate the angle to the target
         double angleAtTarget = Math.atan2(xDistance, yDistance);
+        double[] currentBestShot = scale_velocity(new double[]{xDistance, yDistance});
+        double[] currentBestShotCoords = engine.get_shot(currentBestShot[0], currentBestShot[1]);
+        double distanceToTarget = euclidian_distance(currentBestShotCoords);
+
+        if(euclidian_distance(currentBestShotCoords) < targetRad){
+            return currentBestShot;
+        }
 
         do{
             // here we gerate two shots that diverge from the angle to the target slightly and we see where they end up
-            double[][] shots = generate_shots(angleAtTarget);
+            double[][] shots = generate_shots(angleAtTarget, currentBestShotCoords, distanceToTarget);
             double[] shotOne = engine.get_shot(shots[0][0], shots[0][1]);
             double[] shotTwo = engine.get_shot(shots[1][0], shots[1][1]);
             double distOne = euclidian_distance(shotOne);
@@ -89,7 +90,7 @@ public class AIBot {
      * @return A double array containing two shots that slightly diverge in both directions from the reference
      * angle
 	 */
-    private double[][] generate_shots(double angle) {
+    private double[][] generate_shots(double angle, double[] currentBestShotCoords, double distanceToTarget) {
         double[][] result = new double[2][2];
 
         result[0] = new double[]{Math.cos(angle - 0.3), Math.sin(angle - 0.3)};
@@ -99,6 +100,12 @@ public class AIBot {
         result[1] = scale_velocity(result[1]);
 
         return result;
+    }
+
+    private double calculate_divergence(double[] currentBestShotCoords, double distanceToTarget){
+        double distanceFromStart = Math.sqrt(Math.pow(currentBestShotCoords[0] - currentState.getXPos(), 2) + Math.pow(currentBestShotCoords[1] - currentState.getYPos(), 2));
+        double finalAngleChange = 1 - (distanceToTarget);
+        return finalAngleChange;
     }
 
     /**
