@@ -25,7 +25,7 @@ public class AIBot {
      * @return A double array of length 2 where the first index is the x velocity and the second
      * index is the y velocity
 	 */
-    public double[] get_shot() {// here we find out the x and y distance from the ball's current position to the target
+    public double[] get_shot(int iterations) {// here we find out the x and y distance from the ball's current position to the target
         double xDistance = targetX - currentState.getXPos();
         double yDistance = targetY - currentState.getYPos();
 
@@ -39,33 +39,62 @@ public class AIBot {
             return currentBestShot;
         }
 
-        do{
-            // here we gerate two shots that diverge from the angle to the target slightly and we see where they end up
-            double[][] shots = generate_shots(angleAtTarget, currentBestShotCoords, distanceToTarget);
-            double[] shotOne = engine.get_shot(shots[0][0], shots[0][1]);
-            double[] shotTwo = engine.get_shot(shots[1][0], shots[1][1]);
-            double distOne = euclidian_distance(shotOne);
-            double distTwo = euclidian_distance(shotTwo);
+        int counter = 0;
+        while(euclidian_distance(currentBestShotCoords) >= targetRad && counter < iterations){
 
-            // here we see which of the shots ended up closest to the target and set the variables accordingly
-            if(distOne < distTwo){
-                currentBestShot = shots[0];
-                currentBestShotCoords = shotOne;
-                distanceToTarget = distOne;
-            }
-            else{
-                currentBestShot = shots[1];
-                currentBestShotCoords = shotTwo;
-                distanceToTarget = distTwo;
-            }
+            int iteration = 1;
+            double distanceTracker = distanceToTarget;
 
-            // since we now have a new best shot we calculate the angle of that shot as the new reference angle for
-            // our next two shots
-            xDistance = targetX - currentBestShotCoords[0];
-            yDistance = targetY - currentBestShotCoords[1];
-            angleAtTarget = Math.atan2(xDistance, yDistance);
-        }while(distanceToTarget >= targetRad);
+            while(distanceTracker >= distanceToTarget){
+
+                double[][] shots = generate_shots(angleAtTarget, iteration);
+                double[] shotOneCoords =  engine.get_shot(shots[0][0], shots[0][1]);
+                double[] shotTwoCoords = engine.get_shot(shots[1][0], shots[1][1]);
+                double distOne = euclidian_distance(shotOneCoords);
+                double distTwo = euclidian_distance(shotTwoCoords);
+
+                if(distOne < distTwo){
+                    if(distOne < distanceToTarget){
+                        currentBestShot = shots[0];
+                        currentBestShotCoords = shotOneCoords;
+                        distanceToTarget = distOne;
+                        angleAtTarget = Math.atan2(targetX - currentBestShotCoords[0], targetY - currentBestShotCoords[1]);
+                    }
+                }
+                else{
+                    if(distTwo < distanceToTarget){
+                        currentBestShot = shots[1];
+                        currentBestShotCoords = shotTwoCoords;
+                        distanceToTarget = distTwo;
+                        angleAtTarget = Math.atan2(targetX - currentBestShotCoords[0], targetY - currentBestShotCoords[1]);
+                    }
+                }
+                iteration++;
+            }
+            counter++;
+        }
+
         return currentBestShot;
+    }
+
+    /**
+	 * Based on an angle that is given as a reference this method will generate two shots, where one shot
+     * is performed at a slightly bigger and the other shot at a slightly smaller angle.
+     * 
+     * @param angle An angle that is given as a reference, usually the angle of the previously best shot.
+     * @return A double array containing two shots that slightly diverge in both directions from the reference
+     * angle
+	 */
+    private double[][] generate_shots(double angle, int iteration) {
+        double[][] result = new double[2][2];
+
+        result[0] = new double[]{Math.cos(angle - 0.2 * iteration), Math.sin(angle - 0.2 * iteration)};
+        result[1] = new double[]{Math.cos(angle + 0.2 * iteration), Math.sin(angle + 0.2 * iteration)};
+
+        result[0] = scale_velocity(result[0]);
+        result[1] = scale_velocity(result[1]);
+
+        return result;
     }
 
     /**
@@ -80,32 +109,6 @@ public class AIBot {
         double scalar = 5 / currentVel;
         return new double[]{velocities[0] * scalar, velocities[1] * scalar};
 
-    }
-
-    /**
-	 * Based on an angle that is given as a reference this method will generate two shots, where one shot
-     * is performed at a slightly bigger and the other shot at a slightly smaller angle.
-     * 
-     * @param angle An angle that is given as a reference, usually the angle of the previously best shot.
-     * @return A double array containing two shots that slightly diverge in both directions from the reference
-     * angle
-	 */
-    private double[][] generate_shots(double angle, double[] currentBestShotCoords, double distanceToTarget) {
-        double[][] result = new double[2][2];
-
-        result[0] = new double[]{Math.cos(angle - 0.3), Math.sin(angle - 0.3)};
-        result[1] = new double[]{Math.cos(angle + 0.3), Math.sin(angle + 0.3)};
-
-        result[0] = scale_velocity(result[0]);
-        result[1] = scale_velocity(result[1]);
-
-        return result;
-    }
-
-    private double calculate_divergence(double[] currentBestShotCoords, double distanceToTarget){
-        double distanceFromStart = Math.sqrt(Math.pow(currentBestShotCoords[0] - currentState.getXPos(), 2) + Math.pow(currentBestShotCoords[1] - currentState.getYPos(), 2));
-        double finalAngleChange = 1 - (distanceToTarget);
-        return finalAngleChange;
     }
 
     /**

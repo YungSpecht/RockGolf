@@ -1,13 +1,13 @@
-height-profile: h(x,y)=(1/20)*(x^2+y^2)
-friction-coefficient-kinetic: 0.01
-friction-coefficient-static: 0.1
-target-x-position: 0
-target-y-position: 0
-target-radius: 0
-ball-x-position: -0.30182158583399304
-ball-y-position: -0.28137790928311274
-x-velocity: 1.0
-y-velocity: 1.0
+height-profile: h(x,y)=0
+friction-coefficient-kinetic: 0.1
+friction-coefficient-static: 0.2
+target-x-position: 3
+target-y-position: 2
+target-radius: 0.2
+ball-x-position: 2.54123404054341
+ball-y-position: 3.6795400205546005
+x-velocity: -4.900000000000022
+y-velocity: -0.09999999999999898
 
 
 0.4*(0.9 -e^(-(x^2+y^2)/8))
