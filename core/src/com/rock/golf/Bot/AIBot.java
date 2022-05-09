@@ -75,7 +75,7 @@ public class AIBot {
      * @param velocities A double array containing the unscaled velocity array
      * @return A double array containing the scaled velocities such that the resulting velocity is 5 m/s
 	 */
-    public static double[] scale_velocity(double[] velocities) {
+    private double[] scale_velocity(double[] velocities) {
         double currentVel = Math.sqrt(Math.pow(velocities[0], 2) + Math.pow(velocities[1], 2));
         double scalar = 5 / currentVel;
         return new double[]{velocities[0] * scalar, velocities[1] * scalar};
