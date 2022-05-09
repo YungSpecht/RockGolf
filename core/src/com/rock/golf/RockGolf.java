@@ -46,6 +46,7 @@ public class RockGolf extends ApplicationAdapter {
     private ArrayList<float[]> map = new ArrayList<>();
 	private ArrayList<float[]> color = new ArrayList<>();
     private double[] input;
+    private double[] initialState;
     private Runnable engine;
     private StochasticBot stochasticBot;
     private HillClimb hillClimb;
@@ -76,6 +77,7 @@ public class RockGolf extends ApplicationAdapter {
         prepare_new_shot();
         xPosition = metersToPixel(convert(input[5])) + originX;
         yPosition = metersToPixel(convert(input[6])) + originY;
+        initialState = new double[]{input[5], input[6]};
         generateField();
         shotActive = false;
         newShotPossible = true;
@@ -272,6 +274,12 @@ public class RockGolf extends ApplicationAdapter {
                 InputModule.set_new_velocity(shot[0], shot[1]);
                 prepare_new_shot();
                 executor.execute(engine);
+            }  else if (keycode == Input.Keys.ESCAPE) {
+                xPosition = metersToPixel(convert(initialState[0])) + originX;
+                yPosition = metersToPixel(convert(initialState[1])) + originY;
+                InputModule.set_new_position(initialState[0], initialState[1]);
+                ((PhysicsEngine) engine).resume();
+                newShotPossible = true;
             }
             return false;
         }

@@ -186,4 +186,8 @@ public class PhysicsEngine implements Runnable{
     public void abort(){
         abort = true;
     }
+
+    public void resume(){
+        abort = false;
+    }
 }
