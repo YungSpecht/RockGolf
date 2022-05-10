@@ -23,16 +23,17 @@ public class HillClimbingAlgorithm {
     }
 
     /**
-	 * This method is the heuristic function for our hill climbing algorithm
-     * Our heuristics function is the distance between ball position and target position
-	 */
+     * This method is the heuristic function for our hill climbing algorithm
+     * Our heuristics function is the distance between ball position and target
+     * position
+     */
     private double get_Distance(StateVector vector) {
         return Math.sqrt(Math.pow((targetX - vector.getXPos()), 2) + Math.pow((targetY - vector.getYPos()), 2));
     }
 
     /**
-	 * Uses heuristic function to update state of ball position after one shot
-	 */
+     * Uses heuristic function to update state of ball position after one shot
+     */
     private StateVector current_State_Shot(StateVector vector) {
         ballPositionX += get_Distance(vector) * 0.1;
         ballPositionY += get_Distance(vector) * 0.1;
@@ -40,13 +41,15 @@ public class HillClimbingAlgorithm {
     }
 
     /**
-	 * This method determines wether the ball is currently inside the target based on the position and
+     * This method determines wether the ball is currently inside the target based
+     * on the position and
      * radius of the ball as well as the target.
      * 
      * @return Boolean value: true if ball is inside target, false if not.
-	 */
+     */
     private boolean ball_in_target(StateVector vector) {
-        if(Math.pow(vector.getXPos() - targetX, 2) + Math.pow(vector.getYPos() - targetY, 2) <= Math.pow(targetRadius, 2)){
+        if (Math.pow(vector.getXPos() - targetX, 2) + Math.pow(vector.getYPos() - targetY, 2) <= Math.pow(targetRadius,
+                2)) {
             return true;
         }
         return false;
@@ -56,7 +59,8 @@ public class HillClimbingAlgorithm {
         StateVector newState = current_State_Shot(vector);
         double xPos = newState.getXPos();
         double yPos = newState.getYPos();
-        if (get_Distance(newState) < get_Distance(new StateVector(ballPositionX, ballPositionY, xVelocity, yVelocity))) {
+        if (get_Distance(newState) < get_Distance(
+                new StateVector(ballPositionX, ballPositionY, xVelocity, yVelocity))) {
             ballPositionX = xPos;
             ballPositionY = yPos;
         }
@@ -73,7 +77,5 @@ public class HillClimbingAlgorithm {
         xVelocity = 0;
         yVelocity = 0;
         return newState;
-
     }
-
 }
