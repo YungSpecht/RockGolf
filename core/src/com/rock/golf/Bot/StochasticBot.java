@@ -8,6 +8,7 @@ public class StochasticBot {
     int iterations;
     Random rand = new Random();
     double[] targetPos = new double[]{InputModule.get_input()[2], InputModule.get_input()[3]};
+    double[] ballPos = new double[]{InputModule.get_input()[5], InputModule.get_input()[6]};
     double targetRadius = InputModule.get_input()[4];
 
     public StochasticBot(PhysicsEngine engine, int i) {
@@ -18,7 +19,6 @@ public class StochasticBot {
     public double[] getVelocities() {
         double velX = (rand.nextDouble() * 10) - 5;
         double velY = (rand.nextDouble() * 10) - 5;
-
         double finalVelocity = Math.sqrt(Math.pow(velX, 2) + Math.pow(velY, 2));
 
         while(finalVelocity > 5) {
@@ -30,7 +30,18 @@ public class StochasticBot {
 
             finalVelocity = Math.sqrt(Math.pow(velX, 2) + Math.pow(velY, 2));
         }
+        double angle = Math.atan2(velX, velY);
+        if(isIllegal(angle)) {
+            System.out.println(angle);
+        }
         return new double[]{velX, velY};
+    }
+
+    public boolean isIllegal(double angle) {
+        double xDistance = targetPos[0] - ballPos[0];
+        double yDistance = targetPos[1] - ballPos[1];
+        double angleAtTarget = Math.atan2(xDistance, yDistance);
+        return angle < angleAtTarget + 90 && angle > angleAtTarget - 90;
     }
 
     public double[] getBestMove() {
