@@ -35,16 +35,20 @@ public class AIBot {
         double angleAtTarget = convert(Math.atan2(yDistance, xDistance));
 
         double[] bestShot = new double[2];
+        double[] bestShotCoords = new double[]{currentState.getXPos(), currentState.getYPos()};
+        double bestShotDistance = euclidian_distance(bestShotCoords);
 
-        double[][][] shotsArray = generate_shots(angleAtTarget, 5, 45, 10, 2, 5);
-        double currentBestDistance = Double.MAX_VALUE;
-        for(int i = 0; i < shotsArray.length; i++){
-            for(int j = 0; j < shotsArray[0].length; j++){
-                double distance = euclidian_distance(engine.get_shot(shotsArray[i][j][0], shotsArray[i][j][1]));
-                System.out.println(distance);
-                if(distance < currentBestDistance){
-                    bestShot = shotsArray[i][j];
-                    currentBestDistance = distance;
+        while(bestShotDistance >= targetRad){
+            double[][][] shotsArray = generate_shots(angleAtTarget, 5, 45, 10, 2, 5);
+            double currentBestDistance = Double.MAX_VALUE;
+            for(int i = 0; i < shotsArray.length; i++){
+                for(int j = 0; j < shotsArray[0].length; j++){
+                    double distance = euclidian_distance(engine.get_shot(shotsArray[i][j][0], shotsArray[i][j][1]));
+                    System.out.println(distance);
+                    if(distance < currentBestDistance){
+                        bestShot = shotsArray[i][j];
+                        currentBestDistance = distance;
+                    }
                 }
             }
         }
