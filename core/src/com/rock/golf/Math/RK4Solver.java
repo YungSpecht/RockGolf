@@ -18,19 +18,17 @@ public class RK4Solver {
         this.uS = uS;
     }
 
-    // TODO: add distinction between motion due to velocity vs. motion due to sloped
-    // surface
+    
 
     /**
      * 
      * use RK4 formula to calculate accelatartion (first derivateive of velocity) at
-     * given time t
+     * given point/state
      *
-     * @param stateVector
-     * @param t
-     * @return updated state vector
+     * @param stateVector holds current state of the ball
+     * @return updated state vector after one RK4 iteration
      */
-    public StateVector RK4(StateVector stateVector, double t) {
+    public StateVector RK4(StateVector stateVector) {
 
         StateVector k1 = StateVector.multiply(function(stateVector), h);
         StateVector k2 = StateVector.multiply(function(StateVector.add(stateVector, StateVector.multiply(k1, 1 / 2))),
@@ -49,20 +47,35 @@ public class RK4Solver {
     }
 
     /**
-     * 
-     * @param stateVector
+     * evaluates acceleration function at given state/point 
+     * @param stateVector holds current state of the ball
      * @return stateVector after one function evaluation
      */
     private StateVector function(StateVector stateVector) {
 
         double xSlope = Derivation.derivativeX(stateVector.getXPos(), stateVector.getYPos(), f);
         double ySlope = Derivation.derivativeY(stateVector.getXPos(), stateVector.getYPos(), f);
-        double formulaX = (-G * xSlope) - uK * G * (stateVector.getXSpeed()
-                / Math.sqrt(Math.pow(stateVector.getXSpeed(), 2) + Math.pow(stateVector.getYSpeed(), 2)));
-        double formulaY = (-G * ySlope) - uK * G * (stateVector.getYSpeed()
-                / Math.sqrt(Math.pow(stateVector.getXSpeed(), 2) + Math.pow(stateVector.getYSpeed(), 2)));
+        
+        if(Math.abs(Math.sqrt(Math.pow(stateVector.getXSpeed(), 2) + Math.pow(stateVector.getYSpeed(), 2))) < h){
+                stateVector.setXSpeed(0);
+                stateVector.setYSpeed(0);
+                double formulaX = (-G * xSlope) - uK * G * (xSlope
+                        / Math.sqrt(Math.pow(xSlope, 2) + Math.pow(ySlope, 2)));
+                double formulaY = (-G * ySlope) - uK * G * (ySlope
+                        / Math.sqrt(Math.pow(xSlope, 2) + Math.pow(ySlope, 2)));
+                        return new StateVector(stateVector.getXSpeed(), stateVector.getYSpeed(), formulaX, formulaY);
+                
+        }else{
+                double formulaX = (-G * xSlope) - uK * G * (stateVector.getXSpeed()
+                        / Math.sqrt(Math.pow(stateVector.getXSpeed(), 2) + Math.pow(stateVector.getYSpeed(), 2)));
+                double formulaY = (-G * ySlope) - uK * G * (stateVector.getYSpeed()
+                        / Math.sqrt(Math.pow(stateVector.getXSpeed(), 2) + Math.pow(stateVector.getYSpeed(), 2)));
+                return new StateVector(stateVector.getXSpeed(), stateVector.getYSpeed(), formulaX, formulaY);
+        }
 
-        return new StateVector(stateVector.getXSpeed(), stateVector.getYSpeed(), formulaX, formulaY);
+        
+
+        
     }
 
 }
