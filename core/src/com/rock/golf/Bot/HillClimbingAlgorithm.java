@@ -34,6 +34,7 @@ public class HillClimbingAlgorithm {
     /**
      * Uses heuristic function to update state of ball position after one shot
      */
+
     private StateVector current_State_Shot(StateVector vector) {
         ballPositionX += get_Distance(vector) * 0.1;
         ballPositionY += get_Distance(vector) * 0.1;
@@ -47,6 +48,7 @@ public class HillClimbingAlgorithm {
      * 
      * @return Boolean value: true if ball is inside target, false if not.
      */
+    
     private boolean ball_in_target(StateVector vector) {
         if (Math.pow(vector.getXPos() - targetX, 2) + Math.pow(vector.getYPos() - targetY, 2) <= Math.pow(targetRadius,
                 2)) {

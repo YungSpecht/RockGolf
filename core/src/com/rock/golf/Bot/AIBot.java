@@ -27,6 +27,7 @@ public class AIBot {
      *         and the second
      *         index is the y velocity
      */
+    
     public double[] get_shot(int iterations) {// here we find out the x and y distance from the ball's current position
                                               // to the target
         double xDistance = targetX - currentState.getXPos();
@@ -78,7 +79,6 @@ public class AIBot {
             }
             counter++;
         }
-
         return currentBestShot;
     }
 
@@ -94,6 +94,7 @@ public class AIBot {
      *         directions from the reference
      *         angle
      */
+
     private double[][] generate_shots(double angle, int iteration) {
         double[][] result = new double[2][2];
 

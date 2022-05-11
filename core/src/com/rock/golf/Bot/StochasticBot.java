@@ -53,10 +53,8 @@ public class StochasticBot {
                 if (fitness == 0)
                     break;
             }
-
             vel = getVelocities();
         }
-
         return new double[] { best[0], best[1], previousFitness };
     }
 
