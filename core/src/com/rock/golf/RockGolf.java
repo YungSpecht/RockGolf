@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.rock.golf.Bot.AIBot;
 import com.rock.golf.Bot.HillClimb;
 import com.rock.golf.Bot.HillClimbingAlgorithm;
+import com.rock.golf.Bot.PSOBot;
 import com.rock.golf.Bot.StochasticBot;
 import com.rock.golf.Input.*;
 import com.rock.golf.Math.Derivation;
@@ -51,6 +52,7 @@ public class RockGolf extends ApplicationAdapter {
     private StochasticBot stochasticBot;
     private HillClimb hillClimb;
     private AIBot veryDumbBot;
+    private PSOBot PSOBot;
     private ExecutorService executor;
     private SpriteBatch position, shot;
     private BitmapFont font;
@@ -252,7 +254,7 @@ public class RockGolf extends ApplicationAdapter {
                 prepare_new_shot();
                 executor.execute(engine); 
             } else if (keycode == Input.Keys.ALT_RIGHT) {
-                stochasticBot = new StochasticBot(botEngine, 500);
+                stochasticBot = new StochasticBot(botEngine, 1);
                 double[] vel = stochasticBot.getBestMove();
                 InputModule.set_new_velocity(vel[0],vel[1]);
                 prepare_new_shot();
@@ -280,6 +282,12 @@ public class RockGolf extends ApplicationAdapter {
                 InputModule.set_new_position(initialState[0], initialState[1]);
                 ((PhysicsEngine) engine).resume();
                 newShotPossible = true;
+            } else if(keycode == Input.Keys.V) {
+                PSOBot = new PSOBot(botEngine, 50);
+                double[] vel = PSOBot.run();
+                InputModule.set_new_velocity(vel[0],vel[1]);
+                prepare_new_shot();
+                executor.execute(botEngine);            
             }
             return false;
         }
