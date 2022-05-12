@@ -280,6 +280,7 @@ public class RockGolf extends ApplicationAdapter {
                 xPosition = metersToPixel(convert(initialState[0])) + originX;
                 yPosition = metersToPixel(convert(initialState[1])) + originY;
                 InputModule.set_new_position(initialState[0], initialState[1]);
+                shotCounter = 0;
                 ((PhysicsEngine) engine).resume();
                 newShotPossible = true;
             } else if(keycode == Input.Keys.V) {

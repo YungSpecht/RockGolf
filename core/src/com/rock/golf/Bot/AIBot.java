@@ -46,7 +46,7 @@ public class AIBot {
             return bestShot;
         }
 
-        System.out.println("Intermediate checkpoint: " + bestShotDistance);
+        System.out.println("Intermediate checkpoint: " + (bestShotDistance - targetRad));
 
         int counter = 0;
         while(bestShotDistance >= targetRad && counter < 2){
@@ -65,6 +65,16 @@ public class AIBot {
         return bestShot;
     }
 
+    /**
+     * This method is responsible for simulating the shots using the physics engine and 
+     * implements a pruning tactic.
+     * 
+     * @param centerShots Array of shots in the direction of the centered angle.
+     * @param leftShots   Array of shots diverging to the left of the centered angle.
+     * @param rightShots  Array of shots diverging to the right of the centered angle.
+     * @return            A double array of length 2 where the first index is the x velocity
+     *                    and the second index is the y velocity.
+     */
     private void get_best_shot(double[][] centerShots, double[][][] leftShots, double[][][]rightShots){
         for(int i = 0; i < centerShots.length; i++){
             double[] shotCoords = engine.get_shot(centerShots[i][0], centerShots[i][1]);
@@ -72,14 +82,43 @@ public class AIBot {
             compare_shot(centerShots[i], shotCoords, distance);
         }
         for(int i = 0; i < leftShots.length; i++){
+            boolean leftPruned = false;
+            boolean rightPruned = false;
+            double leftTracker = Double.MAX_VALUE;
+            double rightTracker = Double.MAX_VALUE;
+            int leftCounter = 0;
+            int rightCounter = 0;
             for(int j = 0; j < leftShots[0].length; j++){
-                double[] leftShotCoords = engine.get_shot(leftShots[i][j][0], leftShots[i][j][1]);
-                double leftShotDistance = euclidian_distance(leftShotCoords);
-                compare_shot(leftShots[i][j], leftShotCoords, leftShotDistance);
-
-                double[] rightShotCoords = engine.get_shot(rightShots[i][j][0], rightShots[i][j][1]);
-                double rightShotDistance = euclidian_distance(rightShotCoords);
-                compare_shot(rightShots[i][j], rightShotCoords, rightShotDistance);
+                if(!leftPruned){
+                    double[] leftShotCoords = engine.get_shot(leftShots[i][j][0], leftShots[i][j][1]);
+                    double leftShotDistance = euclidian_distance(leftShotCoords);
+                    if(leftShotDistance < leftTracker){
+                        leftCounter = 0;
+                        leftTracker = leftShotDistance;
+                    }
+                    else{
+                        leftCounter++;
+                    }
+                    if(leftCounter > 2){
+                        leftPruned = true;
+                    }
+                    compare_shot(leftShots[i][j], leftShotCoords, leftShotDistance);
+                }
+                if(!rightPruned){
+                    double[] rightShotCoords = engine.get_shot(rightShots[i][j][0], rightShots[i][j][1]);
+                    double rightShotDistance = euclidian_distance(rightShotCoords);
+                    if(rightShotDistance < rightTracker){
+                        rightCounter = 0;
+                        rightTracker = rightShotDistance;
+                    }
+                    else{
+                        rightCounter++;
+                    }
+                    if(rightCounter > 2){
+                        rightPruned = true;
+                    }
+                    compare_shot(rightShots[i][j], rightShotCoords, rightShotDistance);
+                }
                 if(bestShotDistance < targetRad){
                     return;
                 }
@@ -87,6 +126,14 @@ public class AIBot {
         }
     }
 
+    /**
+     * This method compares a shot against the current best shot and updates the
+     * fields accordingly.
+     * 
+     * @param shot       Array containing the x and y velocity of the shot.
+     * @param shotCoords Array containing the x and y position of the shot.
+     * @param distance   The euclidian distance from the shot to the target.
+     */
     private void compare_shot(double[] shot, double[] shotCoords, double distance){
         if(distance < bestShotDistance){
             bestShot = shot;
@@ -123,6 +170,14 @@ public class AIBot {
         return result;
     }
 
+    /**
+     * This method arranges the shots to the left or right side of the reference
+     * angle into array starting from the reference angle towards the outside.
+     * 
+     * @param shots Array containing the x and y velocity of the shot.
+     * @param side  A char deciding which side to order; 'r' for right, 'l for left'.
+     * @return      Array containing the ordered shots
+     */
     private double[][][] arrange_shots(double[][][] shots, char side){
         double[][][] result = new double[shots.length/2][shots[0].length][2];
         if(side == 'l'){
@@ -161,7 +216,7 @@ public class AIBot {
      */
     private double[] get_velocity_range(double[] velocity){
         double currentVel = Math.sqrt(Math.pow(velocity[0], 2) + Math.pow(velocity[1], 2));
-        double[] result = new double[]{currentVel-0.5, currentVel + 0.5};
+        double[] result = new double[]{currentVel-0.4, currentVel + 0.4};
         if(result[0] < 0){
             result[0] = 0;
         }
