@@ -33,7 +33,7 @@ public class AIBot {
         double bestShotDistance = euclidian_distance(bestShotCoords);
         double shotAngle = convert(Math.atan2(targetY - bestShotCoords[0], targetX - bestShotCoords[1]));
 
-        double[][][] shotsArray = generate_shots(shotAngle, 5, 45, 10, 2, 5);
+        double[][][] shotsArray = generate_shots(shotAngle, 10, 40, 10, 2, 4.5);
         double[][][] shotCoordSArray = new double[shotsArray.length][shotsArray[0].length][2];
         for(int i = 0; i < shotsArray.length; i++){
             for(int j = 0; j < shotsArray[0].length; j++){
@@ -44,16 +44,18 @@ public class AIBot {
                     bestShotCoords = shotCoordSArray[i][j];
                     bestShotDistance = distance;
                     System.out.println("Current shortest Distance to Target: " + bestShotDistance);
+                    if(bestShotDistance < targetRad){
+                        return bestShot;
+                    }
                 }
             }
         }
         System.out.println("Intermediate checkpoint: " + bestShotDistance);
-        
         int counter = 0;
         while(bestShotDistance >= targetRad && counter < 10){
             shotAngle = convert(Math.atan2(bestShot[1], bestShot[0]));
             double[] velRange = get_velocity_range(bestShot);
-            shotsArray = generate_shots(shotAngle, 5, 45 - ((1 + counter) * 5), 10 + ((counter + 1) * 5), velRange[0], velRange[1]);
+            shotsArray = generate_shots(shotAngle, 10, 30 - ((1 + counter) * 7.5), 10 + ((counter + 1) * 4), velRange[0], velRange[1]);
             shotCoordSArray = new double[shotsArray.length][shotsArray[0].length][2];
             for(int i = 0; i < shotsArray.length; i++){
                 for(int j = 0; j < shotsArray[0].length; j++){
@@ -64,6 +66,9 @@ public class AIBot {
                         bestShotCoords = shotCoordSArray[i][j];
                         bestShotDistance = distance;
                         System.out.println("Current shortest Distance to Target: " + bestShotDistance);
+                        if(bestShotDistance < targetRad){
+                            return bestShot;
+                        }
                     }
                 }
             }
