@@ -8,6 +8,10 @@ public class AIBot {
     private PhysicsEngine engine;
     private StateVector currentState;
     private double targetX, targetY, targetRad;
+    private double[] bestShot;
+    private double[] bestShotCoords;
+    private double bestShotDistance;
+    private double bestShotAngle;
 
     // constructor
     public AIBot(PhysicsEngine engine) {
@@ -28,53 +32,69 @@ public class AIBot {
      */
     public double[] get_shot() {
 
-        double[] bestShot = new double[2];
-        double[] bestShotCoords = new double[]{currentState.getXPos(), currentState.getYPos()};
-        double bestShotDistance = euclidian_distance(bestShotCoords);
-        double shotAngle = convert(Math.atan2(targetY - bestShotCoords[0], targetX - bestShotCoords[1]));
+        bestShot = new double[2];
+        bestShotCoords = new double[]{currentState.getXPos(), currentState.getYPos()};
+        bestShotDistance = euclidian_distance(bestShotCoords);
+        bestShotAngle = convert(Math.atan2(targetY - bestShotCoords[1], targetX - bestShotCoords[0]));
 
-        double[][][] shotsArray = generate_shots(shotAngle, 10, 40, 10, 2, 4.5);
-        double[][][] shotCoordSArray = new double[shotsArray.length][shotsArray[0].length][2];
-        for(int i = 0; i < shotsArray.length; i++){
-            for(int j = 0; j < shotsArray[0].length; j++){
-                shotCoordSArray[i][j] = engine.get_shot(shotsArray[i][j][0], shotsArray[i][j][1]);
-                double distance = euclidian_distance(shotCoordSArray[i][j]);
-                if(distance < bestShotDistance){
-                    bestShot = shotsArray[i][j];
-                    bestShotCoords = shotCoordSArray[i][j];
-                    bestShotDistance = distance;
-                    System.out.println("Current shortest Distance to Target: " + bestShotDistance);
-                    if(bestShotDistance < targetRad){
-                        return bestShot;
-                    }
-                }
-            }
+        double[][][] shotsArray = generate_shots(bestShotAngle, 10, 40, 10, 2, 4.5);
+        double[][] centerShots = shotsArray[shotsArray.length/2];
+        double[][][] leftShots = arrange_shots(shotsArray, 'l');
+        double[][][] rightShots = arrange_shots(shotsArray, 'r');
+        get_best_shot(centerShots, leftShots, rightShots);
+        if(bestShotDistance < targetRad){
+            return bestShot;
         }
+
         System.out.println("Intermediate checkpoint: " + bestShotDistance);
+
         int counter = 0;
-        while(bestShotDistance >= targetRad && counter < 10){
-            shotAngle = convert(Math.atan2(bestShot[1], bestShot[0]));
+        while(bestShotDistance >= targetRad && counter < 2){
+            bestShotAngle = convert(Math.atan2(bestShot[1], bestShot[0]));
             double[] velRange = get_velocity_range(bestShot);
-            shotsArray = generate_shots(shotAngle, 10, 30 - ((1 + counter) * 7.5), 10 + ((counter + 1) * 4), velRange[0], velRange[1]);
-            shotCoordSArray = new double[shotsArray.length][shotsArray[0].length][2];
-            for(int i = 0; i < shotsArray.length; i++){
-                for(int j = 0; j < shotsArray[0].length; j++){
-                    shotCoordSArray[i][j] = engine.get_shot(shotsArray[i][j][0], shotsArray[i][j][1]);
-                    double distance = euclidian_distance(shotCoordSArray[i][j]);
-                    if(distance < bestShotDistance){
-                        bestShot = shotsArray[i][j];
-                        bestShotCoords = shotCoordSArray[i][j];
-                        bestShotDistance = distance;
-                        System.out.println("Current shortest Distance to Target: " + bestShotDistance);
-                        if(bestShotDistance < targetRad){
-                            return bestShot;
-                        }
-                    }
-                }
+            shotsArray = generate_shots(bestShotAngle, 10, 30 - ((1 + counter) * 7.5), 10 + ((counter + 1) * 4), velRange[0], velRange[1]);
+            centerShots = shotsArray[shotsArray.length/2];
+            leftShots = arrange_shots(shotsArray, 'l');
+            rightShots = arrange_shots(shotsArray, 'r');
+            get_best_shot(centerShots, leftShots, rightShots);
+            if(bestShotDistance < targetRad){
+                return bestShot;
             }
             System.out.println("Iteration: " + ++counter);
         }
         return bestShot;
+    }
+
+    private void get_best_shot(double[][] centerShots, double[][][] leftShots, double[][][]rightShots){
+        for(int i = 0; i < centerShots.length; i++){
+            double[] shotCoords = engine.get_shot(centerShots[i][0], centerShots[i][1]);
+            double distance = euclidian_distance(shotCoords);
+            compare_shot(centerShots[i], shotCoords, distance);
+        }
+        for(int i = 0; i < leftShots.length; i++){
+            for(int j = 0; j < leftShots[0].length; j++){
+                double[] leftShotCoords = engine.get_shot(leftShots[i][j][0], leftShots[i][j][1]);
+                double leftShotDistance = euclidian_distance(leftShotCoords);
+                compare_shot(leftShots[i][j], leftShotCoords, leftShotDistance);
+
+                double[] rightShotCoords = engine.get_shot(rightShots[i][j][0], rightShots[i][j][1]);
+                double rightShotDistance = euclidian_distance(rightShotCoords);
+                compare_shot(rightShots[i][j], rightShotCoords, rightShotDistance);
+                if(bestShotDistance < targetRad){
+                    return;
+                }
+            }
+        }
+    }
+
+    private void compare_shot(double[] shot, double[] shotCoords, double distance){
+        if(distance < bestShotDistance){
+            bestShot = shot;
+            bestShotCoords = shotCoords;
+            bestShotDistance = distance;
+            bestShotAngle = convert(Math.atan2(targetY - bestShotCoords[1], targetX - bestShotCoords[0]));
+            System.out.println("Current shortest Distance to Target: " + (bestShotDistance - targetRad));
+        }
     }
 
     /**
@@ -98,6 +118,21 @@ public class AIBot {
             for(int j = 0; j < result[0].length; j++){
                 result[(result.length/2) + i + 1][j] = get_velocity((angle + (outermostAngle/divergetShots) * (i+1)) % 360, velocityStart + (j+1) * ((velocityEnd-velocityStart)/velocitySims));
                 result[(result.length/2) - i - 1][j] = get_velocity((angle - (outermostAngle/divergetShots) * (i+1)) % 360, velocityStart + (j+1) * ((velocityEnd-velocityStart)/velocitySims));
+            }
+        }
+        return result;
+    }
+
+    private double[][][] arrange_shots(double[][][] shots, char side){
+        double[][][] result = new double[shots.length/2][shots[0].length][2];
+        if(side == 'l'){
+            for(int i = 0; i < (shots.length/2)-1; i++){
+                result[i] = shots[(shots.length/2)-1-i];
+            }
+        }
+        else{
+            for(int i = (shots.length/2)+1; i < shots.length; i++){
+                result[i - ((shots.length/2)+1)] = shots[i];
             }
         }
         return result;
@@ -127,6 +162,9 @@ public class AIBot {
     private double[] get_velocity_range(double[] velocity){
         double currentVel = Math.sqrt(Math.pow(velocity[0], 2) + Math.pow(velocity[1], 2));
         double[] result = new double[]{currentVel-0.5, currentVel + 0.5};
+        if(result[0] < 0){
+            result[0] = 0;
+        }
         if(result[1] > 5){
             result[1] = 5;
         }

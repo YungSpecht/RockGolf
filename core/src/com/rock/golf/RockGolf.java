@@ -275,7 +275,7 @@ public class RockGolf extends ApplicationAdapter {
                 double[] shot = veryDumbBot.get_shot();
                 InputModule.set_new_velocity(shot[0], shot[1]);
                 prepare_new_shot();
-                executor.execute(engine);
+                executor.execute(botEngine);
             }  else if (keycode == Input.Keys.ESCAPE) {
                 xPosition = metersToPixel(convert(initialState[0])) + originX;
                 yPosition = metersToPixel(convert(initialState[1])) + originY;
