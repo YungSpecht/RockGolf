@@ -134,10 +134,7 @@ public class PhysicsEngine implements Runnable {
         return true;
     }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 8b4329554e3806a22f974143751c5c38f41acc61
     /**
      * This method determines wether the ball is currently inside the target based
      * on the position and
