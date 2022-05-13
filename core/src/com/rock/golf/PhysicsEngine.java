@@ -134,7 +134,10 @@ public class PhysicsEngine implements Runnable {
         return true;
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8b4329554e3806a22f974143751c5c38f41acc61
     /**
      * This method determines wether the ball is currently inside the target based
      * on the position and
@@ -188,6 +191,27 @@ public class PhysicsEngine implements Runnable {
         return false;
     }
 
+    /**
+     * 
+     * This method looks for a collision between the ball and the sandpits.
+     * if the collision is true then the friction coefficient change for both static
+     * and kinetic friction. Once the ball leaves the sandpit, it will revert the
+     * friction
+     */
+    public void changeFriction() {
+        RockGolf golf = new RockGolf();
+        if (sandpitCollision((float) InputModule.get_input()[6], 100, (float) InputModule.get_input()[7], 10,
+                (int) golf.ballRadius, 3) == true
+                || sandpitCollision((float) InputModule.get_input()[6], 600, (float) InputModule.get_input()[7],
+                        800, (int) golf.ballRadius, 3) == true) {
+            uK = 0.03;
+            uS = 0.2;
+            InputModule.set_new_friction((float) 0.03, (float) 0.1);
+        } else {
+            InputModule.set_new_friction((float) 0.08, (float) 0.2);
+        }
+    }
+
     public boolean sandpitCollision(float x1, float x2, float y1, float y2, int c1, int c2) {
         double d = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
         if (c1 > (d + c2)) {
@@ -197,6 +221,8 @@ public class PhysicsEngine implements Runnable {
     }
 
     public double[] get_shot(double velX, double velY) {
+        RockGolf golf = new RockGolf();
+        changeFriction();
         double[] variables = InputModule.get_input();
         uK = variables[0];
         uS = variables[1];
@@ -207,6 +233,12 @@ public class PhysicsEngine implements Runnable {
         golfCourse = InputModule.get_profile();
         RK2Solver solve = new RK2Solver(uK, uS, h, golfCourse);
         while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !is_in_water()) {
+            if (sandpitCollision((float) InputModule.get_input()[6], 100, (float) InputModule.get_input()[7], 10,
+                    (int) golf.ballRadius, 3) == true
+                    || sandpitCollision((float) InputModule.get_input()[6], 600, (float) InputModule.get_input()[7],
+                            800, (int) golf.ballRadius, 3) == true) {
+                changeFriction();
+            }
             vector = solve.runge_kutta_two(vector);
             if (abort) {
                 break;
