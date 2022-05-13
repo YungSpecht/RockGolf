@@ -31,7 +31,6 @@ public class AIBot {
      *         and the second index is the y velocity.
      */
     public double[] get_shot() {
-
         bestShot = new double[2];
         bestShotCoords = new double[]{currentState.getXPos(), currentState.getYPos()};
         bestShotDistance = euclidian_distance(bestShotCoords);
