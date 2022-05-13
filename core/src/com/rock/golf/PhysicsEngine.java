@@ -1,13 +1,15 @@
 package com.rock.golf;
 
 import org.mariuszgromada.math.mxparser.Function;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.rock.golf.Input.InputModule;
 import com.rock.golf.Math.Derivation;
 import com.rock.golf.Math.RK2Solver;
 
 public class PhysicsEngine implements Runnable {
-
-    Sandpit sandpit = new Sandpit();
 
     // constants
     public static final double g = 9.81;
@@ -20,6 +22,7 @@ public class PhysicsEngine implements Runnable {
     private Function golfCourse;
     private StateVector vector;
     private double[] input;
+    private boolean isInWater;
     private boolean abort;
 
     // constructor
@@ -27,6 +30,7 @@ public class PhysicsEngine implements Runnable {
         input = InputModule.get_input();
         set_variables();
         abort = false;
+        isInWater = is_in_water();
         this.h = h;
     }
 
@@ -34,6 +38,7 @@ public class PhysicsEngine implements Runnable {
         input = InputModule.get_input();
         set_variables();
         abort = false;
+        isInWater = is_in_water();
     }
 
     public StateVector getVector() {
@@ -58,7 +63,6 @@ public class PhysicsEngine implements Runnable {
                 && ball_in_screen()) {
             vector = solve.runge_kutta_two(vector);
             RockGolf.update_position(vector);
-            sandpit.changeFriction();
             if (abort) {
                 break;
             }
