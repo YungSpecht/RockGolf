@@ -1,10 +1,6 @@
 package com.rock.golf;
 
 import org.mariuszgromada.math.mxparser.Function;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.rock.golf.Input.InputModule;
 import com.rock.golf.Math.Derivation;
 import com.rock.golf.Math.RK2Solver;
@@ -22,7 +18,6 @@ public class PhysicsEngine implements Runnable{
     private Function golfCourse;
     private StateVector vector;
     private double[] input;
-    private boolean isInWater;
     private boolean abort;
 
     //constructor
@@ -30,7 +25,6 @@ public class PhysicsEngine implements Runnable{
         input = InputModule.get_input();
         set_variables();
         abort = false;
-        isInWater = is_in_water();
         this.h = h;
     }
 
@@ -38,7 +32,6 @@ public class PhysicsEngine implements Runnable{
         input = InputModule.get_input();
         set_variables();
         abort = false;
-        isInWater = is_in_water();
     }
 
     public StateVector getVector() {
