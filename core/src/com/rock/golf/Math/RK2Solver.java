@@ -37,6 +37,11 @@ public class RK2Solver {
         return result;
     }
 
+    public void update_friction(double uK, double uS){
+        this.uK = uK;
+        this.uS = uS;
+    }
+
     private StateVector function(StateVector vector){
         double xSlope = Derivation.derivativeX(vector.getXPos(), vector.getYPos(), golfCourse);
         double ySlope = Derivation.derivativeY(vector.getXPos(), vector.getYPos(), golfCourse);

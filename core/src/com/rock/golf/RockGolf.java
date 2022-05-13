@@ -1,6 +1,8 @@
 package com.rock.golf;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -34,8 +36,9 @@ public class RockGolf extends ApplicationAdapter {
     private static float yPosition;
     private float targetxPosition;
     private float targetyPosition;
+    private List<Sandpit> sandpits;
     private ShapeRenderer ball;
-    private ShapeRenderer sandpits;
+    private ShapeRenderer sandpit;
     private ShapeRenderer target;
     private ShapeRenderer shapeRenderer;
     private ShapeRenderer launchVector;
@@ -61,8 +64,8 @@ public class RockGolf extends ApplicationAdapter {
         originX = Gdx.graphics.getWidth() / 2;
         originY = Gdx.graphics.getHeight() / 2;
         ball = new ShapeRenderer();
-        sandpits = new ShapeRenderer();
         target = new ShapeRenderer();
+        sandpit = new ShapeRenderer();
         launchVector = new ShapeRenderer();
         engine = new PhysicsEngine();
         executor = Executors.newFixedThreadPool(1);
@@ -77,6 +80,7 @@ public class RockGolf extends ApplicationAdapter {
         yPosition = metersToPixel(convert(input[6])) + originY;
         initialState = new double[] { input[5], input[6] };
         generateField();
+        sandpits = ((PhysicsEngine)engine).get_sandpits();
         shotActive = false;
         newShotPossible = true;
     }
@@ -85,12 +89,13 @@ public class RockGolf extends ApplicationAdapter {
     public void render() {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         createMap();
-
-        sandpits.begin(ShapeRenderer.ShapeType.Filled);
-        sandpits.circle(100, 10, metersToPixel(3));
-        sandpits.circle(600, 800, metersToPixel(3));
-        sandpits.setColor(255, 255, 0, 1);
-        sandpits.end();
+        for(int i = 0; i < sandpits.size(); i++){
+            double[] pos = sandpits.get(i).get_position();
+            sandpit.begin(ShapeRenderer.ShapeType.Filled);
+            sandpit.setColor(255, 255, 0, 1);
+            sandpit.circle(metersToPixel(convert(pos[0])) + originX, metersToPixel(convert(pos[1])) + originY, metersToPixel(convert(sandpits.get(i).get_radius())));
+            sandpit.end();
+        }
 
         target.begin(ShapeRenderer.ShapeType.Filled);
         target.setColor(Color.BLACK);

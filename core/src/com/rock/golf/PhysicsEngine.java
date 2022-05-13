@@ -22,25 +22,25 @@ public class PhysicsEngine implements Runnable {
     private Function golfCourse;
     private StateVector vector;
     private double[] input;
-    private boolean isInWater;
     private boolean abort;
-
-    private Sandpit sandpit = new Sandpit();
+    private List<Sandpit> sandpits;
 
     // constructor
     public PhysicsEngine(double h) {
         input = InputModule.get_input();
         set_variables();
         abort = false;
-        isInWater = is_in_water();
         this.h = h;
+        sandpits = new ArrayList<Sandpit>();
+        sandpits.add(new Sandpit(new double[]{-3, 3}, 2, uK, uS));
     }
 
     public PhysicsEngine() {
         input = InputModule.get_input();
         set_variables();
         abort = false;
-        isInWater = is_in_water();
+        sandpits = new ArrayList<Sandpit>();
+        sandpits.add(new Sandpit(new double[]{-3, 3}, 2, uK, uS));
     }
 
     public StateVector getVector() {
@@ -61,8 +61,14 @@ public class PhysicsEngine implements Runnable {
         RockGolf.shotCounter++;
         set_variables();
         RK2Solver solve = new RK2Solver(uK, uS, h, golfCourse);
-        while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !is_in_water()
-                && ball_in_screen()) {
+        while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !is_in_water() && ball_in_screen()) {
+            Sandpit currentSandpit = current_sandpit();
+            if(currentSandpit != null){
+                solve.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS());
+            }
+            else{
+                solve.update_friction(uK, uS);
+            }
             vector = solve.runge_kutta_two(vector);
             RockGolf.update_position(vector);
             if (abort) {
@@ -71,6 +77,15 @@ public class PhysicsEngine implements Runnable {
         }
         InputModule.set_new_position(vector.getXPos(), vector.getYPos());
         RockGolf.shotActive = false;
+    }
+
+    private Sandpit current_sandpit(){
+        for(int i = 0; i < sandpits.size(); i++){
+            if(sandpits.get(i).is_in_sandpit(vector.getXPos(), vector.getYPos())){
+                return sandpits.get(i);
+            }
+        }
+        return null;
     }
 
     private boolean ball_in_screen() {
@@ -114,30 +129,11 @@ public class PhysicsEngine implements Runnable {
         if (Math.abs(Math.sqrt(Math.pow(vector.getXSpeed(), 2) + Math.pow(vector.getYSpeed(), 2))) < h) {
             vector.setXSpeed(0);
             vector.setYSpeed(0);
-            changeFriction();
             return false;
         }
         return true;
     }
 
-    /**
-     * 
-     * This method looks for a collision between the ball and the sandpits.
-     * if the collision is true then the friction coefficient change for both static
-     * and kinetic friction. Once the ball leaves the sandpit, it will revert the
-     * friction
-     */
-    public void changeFriction() {
-        RockGolf golf = new RockGolf();
-        if (sandpitCollision((float) InputModule.get_input()[6], 100, (float) InputModule.get_input()[7], 10,
-                (int) golf.ballRadius, 3) == true
-                || sandpitCollision((float) InputModule.get_input()[6], 600, (float) InputModule.get_input()[7],
-                        800, (int) golf.ballRadius, 3) == true) {
-            InputModule.set_new_friction((float) 0.03, (float) 0.1);
-        } else {
-            InputModule.set_new_friction((float) 0.08, (float) 0.2);
-        }
-    }
 
     /**
      * This method determines wether the ball is currently inside the target based
@@ -147,12 +143,7 @@ public class PhysicsEngine implements Runnable {
      * @return Boolean value: true if ball is inside target, false if not.
      */
     private boolean ball_in_target() {
-
-        // ((x - circle_x) * (x - circle_x) + (y - circle_y) * (y - circle_y) <= rad *
-        // rad);
-
-        if (Math.pow(vector.getXPos() - targetX, 2) + Math.pow(vector.getYPos() - targetY, 2) <= Math.pow(targetRadius,
-                2)) {
+        if (Math.pow(vector.getXPos() - targetX, 2) + Math.pow(vector.getYPos() - targetY, 2) <= Math.pow(targetRadius, 2)) {
             RockGolf.newShotPossible = false;
             return true;
         }
@@ -229,6 +220,10 @@ public class PhysicsEngine implements Runnable {
      */
     public void abort() {
         abort = true;
+    }
+
+    public List<Sandpit> get_sandpits(){
+        return sandpits;
     }
 
     public void resume() {
