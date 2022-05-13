@@ -25,7 +25,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-
 public class RockGolf extends ApplicationAdapter {
     float ballRadius;
     private float targetRadius;

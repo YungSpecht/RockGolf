@@ -25,6 +25,8 @@ public class PhysicsEngine implements Runnable {
     private boolean isInWater;
     private boolean abort;
 
+    private Sandpit sandpit = new Sandpit();
+
     // constructor
     public PhysicsEngine(double h) {
         input = InputModule.get_input();
@@ -112,9 +114,29 @@ public class PhysicsEngine implements Runnable {
         if (Math.abs(Math.sqrt(Math.pow(vector.getXSpeed(), 2) + Math.pow(vector.getYSpeed(), 2))) < h) {
             vector.setXSpeed(0);
             vector.setYSpeed(0);
+            changeFriction();
             return false;
         }
         return true;
+    }
+
+    /**
+     * 
+     * This method looks for a collision between the ball and the sandpits.
+     * if the collision is true then the friction coefficient change for both static
+     * and kinetic friction. Once the ball leaves the sandpit, it will revert the
+     * friction
+     */
+    public void changeFriction() {
+        RockGolf golf = new RockGolf();
+        if (sandpitCollision((float) InputModule.get_input()[6], 100, (float) InputModule.get_input()[7], 10,
+                (int) golf.ballRadius, 3) == true
+                || sandpitCollision((float) InputModule.get_input()[6], 600, (float) InputModule.get_input()[7],
+                        800, (int) golf.ballRadius, 3) == true) {
+            InputModule.set_new_friction((float) 0.03, (float) 0.1);
+        } else {
+            InputModule.set_new_friction((float) 0.08, (float) 0.2);
+        }
     }
 
     /**
