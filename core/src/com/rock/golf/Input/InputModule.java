@@ -11,8 +11,8 @@ import java.util.Scanner;
 import org.mariuszgromada.math.mxparser.Function;
 
 public class InputModule {
-    
-    public static double[] get_input(){
+
+    public static double[] get_input() {
         double[] result = new double[9];
         FileReader reader;
         try {
@@ -21,7 +21,7 @@ public class InputModule {
 
             Scanner in = new Scanner(reader);
             in.nextLine();
-            for(int i = 0; i < 9; i++){
+            for (int i = 0; i < 9; i++) {
                 String inputLine = in.nextLine();
                 result[i] = Double.parseDouble(inputLine.substring(inputLine.indexOf(' ')));
             }
@@ -29,11 +29,11 @@ public class InputModule {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        
+
         return result;
     }
 
-    public static void set_new_position(double xPos, double yPos){
+    public static void set_new_position(double xPos, double yPos) {
         try {
             File file = new File("core/src/com/rock/golf/Input/Input.txt");
             List<String> lines = Files.readAllLines(file.toPath());
@@ -46,7 +46,20 @@ public class InputModule {
         }
     }
 
-    public static void set_new_velocity(double xSpeed, double ySpeed){
+    public static void set_new_friction(float kineticFriction, float staticFriction) {
+        try {
+            File file = new File("core/src/com/rock/golf/Input/Input.txt");
+            List<String> lines = Files.readAllLines(file.toPath());
+            lines.set(1, "friction-coefficient-kinetic: " + kineticFriction);
+            Files.write(file.toPath(), lines);
+            lines.set(2, "friction-coefficient-static:" + staticFriction);
+            Files.write(file.toPath(), lines);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void set_new_velocity(double xSpeed, double ySpeed) {
         try {
             File file = new File("core/src/com/rock/golf/Input/Input.txt");
             List<String> lines = Files.readAllLines(file.toPath());
@@ -59,7 +72,7 @@ public class InputModule {
         }
     }
 
-    public static Function get_profile(){
+    public static Function get_profile() {
         FileReader reader;
         try {
             reader = new FileReader("core/src/com/rock/golf/Input/Input.txt");
@@ -70,7 +83,7 @@ public class InputModule {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        
+
         return new Function(" ");
     }
 }
