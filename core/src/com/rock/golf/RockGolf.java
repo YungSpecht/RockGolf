@@ -13,7 +13,6 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.rock.golf.Bot.AIBot;
 import com.rock.golf.Bot.HillClimb;
-import com.rock.golf.Bot.HillClimbingAlgorithm;
 import com.rock.golf.Bot.PSOBot;
 import com.rock.golf.Bot.StochasticBot;
 import com.rock.golf.Input.*;
@@ -26,10 +25,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import org.mariuszgromada.math.mxparser.Function;
-
-import com.rock.golf.Input.*;
-import com.rock.golf.Math.Derivation;
 
 public class RockGolf extends ApplicationAdapter {
     float ballRadius;
