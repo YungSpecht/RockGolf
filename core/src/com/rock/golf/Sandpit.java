@@ -8,4 +8,9 @@ public class Sandpit {
     private double xStart, xEnd;
     private double yStart, yEnd;
 
+    public Sandpit() {
+        uK = 0.03;
+        uS = 0.2;
+    }
+
 }
