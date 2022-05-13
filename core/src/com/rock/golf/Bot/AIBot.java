@@ -41,7 +41,7 @@ public class AIBot {
         double[][] centerShots = shotsArray[shotsArray.length/2];
         double[][][] leftShots = arrange_shots(shotsArray, 'l');
         double[][][] rightShots = arrange_shots(shotsArray, 'r');
-        get_best_shot(centerShots, leftShots, rightShots);
+        get_best_shot(centerShots, leftShots, rightShots, 0.15);
         if(bestShotDistance < targetRad){
             return bestShot;
         }
@@ -49,14 +49,14 @@ public class AIBot {
         System.out.println("Intermediate checkpoint: " + (bestShotDistance - targetRad));
 
         int counter = 0;
-        while(bestShotDistance >= targetRad && counter < 2){
+        while(bestShotDistance >= targetRad && counter < 5){
             bestShotAngle = convert(Math.atan2(bestShot[1], bestShot[0]));
             double[] velRange = get_velocity_range(bestShot);
             shotsArray = generate_shots(bestShotAngle, 10, 30 - ((1 + counter) * 7.5), 10 + ((counter + 1) * 4), velRange[0], velRange[1]);
             centerShots = shotsArray[shotsArray.length/2];
             leftShots = arrange_shots(shotsArray, 'l');
             rightShots = arrange_shots(shotsArray, 'r');
-            get_best_shot(centerShots, leftShots, rightShots);
+            get_best_shot(centerShots, leftShots, rightShots, 0);
             if(bestShotDistance < targetRad){
                 return bestShot;
             }
@@ -75,7 +75,11 @@ public class AIBot {
      * @return            A double array of length 2 where the first index is the x velocity
      *                    and the second index is the y velocity.
      */
-    private void get_best_shot(double[][] centerShots, double[][][] leftShots, double[][][]rightShots){
+    private void get_best_shot(double[][] centerShots, double[][][] leftShots, double[][][]rightShots, double instantReturnRange){
+        boolean cancelRight = false;
+        boolean cancelLeft = false;
+        int lCount = 0;
+        int rCount = 0;
         for(int i = 0; i < centerShots.length; i++){
             double[] shotCoords = engine.get_shot(centerShots[i][0], centerShots[i][1]);
             double distance = euclidian_distance(shotCoords);
@@ -84,42 +88,54 @@ public class AIBot {
         for(int i = 0; i < leftShots.length; i++){
             boolean leftPruned = false;
             boolean rightPruned = false;
-            double leftTracker = Double.MAX_VALUE;
-            double rightTracker = Double.MAX_VALUE;
             int leftCounter = 0;
             int rightCounter = 0;
             for(int j = 0; j < leftShots[0].length; j++){
-                if(!leftPruned){
+                if(!leftPruned && !cancelLeft){
                     double[] leftShotCoords = engine.get_shot(leftShots[i][j][0], leftShots[i][j][1]);
                     double leftShotDistance = euclidian_distance(leftShotCoords);
-                    if(leftShotDistance < leftTracker){
+                    if(leftShotDistance < bestShotDistance){
                         leftCounter = 0;
-                        leftTracker = leftShotDistance;
+                        lCount = 0;
                     }
                     else{
                         leftCounter++;
+                        lCount++;
                     }
-                    if(leftCounter > 2){
+                    if(leftCounter > 10){
                         leftPruned = true;
                     }
+                    if(lCount > 15){
+                        cancelLeft = true;
+                    }
                     compare_shot(leftShots[i][j], leftShotCoords, leftShotDistance);
+                    if(bestShotDistance < instantReturnRange){
+                        return;
+                    }
                 }
-                if(!rightPruned){
+                if(!rightPruned && !cancelRight){
                     double[] rightShotCoords = engine.get_shot(rightShots[i][j][0], rightShots[i][j][1]);
                     double rightShotDistance = euclidian_distance(rightShotCoords);
-                    if(rightShotDistance < rightTracker){
+                    if(rightShotDistance-targetRad < bestShotDistance){
                         rightCounter = 0;
-                        rightTracker = rightShotDistance;
+                        rCount = 0;
                     }
                     else{
                         rightCounter++;
+                        rCount++;
                     }
-                    if(rightCounter > 2){
+                    if(rightCounter > 10){
                         rightPruned = true;
                     }
+                    if(rCount > 15){
+                        cancelRight = true;
+                    }
                     compare_shot(rightShots[i][j], rightShotCoords, rightShotDistance);
+                    if(bestShotDistance-targetRad < instantReturnRange){
+                        return;
+                    }
                 }
-                if(bestShotDistance < targetRad){
+                if(bestShotDistance < targetRad ||  cancelLeft&&cancelRight){
                     return;
                 }
             }
