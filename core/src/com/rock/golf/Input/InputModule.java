@@ -17,7 +17,9 @@ public class InputModule {
         double[] result = new double[9];
         FileReader reader;
         try {
-            reader = new FileReader("core/src/main/com/rock/golf/Input/Input.txt");
+
+            reader = new FileReader("core/src/com/rock/golf/Input/Input.txt");
+
             Scanner in = new Scanner(reader);
             in.nextLine();
             for (int i = 0; i < 9; i++) {
@@ -39,6 +41,32 @@ public class InputModule {
             lines.set(6, "ball-x-position: " + xPos);
             Files.write(file.toPath(), lines);
             lines.set(7, "ball-y-position: " + yPos);
+            Files.write(file.toPath(), lines);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void set_new_friction(float kineticFriction, float staticFriction) {
+        try {
+            File file = new File("core/src/com/rock/golf/Input/Input.txt");
+            List<String> lines = Files.readAllLines(file.toPath());
+            lines.set(1, "friction-coefficient-kinetic: " + kineticFriction);
+            Files.write(file.toPath(), lines);
+            lines.set(2, "friction-coefficient-static:" + staticFriction);
+            Files.write(file.toPath(), lines);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void set_new_velocity(double xSpeed, double ySpeed) {
+        try {
+            File file = new File("core/src/com/rock/golf/Input/Input.txt");
+            List<String> lines = Files.readAllLines(file.toPath());
+            lines.set(8, "x-velocity: " + xSpeed);
+            Files.write(file.toPath(), lines);
+            lines.set(9, "y-velocity: " + ySpeed);
             Files.write(file.toPath(), lines);
         } catch (IOException e) {
             e.printStackTrace();
