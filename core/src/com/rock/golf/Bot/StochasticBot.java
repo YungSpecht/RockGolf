@@ -35,8 +35,18 @@ public class StochasticBot {
 
             finalVelocity = Math.sqrt(Math.pow(velX, 2) + Math.pow(velY, 2));
         }
-
+        double angle = Math.atan2(velX, velY);
+        if(isIllegal(angle)) {
+            System.out.println(angle);
+        }
         return new double[]{velX, velY};
+    }
+
+    public boolean isIllegal(double angle) {
+        double xDistance = targetPos[0] - ballPos[0];
+        double yDistance = targetPos[1] - ballPos[1];
+        double angleAtTarget = Math.atan2(xDistance, yDistance);
+        return angle < angleAtTarget + 90 && angle > angleAtTarget - 90;
     }
 
     public double[] getBestMove() {
