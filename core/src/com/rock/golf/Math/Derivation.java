@@ -1,9 +1,18 @@
 package com.rock.golf.Math;
 
+import com.rock.golf.Input.InputModule;
+
 import org.mariuszgromada.math.mxparser.*;
 import org.mariuszgromada.math.mxparser.mathcollection.*;
 
+
 public class Derivation {
+    public static void main(String[] args) {
+        Function golfCourse = InputModule.get_profile();
+        System.out.println(derivativeX(0, 0, golfCourse));
+        System.out.println(derivativeY(0, 0, golfCourse));
+    }
+
     public static double derivativeX(double x, double y, Function f) {
         Argument x1 = new Argument("x1", x);
         Argument y1 = new Argument("y1", y);

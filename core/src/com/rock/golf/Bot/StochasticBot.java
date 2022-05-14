@@ -8,7 +8,8 @@ public class StochasticBot {
     PhysicsEngine engine;
     int iterations;
     Random rand = new Random();
-    double[] targetPos = new double[] { InputModule.get_input()[2], InputModule.get_input()[3] };
+    double[] targetPos = new double[]{InputModule.get_input()[2], InputModule.get_input()[3]};
+    double[] ballPos = new double[]{InputModule.get_input()[5], InputModule.get_input()[6]};
     double targetRadius = InputModule.get_input()[4];
 
     public StochasticBot(PhysicsEngine engine, int i) {
@@ -19,7 +20,6 @@ public class StochasticBot {
     public double[] getVelocities() {
         double velX = (rand.nextDouble() * 10) - 5;
         double velY = (rand.nextDouble() * 10) - 5;
-
         double finalVelocity = Math.sqrt(Math.pow(velX, 2) + Math.pow(velY, 2));
 
         while (finalVelocity > 5) {
@@ -35,7 +35,8 @@ public class StochasticBot {
 
             finalVelocity = Math.sqrt(Math.pow(velX, 2) + Math.pow(velY, 2));
         }
-        return new double[] { velX, velY };
+
+        return new double[]{velX, velY};
     }
 
     public double[] getBestMove() {
@@ -53,8 +54,10 @@ public class StochasticBot {
                 if (fitness == 0)
                     break;
             }
+
             vel = getVelocities();
         }
+
         return new double[] { best[0], best[1], previousFitness };
     }
 

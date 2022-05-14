@@ -40,7 +40,7 @@ public class AIBot {
         double[][] centerShots = shotsArray[shotsArray.length/2];
         double[][][] leftShots = arrange_shots(shotsArray, 'l');
         double[][][] rightShots = arrange_shots(shotsArray, 'r');
-        get_best_shot(centerShots, leftShots, rightShots, 6);
+        get_best_shot(centerShots, leftShots, rightShots, 0.15);
         if(bestShotDistance < targetRad){
             return bestShot;
         }
@@ -55,7 +55,7 @@ public class AIBot {
             centerShots = shotsArray[shotsArray.length/2];
             leftShots = arrange_shots(shotsArray, 'l');
             rightShots = arrange_shots(shotsArray, 'r');
-            get_best_shot(centerShots, leftShots, rightShots, counter);
+            get_best_shot(centerShots, leftShots, rightShots, 0);
             if(bestShotDistance < targetRad){
                 return bestShot;
             }
@@ -74,8 +74,7 @@ public class AIBot {
      * @return            A double array of length 2 where the first index is the x velocity
      *                    and the second index is the y velocity.
      */
-    private void get_best_shot(double[][] centerShots, double[][][] leftShots, double[][][]rightShots, int multiplicator){
-        int tracker = 0;
+    private void get_best_shot(double[][] centerShots, double[][][] leftShots, double[][][]rightShots, double instantReturnRange){
         boolean cancelRight = false;
         boolean cancelLeft = false;
         int lCount = 0;
@@ -95,26 +94,21 @@ public class AIBot {
                     double[] leftShotCoords = engine.get_shot(leftShots[i][j][0], leftShots[i][j][1]);
                     double leftShotDistance = euclidian_distance(leftShotCoords);
                     if(leftShotDistance < bestShotDistance){
-                        tracker = 0;
                         leftCounter = 0;
                         lCount = 0;
                     }
                     else{
                         leftCounter++;
                         lCount++;
-                        tracker++;
                     }
-                    if(leftCounter > 8){
+                    if(leftCounter > 10){
                         leftPruned = true;
                     }
                     if(lCount > 15){
                         cancelLeft = true;
                     }
                     compare_shot(leftShots[i][j], leftShotCoords, leftShotDistance);
-                    if(bestShotDistance < targetRad){
-                        return;
-                    }
-                    if(tracker > 25-(multiplicator+1*2)){
+                    if(bestShotDistance < instantReturnRange){
                         return;
                     }
                 }
@@ -124,26 +118,24 @@ public class AIBot {
                     if(rightShotDistance-targetRad < bestShotDistance){
                         rightCounter = 0;
                         rCount = 0;
-                        tracker = 0;
                     }
                     else{
                         rightCounter++;
                         rCount++;
-                        tracker++;
                     }
-                    if(rightCounter > 8){
+                    if(rightCounter > 10){
                         rightPruned = true;
                     }
                     if(rCount > 15){
                         cancelRight = true;
                     }
                     compare_shot(rightShots[i][j], rightShotCoords, rightShotDistance);
-                    if(bestShotDistance < targetRad){
+                    if(bestShotDistance-targetRad < instantReturnRange){
                         return;
                     }
-                    if(tracker > 25-(multiplicator+1*2)){
-                        return;
-                    }
+                }
+                if(bestShotDistance < targetRad ||  cancelLeft&&cancelRight){
+                    return;
                 }
             }
         }
