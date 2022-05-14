@@ -1,4 +1,4 @@
-package com.rock.golf.Math;
+    package com.rock.golf.Math;
 
 import com.rock.golf.Input.InputModule;
 
@@ -8,9 +8,9 @@ import org.mariuszgromada.math.mxparser.mathcollection.*;
 
 public class Derivation {
     public static void main(String[] args) {
-        Function golfCourse = InputModule.get_profile();
-        System.out.println(derivativeX(0, 0, golfCourse));
-        System.out.println(derivativeY(0, 0, golfCourse));
+        Function golfCourse = new Function("h(x,y) = 0.4*(0.9 -e^(-(x^2+y^2)/8))");
+        System.out.println(derivativeX(-1, -0.5, golfCourse));
+        System.out.println(derivativeY(-1, -0.5, golfCourse));
     }
 
     public static double derivativeX(double x, double y, Function f) {
