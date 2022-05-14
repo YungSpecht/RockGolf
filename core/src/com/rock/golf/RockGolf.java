@@ -270,7 +270,7 @@ public class RockGolf extends ApplicationAdapter {
             }
             else if(keycode == Input.Keys.TAB){
                 veryDumbBot = new AIBot(botEngine);
-                double[] shot = veryDumbBot.get_shot(15);
+                double[] shot = veryDumbBot.get_shot();
                 InputModule.set_new_velocity(shot[0], shot[1]);
                 prepare_new_shot();
                 executor.execute(engine);
