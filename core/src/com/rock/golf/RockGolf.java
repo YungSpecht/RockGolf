@@ -13,8 +13,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.rock.golf.Bot.AIBot;
+import com.rock.golf.Bot.AiBot2;
 import com.rock.golf.Bot.HillClimb;
 import com.rock.golf.Bot.PSOBot;
+import com.rock.golf.Bot.SteepestDescent;
 import com.rock.golf.Bot.StochasticBot;
 import com.rock.golf.Input.*;
 import com.rock.golf.Math.Derivation;
@@ -49,6 +51,8 @@ public class RockGolf extends ApplicationAdapter {
     private StochasticBot stochasticBot;
     private HillClimb hillClimb;
     private AIBot veryDumbBot;
+    private AiBot2 botWhosMid;
+    private SteepestDescent steepestDescent;
     private PSOBot PSOBot;
     private ExecutorService executor;
     private SpriteBatch position, shot;
@@ -285,12 +289,26 @@ public class RockGolf extends ApplicationAdapter {
                 executor.execute(botEngine);
                 System.out.println("Goal!");
 
+            }else if(keycode == Input.Keys.EQUALS){
+                steepestDescent = new SteepestDescent(botEngine);
+                double[] shot = steepestDescent.get_shot();
+                InputModule.set_new_velocity(shot[0], shot[1]);
+                prepare_new_shot();
+                executor.execute(botEngine);
             } else if (keycode == Input.Keys.TAB) {
                 veryDumbBot = new AIBot(botEngine);
                 double[] shot = veryDumbBot.get_shot();
                 InputModule.set_new_velocity(shot[0], shot[1]);
                 prepare_new_shot();
                 executor.execute(botEngine);
+        
+            } else if(keycode == Input.Keys.BACKSLASH){
+                botWhosMid = new AiBot2(botEngine);
+                double[] shot = botWhosMid.get_shot();
+                InputModule.set_new_velocity(shot[0], shot[1]);
+                prepare_new_shot();
+                executor.execute(botEngine);
+
             } else if (keycode == Input.Keys.ESCAPE) {
                 xPosition = metersToPixel(convert(initialState[0])) + originX;
                 yPosition = metersToPixel(convert(initialState[1])) + originY;
