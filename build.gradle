@@ -52,6 +52,7 @@ project(":desktop") {
     dependencies {
         implementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
         implementation 'org.junit.vintage:junit-vintage-engine:5.8.2'
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
         implementation project(":core")
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
@@ -61,6 +62,10 @@ project(":desktop") {
 
     test {
         useJUnitPlatform()
+        
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
     }
 }
 
