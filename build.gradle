@@ -7,10 +7,11 @@ buildscript {
         gradlePluginPortal()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         google()
+        jcenter()
     }
     dependencies {
         
-
+        
     }
 }
 
@@ -30,6 +31,7 @@ allprojects {
 
     repositories {
         mavenLocal()
+        jcenter()
         mavenCentral()
         google()
         gradlePluginPortal()
@@ -37,18 +39,28 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         maven { url "https://jitpack.io" }
     }
+
+    dependencies {
+        
+    }
 }
 
 project(":desktop") {
     apply plugin: "java-library"
-
+    
 
     dependencies {
+        implementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+        implementation 'org.junit.vintage:junit-vintage-engine:5.8.2'
         implementation project(":core")
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-lwjgl3-glfw-awt-macos:$gdxVersion"
         
+    }
+
+    test {
+        useJUnitPlatform()
     }
 }
 
@@ -59,5 +71,7 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         implementation 'org.mariuszgromada.math:MathParser.org-mXparser:4.4.2'
     }
-}
 
+
+
+}
