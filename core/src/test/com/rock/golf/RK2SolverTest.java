@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import com.rock.golf.StateVector;
+// import com.rock.golf.StateVector;
 import com.rock.golf.Input.InputModule;
 import com.rock.golf.Math.RK2Solver;
 
