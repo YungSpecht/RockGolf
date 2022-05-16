@@ -14,8 +14,9 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.rock.golf.Bot.AIBot;
 import com.rock.golf.Bot.AiBot2;
-import com.rock.golf.Bot.HillClimb;
+import com.rock.golf.Bot.Bruteforce;
 import com.rock.golf.Bot.PSOBot;
+import com.rock.golf.Bot.RuleBasedBot;
 import com.rock.golf.Bot.SteepestDescent;
 import com.rock.golf.Bot.StochasticBot;
 import com.rock.golf.Input.*;
@@ -49,10 +50,11 @@ public class RockGolf extends ApplicationAdapter {
     private double[] initialState;
     private Runnable engine;
     private StochasticBot stochasticBot;
-    private HillClimb hillClimb;
+    private Bruteforce hillClimb;
     private AIBot veryDumbBot;
     private AiBot2 botWhosMid;
     private SteepestDescent steepestDescent;
+    private RuleBasedBot RuleBasedBot;
     private PSOBot PSOBot;
     private ExecutorService executor;
     private SpriteBatch position, shot;
@@ -275,21 +277,20 @@ public class RockGolf extends ApplicationAdapter {
                 executor.execute(engine);
             } else if (keycode == Input.Keys.ALT_RIGHT) {
                 stochasticBot = new StochasticBot(botEngine, 1);
-                double[] vel = stochasticBot.getBestMove();
+                double[] vel = stochasticBot.getMove();
                 InputModule.set_new_velocity(vel[0], vel[1]);
                 prepare_new_shot();
                 executor.execute(botEngine);
                 System.out.println("Shot! Distance from target: " + vel[2]);
 
             } else if (keycode == Input.Keys.CONTROL_RIGHT) {
-                hillClimb = new HillClimb(botEngine);
-                double[] vel = hillClimb.getMove(1);
+                hillClimb = new Bruteforce(botEngine, 1);
+                double[] vel = hillClimb.getMove();
                 InputModule.set_new_velocity(vel[0], vel[1]);
                 prepare_new_shot();
                 executor.execute(botEngine);
-                System.out.println("Goal!");
 
-            }else if(keycode == Input.Keys.EQUALS){
+            } else if(keycode == Input.Keys.EQUALS){
                 steepestDescent = new SteepestDescent(botEngine);
                 double[] shot = steepestDescent.get_shot();
                 InputModule.set_new_velocity(shot[0], shot[1]);
@@ -317,8 +318,13 @@ public class RockGolf extends ApplicationAdapter {
                 ((PhysicsEngine) engine).resume();
                 newShotPossible = true;
             } else if (keycode == Input.Keys.V) {
-                PSOBot = new PSOBot(botEngine, 50);
-                double[] vel = PSOBot.run();
+                // PSOBot = new PSOBot(botEngine, 50);
+                // double[] vel = PSOBot.run();
+                // InputModule.set_new_velocity(vel[0], vel[1]);
+                // prepare_new_shot();
+                // executor.execute(botEngine);
+                RuleBasedBot = new RuleBasedBot(botEngine);
+                double[] vel = RuleBasedBot.getMove();
                 InputModule.set_new_velocity(vel[0], vel[1]);
                 prepare_new_shot();
                 executor.execute(botEngine);

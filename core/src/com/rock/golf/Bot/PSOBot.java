@@ -54,7 +54,7 @@ public class PSOBot {
 
     public void updateParticle(Particle particle, double[] best, double[] r1, double[] r2) {
         double[] vel = particle.getVel();
-        double[] personalBest = particle.getBestVel();
+        double[] personalBest = particle.getMove();
         double[] positions = particle.getPos();
         double[] bestNeigh = best.clone();
 
@@ -96,10 +96,9 @@ public class PSOBot {
 
         for (int i=0; i<numDimensions; i++) {
             particle.setVel(i, inertiaTerm[i]+cognitiveTerm[i]+socialTerm[i]);
-            particle.normalizeVel();
-
         }
-
+        
+        particle.normalizeVelocity(particle.getVel()[0], particle.getVel()[1]);
         particle.calculateFitness();
     }
 
@@ -109,7 +108,7 @@ public class PSOBot {
         for(Particle particle : particles) {
             if(particle.getBestFitness() < bestFitness) {
                 bestFitness = particle.getBestFitness();
-                best = particle.getBestVel();
+                best = particle.getMove();
             }
         }
         System.out.println(bestFitness);
