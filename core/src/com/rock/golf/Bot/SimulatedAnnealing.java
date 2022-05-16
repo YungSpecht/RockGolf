@@ -4,14 +4,12 @@ import com.rock.golf.PhysicsEngine;
 import com.rock.golf.StateVector;
 import com.rock.golf.Input.InputModule;
 
-public class SimulatedAnnealing {
-    private PhysicsEngine engine;
+public class SimulatedAnnealing extends Bot{
     private StateVector currentState;
     private double targetX, targetY, targetRad;
     private double[] currentShot;
     private double[] currentShotCoords;
     private double currentShotDistance;
-    private double currentTemp;
 
     public SimulatedAnnealing(PhysicsEngine engine){
         double[] input = InputModule.get_input();
@@ -20,34 +18,32 @@ public class SimulatedAnnealing {
         targetX = input[2];
         targetY = input[3];
         targetRad = input[4];
-        
     }
 
-    public double[] get_shot(){
+    @Override
+    public double[] getMove() {
         double xdiff = targetX - currentState.getXPos();
         double ydiff = targetY - currentState.getYPos();
-        currentShot = scale_velocity(new double[]{xdiff, ydiff}, 4.5);
+        currentShot = normalizeVelocity(new double[]{xdiff, ydiff}, 5);
         currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
-        currentShotDistance = euclidian_distance(currentShotCoords);
-
-        System.out.println("+++FIRST LOOP+++");
+        currentShotDistance = EuclideanDistance(currentShotCoords);
 
         int counter = 0;
         while(currentShotDistance >= targetRad && counter < 5){
             mountain_climber(0.2 - (0.025*counter));
-            System.out.println("Iteration: " + ++counter);
+            System.out.println("LOOP 1 || Iteration: " + ++counter);
         }
-        System.out.println("+++SECOND LOOP+++");
+
         counter = 0;
         while(currentShotDistance >targetRad && counter < 4){
             mountain_climber(0.08 - (0.02*counter));
-            System.out.println("Iteration: " + ++counter);
+            System.out.println("LOOP 2 || Iteration: " + ++counter);
         }
-        System.out.println("+++THIRD LOOP+++");
+
         counter = 0;
         while(currentShotDistance >targetRad && counter < 5){
             mountain_climber(0.01 - (0.002*counter));
-            System.out.println("Iteration: " + ++counter);
+            System.out.println("LOOP 3 || Iteration: " + ++counter);
         }
         return currentShot;
     }
@@ -76,7 +72,7 @@ public class SimulatedAnnealing {
             if(bestSuccessor != -1){
                 currentShot = successors[bestSuccessor];
                 currentShotCoords = successorCoords[bestSuccessor];
-                currentShotDistance = euclidian_distance(currentShotCoords);
+                currentShotDistance = EuclideanDistance(currentShotCoords);
                 successorAvailable = true;
             }else{
                 successorAvailable = false;
@@ -92,9 +88,9 @@ public class SimulatedAnnealing {
         double reference = currentShotDistance;
         int result = -1;
         for(int i = 0; i < successorCoords.length; i++){
-            if(successorCoords[i] != null && euclidian_distance(successorCoords[i]) < reference){
+            if(successorCoords[i] != null && EuclideanDistance(successorCoords[i]) < reference ){
                 result = i;
-                reference = euclidian_distance(successorCoords[i]);
+                reference = EuclideanDistance(successorCoords[i]);
                 System.out.println("New Shortest Distance: " + (reference - targetRad));
                 if(reference < targetRad){
                     return result;
@@ -104,17 +100,8 @@ public class SimulatedAnnealing {
         return result;
     }
 
-    private double euclidian_distance(double[] position) {
-        return Math.sqrt(Math.pow((targetX - position[0]), 2) + Math.pow((targetY - position[1]), 2));
-    }
-
     private boolean vel_is_legal(double[] velPair){
         return Math.sqrt(Math.pow(velPair[0], 2) + Math.pow(velPair[1], 2)) <= 5.0;
     }
-    
-    private double[] scale_velocity(double[] velocities, double velocity) {
-        double currentVel = Math.sqrt(Math.pow(velocities[0], 2) + Math.pow(velocities[1], 2));
-        double scalar = velocity / currentVel;
-        return new double[] { velocities[0] * scalar, velocities[1] * scalar };
-    }
+
 }

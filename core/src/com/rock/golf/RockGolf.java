@@ -194,8 +194,8 @@ public class RockGolf extends ApplicationAdapter {
 
         for (float i = 0; i <= sizeX; i += 10) {
             for (float j = 0; j <= sizeY; j += 10) {
-                float x = (i - originX) / 100;
-                float y = (j - originY) / 100;
+                float x = (i - originX) / metertoPixelRatio;
+                float y = (j - originY) / metertoPixelRatio;
 
                 float n = (float) Derivation.compute(x, y, profile);
 
@@ -298,7 +298,7 @@ public class RockGolf extends ApplicationAdapter {
 
             } else if(keycode == Input.Keys.EQUALS){
                 steepestDescent = new SteepestDescent(botEngine);
-                double[] shot = steepestDescent.get_shot();
+                double[] shot = steepestDescent.getMove();
                 InputModule.set_new_velocity(shot[0], shot[1]);
                 prepare_new_shot();
                 executor.execute(engine);
