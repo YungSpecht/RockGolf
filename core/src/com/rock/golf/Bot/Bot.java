@@ -20,28 +20,15 @@ public abstract class Bot {
         return Math.sqrt(Math.pow((targetPos[0] - ballPos[0]), 2) + Math.pow((targetPos[1] - ballPos[1]), 2));
     }
 
-    protected double[] normalizeVelocity(double velX, double velY) {
-        double finalVelocity = Math.sqrt(Math.pow(velX, 2) + Math.pow(velY, 2));
+    protected double[] normalizeVelocity(double[] velocities, double velocity) {
+        double currentVel = Math.sqrt(Math.pow(velocities[0], 2) + Math.pow(velocities[1], 2));
+        double scalar = velocity / currentVel;
+        return new double[] { velocities[0] * scalar, velocities[1] * scalar };
 
-        while (finalVelocity > 5) {
-            if (velX > 0)
-                velX = velX - 0.1;
-            else
-                velX = velX + 0.1;
-
-            if (velY > 0)
-                velY = velY - 0.1;
-            else
-                velY = velY + 0.1;
-
-            finalVelocity = Math.sqrt(Math.pow(velX, 2) + Math.pow(velY, 2));
-        }
-
-        return new double[]{velX, velY};
     }
 
     
-    protected double euclidian_distance(double[] position) {
+    protected double EuclideanDistance(double[] position) {
         return Math.sqrt(Math.pow((targetPos[0] - position[0]), 2) + Math.pow((targetPos[1] - position[1]), 2));
     }
 
@@ -59,7 +46,7 @@ public abstract class Bot {
         double velX = (rand.nextDouble() * 10) - 5;
         double velY = (rand.nextDouble() * 10) - 5;
 
-        return normalizeVelocity(velX, velY);
+        return normalizeVelocity(new double[]{velX,velY},5);
     }
 
     public abstract double[] getMove();

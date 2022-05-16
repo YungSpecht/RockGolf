@@ -98,7 +98,7 @@ public class PSOBot {
             particle.setVel(i, inertiaTerm[i]+cognitiveTerm[i]+socialTerm[i]);
         }
         
-        particle.normalizeVelocity(particle.getVel()[0], particle.getVel()[1]);
+        particle.normalizeVelocity(new double[]{particle.getVel()[0], particle.getVel()[1]},5);
         particle.calculateFitness();
     }
 

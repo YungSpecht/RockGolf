@@ -12,11 +12,13 @@ public class RuleBasedBot extends Bot {
     public double[] getMove() {
         
         double angleToShot = convert(Math.atan2(targetPos[1] - ballPos[1], targetPos[0] - ballPos[0]));
-        double distanceToTarget = euclidian_distance(ballPos);
+        double distanceToTarget = EuclideanDistance(ballPos);
         double velX = (powerCoefficient*distanceToTarget) * Math.cos(Math.toRadians(angleToShot));
         double velY = (powerCoefficient*distanceToTarget) * Math.sin(Math.toRadians(angleToShot));
 
-        return normalizeVelocity(velX, velY);
+        return normalizeVelocity(new double[]{velX,velY},5);
     }
+
+    
 
 }
