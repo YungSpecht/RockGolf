@@ -1,5 +1,6 @@
 package com.rock.golf;
 
+import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -30,6 +31,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class RockGolf extends ApplicationAdapter {
+    public static final float metertoPixelRatio = 100;
+    public static float width;
+    public static float height;
     float ballRadius;
     private float targetRadius;
     private static float originX;
@@ -66,13 +70,15 @@ public class RockGolf extends ApplicationAdapter {
 
     @Override
     public void create() {
-        originX = Gdx.graphics.getWidth() / 2;
-        originY = Gdx.graphics.getHeight() / 2;
+        width = Gdx.graphics.getWidth();
+        height = Gdx.graphics.getHeight();
+        originX = width / 2;
+        originY = height / 2;
         ball = new ShapeRenderer();
         target = new ShapeRenderer();
         sandpit = new ShapeRenderer();
         launchVector = new ShapeRenderer();
-        engine = new PhysicsEngine();
+        engine = new PhysicsEngine(0.05, 'h');
         executor = Executors.newFixedThreadPool(1);
         Gdx.input.setInputProcessor(in);
         position = new SpriteBatch();
@@ -153,7 +159,7 @@ public class RockGolf extends ApplicationAdapter {
     }
 
     private static float metersToPixel(float e) {
-        return e * 100;
+        return e * metertoPixelRatio;
     }
 
     /**
@@ -268,7 +274,7 @@ public class RockGolf extends ApplicationAdapter {
 
         @Override
         public boolean keyDown(int keycode) {
-            PhysicsEngine botEngine = new PhysicsEngine(0.1);
+            PhysicsEngine botEngine = new PhysicsEngine(0.1, 'h');
             if (keycode == Input.Keys.ENTER && !shotActive && newShotPossible) {
                 String x = JOptionPane.showInputDialog("Insert x speed:");
                 String y = JOptionPane.showInputDialog("Insert y speed:");
@@ -295,7 +301,7 @@ public class RockGolf extends ApplicationAdapter {
                 double[] shot = steepestDescent.get_shot();
                 InputModule.set_new_velocity(shot[0], shot[1]);
                 prepare_new_shot();
-                executor.execute(botEngine);
+                executor.execute(engine);
             } else if (keycode == Input.Keys.TAB) {
                 veryDumbBot = new AIBot(botEngine);
                 double[] shot = veryDumbBot.get_shot();

@@ -1,7 +1,5 @@
 package com.rock.golf.Bot;
 
-import java.util.Arrays;
-
 import com.rock.golf.PhysicsEngine;
 import com.rock.golf.StateVector;
 import com.rock.golf.Input.InputModule;

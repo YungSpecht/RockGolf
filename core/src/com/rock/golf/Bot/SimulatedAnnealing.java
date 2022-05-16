@@ -4,21 +4,23 @@ import com.rock.golf.PhysicsEngine;
 import com.rock.golf.StateVector;
 import com.rock.golf.Input.InputModule;
 
-public class SteepestDescent {
+public class SimulatedAnnealing {
     private PhysicsEngine engine;
     private StateVector currentState;
     private double targetX, targetY, targetRad;
     private double[] currentShot;
     private double[] currentShotCoords;
     private double currentShotDistance;
+    private double currentTemp;
 
-    public SteepestDescent(PhysicsEngine engine){
+    public SimulatedAnnealing(PhysicsEngine engine){
         double[] input = InputModule.get_input();
         this.engine = engine;
         this.currentState = new StateVector(input[5], input[6], input[7], input[8]);
         targetX = input[2];
         targetY = input[3];
         targetRad = input[4];
+        
     }
 
     public double[] get_shot(){
@@ -90,7 +92,7 @@ public class SteepestDescent {
         double reference = currentShotDistance;
         int result = -1;
         for(int i = 0; i < successorCoords.length; i++){
-            if(successorCoords[i] != null && euclidian_distance(successorCoords[i]) < reference ){
+            if(successorCoords[i] != null && euclidian_distance(successorCoords[i]) < reference){
                 result = i;
                 reference = euclidian_distance(successorCoords[i]);
                 System.out.println("New Shortest Distance: " + (reference - targetRad));

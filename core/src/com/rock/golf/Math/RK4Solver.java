@@ -7,11 +7,11 @@ import com.rock.golf.StateVector;
 
 public class RK4Solver {
 
-    private final double h;
-    private final double uK, uS;
-    private final Function golfCourse;
+    private double h;
+    private double uK, uS;
+    private Function golfCourse;
 
-    public RK4Solver(Function golfCourse, double h, double uK, double uS) {
+    public RK4Solver(double uK, double uS, double h, Function golfCourse) {
         this.golfCourse = golfCourse;
         this.h = h;
         this.uK = uK;
@@ -56,6 +56,11 @@ public class RK4Solver {
             formulaY = (-PhysicsEngine.g * ySlope) - uK * PhysicsEngine.g * (vector.getYSpeed() / Math.sqrt(Math.pow(vector.getXSpeed(), 2) + Math.pow(vector.getYSpeed(), 2)));
         }
         return new StateVector(vector.getXSpeed(), vector.getYSpeed(), formulaX, formulaY);
+    }
+
+    public void update_friction(double uK, double uS){
+        this.uK = uK;
+        this.uS = uS;
     }
 
 }

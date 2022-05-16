@@ -6,12 +6,13 @@ import java.util.List;
 import com.rock.golf.Input.InputModule;
 import com.rock.golf.Math.Derivation;
 import com.rock.golf.Math.RK2Solver;
+import com.rock.golf.Math.RK4Solver;
 
 public class PhysicsEngine implements Runnable {
 
     // constants
     public static final double g = 9.81;
-    public double h = 0.01;
+    public double h = 0.03;
     public final double ballRadius = 0.05;
 
     // fields
@@ -22,6 +23,9 @@ public class PhysicsEngine implements Runnable {
     private double[] input;
     private boolean abort;
     private List<Sandpit> sandpits;
+    private RK2Solver solver2;
+    private RK4Solver solver4;
+    private char rkMode = 'h';
 
     // constructor
     public PhysicsEngine() {
@@ -33,7 +37,8 @@ public class PhysicsEngine implements Runnable {
     }
 
     // Bot constructor
-    public PhysicsEngine(double h) {
+    public PhysicsEngine(double h, char rkMode) {
+        this.rkMode=rkMode;
         input = InputModule.get_input();
         set_variables();
         abort = false;
@@ -55,16 +60,28 @@ public class PhysicsEngine implements Runnable {
         RockGolf.shotActive = true;
         RockGolf.shotCounter++;
         set_variables();
-        RK2Solver solve = new RK2Solver(uK, uS, h, golfCourse);
+        switch(rkMode){
+            case 'l' : solver2 = new RK2Solver(uK, uS, h, golfCourse); break;
+            case 'h' : solver4 = new RK4Solver(uK, uS, h, golfCourse); break;
+        }
         while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !is_in_water(new double[]{vector.getXPos(), vector.getYPos()}) && ball_in_screen(new double[]{vector.getXPos(), vector.getYPos()})) {
             Sandpit currentSandpit = current_sandpit();
             if(currentSandpit != null){
-                solve.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS());
+                switch(rkMode){
+                    case 'l' : solver2.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS()); break;
+                    case 'h' : solver4.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS()); break;
+                }
             }
             else{
-                solve.update_friction(uK, uS);
+                switch(rkMode){
+                    case 'l' : solver2.update_friction(uK, uS); break;
+                    case 'h' : solver4.update_friction(uK, uS); break;
+                }
             }
-            vector = solve.runge_kutta_two(vector);
+            switch(rkMode){
+                case 'l' : vector = solver2.runge_kutta_two(vector); break;
+                case 'h' : vector = solver4.RK4(vector); break;
+            }
             RockGolf.update_position(vector);
             if (abort) {
                 break;
@@ -189,8 +206,8 @@ public class PhysicsEngine implements Runnable {
      * @return        Boolean value: true if ball is about to start rolling again, false if not.
      */
     public boolean ball_in_screen(double[] ballPos) {
-        boolean xIn = ballPos[0] < 4.5 && ballPos[0] > -4.5;
-        boolean yIn = ballPos[1] < 3.5 && ballPos[1] > -3.5;
+        boolean xIn = ballPos[0] < ((RockGolf.width/2)/RockGolf.metertoPixelRatio) && ballPos[0] > -((RockGolf.width/2)/RockGolf.metertoPixelRatio);
+        boolean yIn = ballPos[1] < ((RockGolf.height/2)/RockGolf.metertoPixelRatio) && ballPos[1] > -((RockGolf.height/2)/RockGolf.metertoPixelRatio);
         return xIn && yIn;
     }
 
