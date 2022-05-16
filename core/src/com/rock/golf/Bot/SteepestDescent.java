@@ -35,13 +35,13 @@ public class SteepestDescent extends Bot{
         }
 
         counter = 0;
-        while(currentShotDistance >targetRad && counter < 4){
+        while(currentShotDistance >= targetRad && counter < 4){
             mountain_climber(0.08 - (0.02*counter));
             System.out.println("LOOP 2 || Iteration: " + ++counter);
         }
 
         counter = 0;
-        while(currentShotDistance >targetRad && counter < 5){
+        while(currentShotDistance >= targetRad && counter < 5){
             mountain_climber(0.01 - (0.002*counter));
             System.out.println("LOOP 3 || Iteration: " + ++counter);
         }
@@ -51,13 +51,16 @@ public class SteepestDescent extends Bot{
     private void mountain_climber(double precision){
         boolean successorAvailable;
         do{
-            double[][] successors = new double[6][2];
+            double[][] successors = new double[8][2];
             successors[0] = new double[]{currentShot[0] - precision, currentShot[1]};
             successors[1] = new double[]{currentShot[0] + precision, currentShot[1]};
             successors[2] = new double[]{currentShot[0], currentShot[1] - precision};
             successors[3] = new double[]{currentShot[0], currentShot[1] + precision};
             successors[4] = new double[]{currentShot[0] - precision, currentShot[1] + precision};
             successors[5] = new double[]{currentShot[0] + precision, currentShot[1] - precision};
+            successors[6] = new double[]{currentShot[0] - precision, currentShot[1] - precision};
+            successors[7] = new double[]{currentShot[0] + precision, currentShot[1] + precision};
+
             double[][] successorCoords = new double[successors.length][2];
             for(int i = 0; i < successors.length; i++){
                 if(vel_is_legal(successors[i])){
@@ -88,7 +91,7 @@ public class SteepestDescent extends Bot{
         double reference = currentShotDistance;
         int result = -1;
         for(int i = 0; i < successorCoords.length; i++){
-            if(successorCoords[i] != null && EuclideanDistance(successorCoords[i]) < reference ){
+            if(successorCoords[i] != null && EuclideanDistance(successorCoords[i]) < reference){
                 result = i;
                 reference = EuclideanDistance(successorCoords[i]);
                 System.out.println("New Shortest Distance: " + (reference - targetRad));

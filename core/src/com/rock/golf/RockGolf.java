@@ -274,7 +274,7 @@ public class RockGolf extends ApplicationAdapter {
 
         @Override
         public boolean keyDown(int keycode) {
-            PhysicsEngine botEngine = new PhysicsEngine(0.1, 'h');
+            PhysicsEngine botEngine = new PhysicsEngine(0.1, 'l');
             if (keycode == Input.Keys.ENTER && !shotActive && newShotPossible) {
                 String x = JOptionPane.showInputDialog("Insert x speed:");
                 String y = JOptionPane.showInputDialog("Insert y speed:");
@@ -301,7 +301,7 @@ public class RockGolf extends ApplicationAdapter {
                 double[] shot = steepestDescent.getMove();
                 InputModule.set_new_velocity(shot[0], shot[1]);
                 prepare_new_shot();
-                executor.execute(engine);
+                executor.execute(botEngine);
             } else if (keycode == Input.Keys.TAB) {
                 veryDumbBot = new AIBot(botEngine);
                 double[] shot = veryDumbBot.get_shot();
