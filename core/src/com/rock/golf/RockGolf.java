@@ -78,7 +78,7 @@ public class RockGolf extends ApplicationAdapter {
         target = new ShapeRenderer();
         sandpit = new ShapeRenderer();
         launchVector = new ShapeRenderer();
-        engine = new PhysicsEngine(0.05, 'h');
+        engine = new PhysicsEngine(0.01, 'h');
         executor = Executors.newFixedThreadPool(1);
         Gdx.input.setInputProcessor(in);
         position = new SpriteBatch();
@@ -274,7 +274,7 @@ public class RockGolf extends ApplicationAdapter {
 
         @Override
         public boolean keyDown(int keycode) {
-            PhysicsEngine botEngine = new PhysicsEngine(0.1, 'l');
+            PhysicsEngine botEngine = new PhysicsEngine(0.01, 'h');
             if (keycode == Input.Keys.ENTER && !shotActive && newShotPossible) {
                 String x = JOptionPane.showInputDialog("Insert x speed:");
                 String y = JOptionPane.showInputDialog("Insert y speed:");
@@ -296,7 +296,7 @@ public class RockGolf extends ApplicationAdapter {
                 prepare_new_shot();
                 executor.execute(botEngine);
 
-            } else if(keycode == Input.Keys.EQUALS){
+            } else if(keycode == Input.Keys.CONTROL_LEFT){
                 steepestDescent = new SteepestDescent(botEngine);
                 double[] shot = steepestDescent.getMove();
                 InputModule.set_new_velocity(shot[0], shot[1]);
@@ -309,7 +309,7 @@ public class RockGolf extends ApplicationAdapter {
                 prepare_new_shot();
                 executor.execute(botEngine);
         
-            } else if(keycode == Input.Keys.BACKSLASH){
+            } else if(keycode == Input.Keys.SHIFT_LEFT){
                 botWhosMid = new AiBot2(botEngine);
                 double[] shot = botWhosMid.get_shot();
                 InputModule.set_new_velocity(shot[0], shot[1]);
