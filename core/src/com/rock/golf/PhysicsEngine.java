@@ -108,8 +108,8 @@ public class PhysicsEngine implements Runnable {
      * 
      * @param velX The initial x velocity of the shot.
      * @param velY The initial y velocity of the shot
-     * @return Array containing the final x and y position resulting
-     *         from the shot.
+     * @return     Array containing the final x and y position resulting
+     *             from the shot.
      */
 
     public double[] get_shot(double velX, double velY) {
@@ -122,43 +122,25 @@ public class PhysicsEngine implements Runnable {
         vector = new StateVector(variables[5], variables[6], velX, velY);
         golfCourse = InputModule.get_profile();
         switch (rkMode) {
-            case 'l':
-                solver2 = new RK2Solver(uK, uS, h, golfCourse);
-                break;
-            case 'h':
-                solver4 = new RK4Solver(uK, uS, h, golfCourse);
-                break;
+            case 'l': solver2 = new RK2Solver(uK, uS, h, golfCourse); break;
+            case 'h': solver4 = new RK4Solver(uK, uS, h, golfCourse); break;
         }
-        while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target())
-                && !is_in_water(new double[] { vector.getXPos(), vector.getYPos() })
-                && ball_in_screen(new double[] { vector.getXPos(), vector.getYPos() })) {
+        while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !is_in_water(new double[] { vector.getXPos(), vector.getYPos() }) && ball_in_screen(new double[] { vector.getXPos(), vector.getYPos() })) {
             Sandpit currentSandpit = current_sandpit();
             if (currentSandpit != null) {
                 switch (rkMode) {
-                    case 'l':
-                        solver2.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS());
-                        break;
-                    case 'h':
-                        solver4.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS());
-                        break;
+                    case 'l': solver2.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS()); break;
+                    case 'h': solver4.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS()); break;
                 }
             } else {
                 switch (rkMode) {
-                    case 'l':
-                        solver2.update_friction(uK, uS);
-                        break;
-                    case 'h':
-                        solver4.update_friction(uK, uS);
-                        break;
+                    case 'l': solver2.update_friction(uK, uS); break;
+                    case 'h': solver4.update_friction(uK, uS); break;
                 }
             }
             switch (rkMode) {
-                case 'l':
-                    vector = solver2.runge_kutta_two(vector);
-                    break;
-                case 'h':
-                    vector = solver4.RK4(vector);
-                    break;
+                case 'l': vector = solver2.runge_kutta_two(vector); break;
+                case 'h': vector = solver4.RK4(vector); break;
             }
             if (abort) {
                 break;
@@ -233,7 +215,7 @@ public class PhysicsEngine implements Runnable {
      * This method determines wether the ball is currently in a body of water.
      * 
      * @param ballPos Array containing the current x and y position of the ball.
-     * @return Boolean value: true if ball is inside target, false if not.
+     * @return        Boolean value: true if ball is inside target, false if not.
      */
 
     public boolean is_in_water(double[] ballPos) {
@@ -245,13 +227,10 @@ public class PhysicsEngine implements Runnable {
     }
 
     /**
-     * This method determines wether the downhillforce acting upon the golf ball in
-     * rest
-     * is greater than the static friction, which would cause it to start rolling
-     * again.
+     * This method determines wether the downhillforce acting upon the golf ball in rest
+     * is greater than the static friction, which would cause it to start rolling again.
      * 
-     * @return Boolean value: true if ball is about to start rolling again, false if
-     *         not.
+     * @return Boolean value: true if ball is about to start rolling again, false if not.
      */
 
     private boolean hill_is_steep() {
@@ -262,19 +241,15 @@ public class PhysicsEngine implements Runnable {
 
     /**
      * This method determines wether the ball is currently located inside of the
-     * bounds
-     * of the graphical application.
+     * bounds of the graphical application.
      * 
      * @param ballPos Array containing the current x and y position of the ball.
-     * @return Boolean value: true if ball is about to start rolling again, false if
-     *         not.
+     * @return        Boolean value: true if ball is about to start rolling again, false if
+     *                not.
      */
-
     public boolean ball_in_screen(double[] ballPos) {
-        boolean xIn = ballPos[0] < ((RockGolf.width / 2) / RockGolf.metertoPixelRatio)
-                && ballPos[0] > -((RockGolf.width / 2) / RockGolf.metertoPixelRatio);
-        boolean yIn = ballPos[1] < ((RockGolf.height / 2) / RockGolf.metertoPixelRatio)
-                && ballPos[1] > -((RockGolf.height / 2) / RockGolf.metertoPixelRatio);
+        boolean xIn = ballPos[0] < ((RockGolf.width/2) / RockGolf.metertoPixelRatio) && ballPos[0] > -((RockGolf.width/2) / RockGolf.metertoPixelRatio);
+        boolean yIn = ballPos[1] < ((RockGolf.height/2) / RockGolf.metertoPixelRatio) && ballPos[1] > -((RockGolf.height/2) / RockGolf.metertoPixelRatio);
         return xIn && yIn;
     }
 

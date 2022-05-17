@@ -103,21 +103,16 @@ public class AiBot2 {
             if (velAmount == 1)
                 result[0][0] = get_velocity(currentAngle, velocityStart);
             else
-                result[0][i] = get_velocity(currentAngle,
-                        velocityStart + i * ((velocityEnd - velocityStart) / (velAmount - 1)));
+                result[0][i] = get_velocity(currentAngle, velocityStart + i * ((velocityEnd - velocityStart) / (velAmount - 1)));
         }
         for (int i = 1; i < result.length; i = i + 2) {
             for (int j = 0; j < result[0].length; j++) {
                 if (velAmount == 1) {
-                    result[i][j] = get_velocity(currentAngle + ((i + 1) / 2) * (outermostAngle / divergentShots),
-                            velocityStart);
-                    result[i + 1][j] = get_velocity(currentAngle - ((i + 1) / 2) * (outermostAngle / divergentShots),
-                            velocityStart);
+                    result[i][j] = get_velocity(currentAngle + ((i + 1) / 2) * (outermostAngle / divergentShots), velocityStart);
+                    result[i + 1][j] = get_velocity(currentAngle - ((i + 1) / 2) * (outermostAngle / divergentShots), velocityStart);
                 } else {
-                    result[i][j] = get_velocity(currentAngle + ((i + 1) / 2) * (outermostAngle / divergentShots),
-                            velocityStart + j * ((velocityEnd - velocityStart) / (velAmount - 1)));
-                    result[i + 1][j] = get_velocity(currentAngle - ((i + 1) / 2) * (outermostAngle / divergentShots),
-                            velocityStart + j * ((velocityEnd - velocityStart) / (velAmount - 1)));
+                    result[i][j] = get_velocity(currentAngle + ((i + 1) / 2) * (outermostAngle / divergentShots), velocityStart + j * ((velocityEnd - velocityStart) / (velAmount - 1)));
+                    result[i + 1][j] = get_velocity(currentAngle - ((i + 1) / 2) * (outermostAngle / divergentShots), velocityStart + j * ((velocityEnd - velocityStart) / (velAmount - 1)));
                 }
             }
         }
@@ -157,7 +152,6 @@ public class AiBot2 {
      * @param shotCoords Array containing the x and y position of the shot.
      * @param distance   The euclidian distance from the shot to the target.
      */
-
     private void compare_shot(double[] shot, double[] shotCoords, double distance) {
         if (distance < bestShotDistance && !engine.is_in_water(shotCoords)) {
             bestShot = shot;
@@ -174,9 +168,8 @@ public class AiBot2 {
      * 
      * @param angle    The angle the shot is supposed to follow.
      * @param velocity The velocity with which the ball is suppoded to be shot.
-     * @return A double array containing the x and y velocity for the desired shot.
+     * @return         A double array containing the x and y velocity for the desired shot.
      */
-
     private double[] get_velocity(double angle, double velocity) {
         double[] result = new double[] { Math.cos(Math.toRadians(angle)), Math.sin(Math.toRadians(angle)) };
         return scale_velocity(result, velocity);
@@ -186,10 +179,9 @@ public class AiBot2 {
      * This method will create a velocity range around the input velocity.
      * 
      * @param velocity A double array containing the current x and y velocity.
-     * @return A double array containing a start- and endpoint of the
-     *         velocity range in the range [0.0-5.0].
+     * @return         A double array containing a start- and endpoint of the
+     *                 velocity range in the range [0.0-5.0].
      */
-
     private double[] get_velocity_range(double[] velocity, double range) {
         double currentVel = Math.sqrt(Math.pow(velocity[0], 2) + Math.pow(velocity[1], 2));
         double[] result = new double[] { currentVel - range, currentVel + range };
@@ -207,10 +199,9 @@ public class AiBot2 {
      * the resulting velocity will be 5 meters per second.
      * 
      * @param velocities A double array containing the unscaled velocity array
-     * @return A double array containing the scaled velocities such that the
-     *         resulting velocity is 5 m/s
+     * @return           A double array containing the scaled velocities such that the
+     *                   resulting velocity is 5 m/s
      */
-
     private double[] scale_velocity(double[] velocities, double velocity) {
         double currentVel = Math.sqrt(Math.pow(velocities[0], 2) + Math.pow(velocities[1], 2));
         double scalar = velocity / currentVel;
@@ -224,23 +215,20 @@ public class AiBot2 {
      * 
      * @param position A double array of length 2 containing the x and y position of
      *                 the ball.
-     * @return A double that describes the euclidian distance of the ball to the
-     *         target.
+     * @return         A double that describes the euclidian distance of the ball to
+     *                 the target.
      */
-
     private double euclidian_distance(double[] position) {
         return Math.sqrt(Math.pow((targetX - position[0]), 2) + Math.pow((targetY - position[1]), 2));
     }
 
     /**
      * This method converts a radian angle that is output by the Math.atan2()
-     * function
-     * and maps it to a degree angle and maps it to the 0-360 degree range.
+     * function and maps it to a degree angle and maps it to the 0-360 degree range.
      * 
      * @param radian Any radian angle
-     * @return The radian angle converted to degrees and mapped to the range 0-360.
+     * @return       The radian angle converted to degrees and mapped to the range 0-360.
      */
-    
     private static double convert(double radian) {
         if (radian > 0) {
             return Math.toDegrees(radian);

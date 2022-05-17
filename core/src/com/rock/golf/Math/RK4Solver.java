@@ -18,14 +18,12 @@ public class RK4Solver {
     }
 
     /**
-     * 
      * use RK4 formula to calculate accelatartion (first derivateive of velocity) at
      * given point/state
      *
      * @param stateVector holds current state of the ball
-     * @return updated state vector after one RK4 iteration
+     * @return            updated state vector after one RK4 iteration
      */
-
     public StateVector RK4(StateVector stateVector) {
 
         StateVector k1 = StateVector.multiply(function(stateVector), h);
@@ -47,9 +45,8 @@ public class RK4Solver {
      * evaluates acceleration function at given state/point
      * 
      * @param stateVector holds current state of the ball
-     * @return stateVector after one function evaluation
+     * @return            stateVector after one function evaluation
      */
-    
     private StateVector function(StateVector vector) {
         double xSlope = Derivation.derivativeX(vector.getXPos(), vector.getYPos(), golfCourse);
         double ySlope = Derivation.derivativeY(vector.getXPos(), vector.getYPos(), golfCourse);

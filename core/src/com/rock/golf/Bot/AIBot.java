@@ -30,7 +30,6 @@ public class AIBot {
      * @return A double array of length 2 where the first index is the x velocity
      *         and the second index is the y velocity.
      */
-
     public double[] get_shot() {
         bestShot = new double[2];
         bestShotCoords = new double[] { currentState.getXPos(), currentState.getYPos() };
@@ -68,18 +67,14 @@ public class AIBot {
 
     /**
      * This method is responsible for simulating the shots using the physics engine
-     * and
-     * implements a pruning tactic.
+     * and implements a pruning tactic.
      * 
      * @param centerShots Array of shots in the direction of the centered angle.
-     * @param leftShots   Array of shots diverging to the left of the centered
-     *                    angle.
-     * @param rightShots  Array of shots diverging to the right of the centered
-     *                    angle.
-     * @return A double array of length 2 where the first index is the x velocity
-     *         and the second index is the y velocity.
+     * @param leftShots   Array of shots diverging to the left of the centered angle.
+     * @param rightShots  Array of shots diverging to the right of the centered angle.
+     * @return            A double array of length 2 where the first index is the x velocity
+     *                    and the second index is the y velocity.
      */
-
     private void get_best_shot(double[][] centerShots, double[][][] leftShots, double[][][] rightShots,
             int multiplicator) {
         int tracker = 0;
@@ -162,7 +157,6 @@ public class AIBot {
      * @param shotCoords Array containing the x and y position of the shot.
      * @param distance   The euclidian distance from the shot to the target.
      */
-
     private void compare_shot(double[] shot, double[] shotCoords, double distance) {
         if (distance < bestShotDistance) {
             bestShot = shot;
@@ -178,33 +172,24 @@ public class AIBot {
      * its given.
      * 
      * @param angle          The angle of the main reference shot in the middle.
-     * @param divergentShots The amount of divergent shots to the left OR to the
-     *                       right.
-     * @param outermostAngle The delta in angle of the outermost and the reference
-     *                       shot.
-     * @param velocitySims   The amount of shots into which the velocity range is
-     *                       divided.
+     * @param divergentShots The amount of divergent shots to the left OR to the right.
+     * @param outermostAngle The delta in angle of the outermost and the reference shot.
+     * @param velocitySims   The amount of shots into which the velocity range is divided.
      * @param velocityStart  The start value of the velocity range [0.0-5.0].
      * @param velocityEnd    The end value of the velocity range [0.0-5.0].
-     * @return A three dimensional double array where each two dimensional double
-     *         array is a collection of shots in an angle with different velocities.
+     * @return               A three dimensional double array where each two dimensional double
+     *                       array is a collection of shots in an angle with different velocities.
      */
-
     private double[][][] generate_shots(double angle, int divergetShots, double outermostAngle, int velocitySims,
             double velocityStart, double velocityEnd) {
         double[][][] result = new double[1 + divergetShots * 2][velocitySims][2];
         for (int i = 0; i < result[0].length; i++) {
-            result[result.length / 2][i] = get_velocity(angle,
-                    velocityStart + (i + 1) * ((velocityEnd - velocityStart) / velocitySims));
+            result[result.length / 2][i] = get_velocity(angle, velocityStart + (i + 1) * ((velocityEnd - velocityStart) / velocitySims));
         }
         for (int i = 0; i < divergetShots; i++) {
-            for (int j = 0; j < result[0].length; j++) {
-                result[(result.length / 2) + i + 1][j] = get_velocity(
-                        (angle + (outermostAngle / divergetShots) * (i + 1)) % 360,
-                        velocityStart + (j + 1) * ((velocityEnd - velocityStart) / velocitySims));
-                result[(result.length / 2) - i - 1][j] = get_velocity(
-                        (angle - (outermostAngle / divergetShots) * (i + 1)) % 360,
-                        velocityStart + (j + 1) * ((velocityEnd - velocityStart) / velocitySims));
+            for (int j = 0; j < result[0].length; j++) { 
+                result[(result.length / 2) + i + 1][j] = get_velocity((angle + (outermostAngle / divergetShots) * (i + 1)) % 360, velocityStart + (j + 1) * ((velocityEnd - velocityStart) / velocitySims));
+                result[(result.length / 2) - i - 1][j] = get_velocity((angle - (outermostAngle / divergetShots) * (i + 1)) % 360, velocityStart + (j + 1) * ((velocityEnd - velocityStart) / velocitySims));
             }
         }
         return result;
@@ -215,11 +200,9 @@ public class AIBot {
      * angle into array starting from the reference angle towards the outside.
      * 
      * @param shots Array containing the x and y velocity of the shot.
-     * @param side  A char deciding which side to order; 'r' for right, 'l for
-     *              left'.
-     * @return Array containing the ordered shots
+     * @param side  A char deciding which side to order; 'r' for right, 'l for left'.
+     * @return      Array containing the ordered shots
      */
-
     private double[][][] arrange_shots(double[][][] shots, char side) {
         double[][][] result = new double[shots.length / 2][shots[0].length][2];
         if (side == 'l') {
@@ -240,9 +223,8 @@ public class AIBot {
      * 
      * @param angle    The angle the shot is supposed to follow.
      * @param velocity The velocity with which the ball is suppoded to be shot.
-     * @return A double array containing the x and y velocity for the desired shot.
+     * @return         A double array containing the x and y velocity for the desired shot.
      */
-
     private double[] get_velocity(double angle, double velocity) {
         double[] result = new double[] { Math.cos(Math.toRadians(angle)), Math.sin(Math.toRadians(angle)) };
         return scale_velocity(result, velocity);
@@ -252,10 +234,9 @@ public class AIBot {
      * This method will create a velocity range around the input velocity.
      * 
      * @param velocity A double array containing the current x and y velocity.
-     * @return A double array containing a start- and endpoint of the
-     *         velocity range in the range [0.0-5.0].
+     * @return         A double array containing a start- and endpoint of the
+     *                 velocity range in the range [0.0-5.0].
      */
-
     private double[] get_velocity_range(double[] velocity) {
         double currentVel = Math.sqrt(Math.pow(velocity[0], 2) + Math.pow(velocity[1], 2));
         double[] result = new double[] { currentVel - 0.4, currentVel + 0.4 };
@@ -273,10 +254,9 @@ public class AIBot {
      * the resulting velocity will be 5 meters per second.
      * 
      * @param velocities A double array containing the unscaled velocity array
-     * @return A double array containing the scaled velocities such that the
-     *         resulting velocity is 5 m/s
+     * @return           A double array containing the scaled velocities such that the
+     *                   resulting velocity is 5 m/s
      */
-
     private double[] scale_velocity(double[] velocities, double velocity) {
         double currentVel = Math.sqrt(Math.pow(velocities[0], 2) + Math.pow(velocities[1], 2));
         double scalar = velocity / currentVel;
@@ -288,25 +268,20 @@ public class AIBot {
      * This method can be viewed as the heuristic function as it calculates the
      * euclidian distance between the position of the ball and the target position.
      * 
-     * @param position A double array of length 2 containing the x and y position of
-     *                 the ball.
-     * @return A double that describes the euclidian distance of the ball to the
-     *         target.
+     * @param position A double array of length 2 containing the x and y position of the ball.
+     * @return          A double that describes the euclidian distance of the ball to the target.
      */
-
     private double euclidian_distance(double[] position) {
         return Math.sqrt(Math.pow((targetX - position[0]), 2) + Math.pow((targetY - position[1]), 2));
     }
 
     /**
-     * This method converts a radian angle that is output by the Math.atan2()
-     * function
+     * This method converts a radian angle that is output by the Math.atan2() function
      * and maps it to a degree angle and maps it to the 0-360 degree range.
      * 
      * @param radian Any radian angle
-     * @return The radian angle converted to degrees and mapped to the range 0-360.
+     * @return       The radian angle converted to degrees and mapped to the range 0-360.
      */
-    
     private static double convert(double radian) {
         if (radian > 0) {
             return Math.toDegrees(radian);

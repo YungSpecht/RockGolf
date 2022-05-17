@@ -15,8 +15,7 @@ public abstract class Bot {
     protected double getFitness(double[] ballPos, double[] targetPos) {
         if (engine.is_in_water(ballPos) || !engine.ball_in_screen(ballPos))
             return Integer.MAX_VALUE;
-        if (Math.pow(ballPos[0] - targetPos[0], 2) + Math.pow(ballPos[1] - targetPos[1], 2) <= Math.pow(targetRadius,
-                2))
+        if (Math.pow(ballPos[0] - targetPos[0], 2) + Math.pow(ballPos[1] - targetPos[1], 2) <= Math.pow(targetRadius, 2))
             return 0;
         return Math.sqrt(Math.pow((targetPos[0] - ballPos[0]), 2) + Math.pow((targetPos[1] - ballPos[1]), 2));
     }
