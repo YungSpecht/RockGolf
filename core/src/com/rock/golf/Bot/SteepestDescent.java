@@ -51,15 +51,13 @@ public class SteepestDescent extends Bot{
     private void mountain_climber(double precision){
         boolean successorAvailable;
         do{
-            double[][] successors = new double[8][2];
+            double[][] successors = new double[6][2];
             successors[0] = new double[]{currentShot[0] - precision, currentShot[1]};
             successors[1] = new double[]{currentShot[0] + precision, currentShot[1]};
             successors[2] = new double[]{currentShot[0], currentShot[1] - precision};
             successors[3] = new double[]{currentShot[0], currentShot[1] + precision};
             successors[4] = new double[]{currentShot[0] - precision, currentShot[1] + precision};
             successors[5] = new double[]{currentShot[0] + precision, currentShot[1] - precision};
-            successors[6] = new double[]{currentShot[0] - precision, currentShot[1] - precision};
-            successors[7] = new double[]{currentShot[0] + precision, currentShot[1] + precision};
 
             double[][] successorCoords = new double[successors.length][2];
             for(int i = 0; i < successors.length; i++){

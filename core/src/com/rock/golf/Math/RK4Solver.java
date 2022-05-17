@@ -43,8 +43,8 @@ public class RK4Solver {
      * @return stateVector after one function evaluation
      */
     private StateVector function(StateVector vector){
-        double xSlope = derivativeX(vector.getXPos(), vector.getYPos());
-        double ySlope = derivativeY(vector.getXPos(), vector.getYPos());
+        double xSlope = Derivation.derivativeX(vector.getXPos(), vector.getYPos(), golfCourse);
+        double ySlope = Derivation.derivativeY(vector.getXPos(), vector.getYPos(), golfCourse);
         double formulaX;
         double formulaY;
         if(vector.getXSpeed() == 0 && vector.getYSpeed() == 0){
@@ -56,21 +56,6 @@ public class RK4Solver {
             formulaY = (-PhysicsEngine.g * ySlope) - uK * PhysicsEngine.g * (vector.getYSpeed() / Math.sqrt(Math.pow(vector.getXSpeed(), 2) + Math.pow(vector.getYSpeed(), 2)));
         }
         return new StateVector(vector.getXSpeed(), vector.getYSpeed(), formulaX, formulaY);
-    }
-
-    private double derivativeX(double x, double y){
-        double h = 00000000000000.1;
-        return (f(x+h, y) - f(x, y))/h;
-    }
-
-    private double derivativeY(double x, double y){
-        double h = 00000000000000.1;
-        return (f(x, y+h) - f(x, y))/h;
-    }
-
-
-    private double f(double x, double y){
-        return 0.4 * (0.9 - Math.pow(Math.E, -((Math.pow(x, 2)+Math.pow(y, 2))/8)));
     }
 
     public void update_friction(double uK, double uS){
