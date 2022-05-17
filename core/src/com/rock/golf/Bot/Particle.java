@@ -1,4 +1,5 @@
 package com.rock.golf.Bot;
+
 import java.util.Random;
 import com.rock.golf.PhysicsEngine;
 
@@ -24,10 +25,10 @@ public class Particle extends Bot {
         if (fitness <= bestFitness) {
             bestFitness = fitness;
             bestVel = vel;
-            if (fitness == 0) System.out.println("hole");
+            if (fitness == 0)
+                System.out.println("hole");
         }
     }
-
 
     public double[] getVel() {
         return vel;
@@ -36,6 +37,7 @@ public class Particle extends Bot {
     public double[] getPos() {
         return ballPos;
     }
+
     public double getFitness() {
         return fitness;
     }
@@ -43,7 +45,7 @@ public class Particle extends Bot {
     public double getBestFitness() {
         return bestFitness;
     }
-    
+
     public void setVel(int i, double j) {
         vel[i] = j;
     }
