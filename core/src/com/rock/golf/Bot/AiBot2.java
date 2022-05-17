@@ -24,6 +24,7 @@ public class AiBot2 {
     }
 
     public double[] get_shot(){
+        long time = System.currentTimeMillis();
         bestShot = new double[2];
         bestShotCoords = new double[]{currentState.getXPos(), currentState.getYPos()};
         bestShotDistance = euclidian_distance(bestShotCoords);
@@ -33,15 +34,15 @@ public class AiBot2 {
         process_shots(shots, 0);
         System.out.println("First best Shot: " +(bestShotDistance-targetRad));
         if(bestShotDistance < targetRad){
+            System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
             return bestShot;
         }
-
-
+        
         shots = generate_shot_range(bestShotAngle, 5, 20, 3.5, 4.5, 10);
         process_shots(shots, 0.15);
 
-        System.out.println("Pre-HillClimb: " + (bestShotDistance - targetRad));
         if(bestShotDistance < targetRad){
+            System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
             return bestShot;
         }
 
@@ -50,6 +51,7 @@ public class AiBot2 {
         process_shots(shots, 0);
 
         if(bestShotDistance < targetRad){
+            System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
             return bestShot;
         }
 
@@ -75,6 +77,7 @@ public class AiBot2 {
                     }
                     compare_shot(new double[]{i, j}, shotCoords, distance);
                     if(bestShotDistance < targetRad){
+                        System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
                         return bestShot;
                     }
                     if(counter > 20){
@@ -88,6 +91,7 @@ public class AiBot2 {
             }
             System.out.println("Iteration: " + ++iteration);
         }
+        System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
 
 
         return bestShot;

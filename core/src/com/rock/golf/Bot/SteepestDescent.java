@@ -22,6 +22,7 @@ public class SteepestDescent extends Bot{
 
     @Override
     public double[] getMove() {
+        long time = System.currentTimeMillis();
         double xdiff = targetX - currentState.getXPos();
         double ydiff = targetY - currentState.getYPos();
         currentShot = normalizeVelocity(new double[]{xdiff, ydiff}, 5);
@@ -45,6 +46,7 @@ public class SteepestDescent extends Bot{
             mountain_climber(0.01 - (0.002*counter));
             System.out.println("LOOP 3 || Iteration: " + ++counter);
         }
+        System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
         return currentShot;
     }
 
