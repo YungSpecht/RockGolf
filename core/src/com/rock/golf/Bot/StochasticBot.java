@@ -1,16 +1,16 @@
 package com.rock.golf.Bot;
+
 import com.rock.golf.PhysicsEngine;
 
 public class StochasticBot extends Bot {
-    
+
     int iterations;
-    
 
     public StochasticBot(PhysicsEngine engine, int i) {
         this.engine = engine;
         iterations = i;
     }
-    
+
     @Override
     public double[] getMove() {
 
@@ -27,12 +27,9 @@ public class StochasticBot extends Bot {
                 if (fitness == 0)
                     break;
             }
-
             vel = getRandomVelocities();
         }
 
         return new double[] { best[0], best[1], previousFitness };
     }
-
-
 }
