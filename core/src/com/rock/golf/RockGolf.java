@@ -91,7 +91,7 @@ public class RockGolf extends ApplicationAdapter {
         yPosition = metersToPixel(convert(input[6])) + originY;
         initialState = new double[] { input[5], input[6] };
         generateField();
-        sandpits = ((PhysicsEngine)engine).get_sandpits();
+        sandpits = ((PhysicsEngine) engine).get_sandpits();
         shotActive = false;
         newShotPossible = true;
     }
@@ -100,11 +100,12 @@ public class RockGolf extends ApplicationAdapter {
     public void render() {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         createMap();
-        for(int i = 0; i < sandpits.size(); i++){
+        for (int i = 0; i < sandpits.size(); i++) {
             double[] pos = sandpits.get(i).get_position();
             sandpit.begin(ShapeRenderer.ShapeType.Filled);
             sandpit.setColor(255, 255, 0, 1);
-            sandpit.circle(metersToPixel(convert(pos[0])) + originX, metersToPixel(convert(pos[1])) + originY, metersToPixel(convert(sandpits.get(i).get_radius())));
+            sandpit.circle(metersToPixel(convert(pos[0])) + originX, metersToPixel(convert(pos[1])) + originY,
+                    metersToPixel(convert(sandpits.get(i).get_radius())));
             sandpit.end();
         }
 
@@ -138,6 +139,7 @@ public class RockGolf extends ApplicationAdapter {
      * 
      * @param vector The state vector containing the updated x- and y- position.
      */
+
     public static void update_position(StateVector vector) {
         xPosition = originX + metersToPixel(convert(vector.getXPos()));
         yPosition = originY + metersToPixel(convert(vector.getYPos()));
@@ -153,6 +155,7 @@ public class RockGolf extends ApplicationAdapter {
      * @param d A double value
      * @return The double value converted to float
      */
+
     private static float convert(double d) {
         Double tmp = Double.valueOf(d);
         return tmp.floatValue();
@@ -167,6 +170,7 @@ public class RockGolf extends ApplicationAdapter {
      * the user decided to change the position and size of the target or the size
      * of the ball.
      */
+
     public void prepare_new_shot() {
         input = ((PhysicsEngine) engine).get_input();
         targetxPosition = metersToPixel(convert(input[2])) + originX;
@@ -186,6 +190,7 @@ public class RockGolf extends ApplicationAdapter {
      * This method calculates the coloration of the course based on the height
      * of the course in every position. (?)
      */
+
     private void generateField() {
         Function profile = InputModule.get_profile();
 
@@ -223,6 +228,7 @@ public class RockGolf extends ApplicationAdapter {
      * Create the map from the generation every frame
      *
      */
+
     private void createMap() {
         int sizeX = Gdx.graphics.getWidth();
         int sizeY = Gdx.graphics.getHeight();
@@ -296,7 +302,7 @@ public class RockGolf extends ApplicationAdapter {
                 prepare_new_shot();
                 executor.execute(botEngine);
 
-            } else if(keycode == Input.Keys.CONTROL_LEFT){
+            } else if (keycode == Input.Keys.CONTROL_LEFT) {
                 steepestDescent = new SteepestDescent(botEngine);
                 double[] shot = steepestDescent.getMove();
                 InputModule.set_new_velocity(shot[0], shot[1]);
@@ -308,8 +314,8 @@ public class RockGolf extends ApplicationAdapter {
                 InputModule.set_new_velocity(shot[0], shot[1]);
                 prepare_new_shot();
                 executor.execute(botEngine);
-        
-            } else if(keycode == Input.Keys.SHIFT_LEFT){
+
+            } else if (keycode == Input.Keys.SHIFT_LEFT) {
                 botWhosMid = new AiBot2(botEngine);
                 double[] shot = botWhosMid.get_shot();
                 InputModule.set_new_velocity(shot[0], shot[1]);
@@ -404,6 +410,5 @@ public class RockGolf extends ApplicationAdapter {
         public boolean scrolled(float amountX, float amountY) {
             return false;
         }
-
     }
 }
