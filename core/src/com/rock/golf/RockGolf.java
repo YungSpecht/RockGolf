@@ -17,6 +17,7 @@ import com.rock.golf.Bot.AiBot2;
 import com.rock.golf.Bot.Bruteforce;
 import com.rock.golf.Bot.PSOBot;
 import com.rock.golf.Bot.RuleBasedBot;
+import com.rock.golf.Bot.SimulatedAnnealing;
 import com.rock.golf.Bot.SteepestDescent;
 import com.rock.golf.Bot.StochasticBot;
 import com.rock.golf.Input.*;
@@ -56,6 +57,7 @@ public class RockGolf extends ApplicationAdapter {
     private Bruteforce hillClimb;
     private AIBot veryDumbBot;
     private AiBot2 botWhosMid;
+    private SimulatedAnnealing exp;
     private SteepestDescent steepestDescent;
     private RuleBasedBot RuleBasedBot;
     private PSOBot PSOBot;
@@ -103,8 +105,7 @@ public class RockGolf extends ApplicationAdapter {
             double[] pos = sandpits.get(i).get_position();
             sandpit.begin(ShapeRenderer.ShapeType.Filled);
             sandpit.setColor(255, 255, 0, 1);
-            sandpit.circle(metersToPixel(convert(pos[0])) + originX, metersToPixel(convert(pos[1])) + originY,
-                    metersToPixel(convert(sandpits.get(i).get_radius())));
+            sandpit.circle(metersToPixel(convert(pos[0])) + originX, metersToPixel(convert(pos[1])) + originY, metersToPixel(convert(sandpits.get(i).get_radius())));
             sandpit.end();
         }
 
@@ -138,7 +139,6 @@ public class RockGolf extends ApplicationAdapter {
      * 
      * @param vector The state vector containing the updated x- and y- position.
      */
-
     public static void update_position(StateVector vector) {
         xPosition = originX + metersToPixel(convert(vector.getXPos()));
         yPosition = originY + metersToPixel(convert(vector.getYPos()));
@@ -154,7 +154,6 @@ public class RockGolf extends ApplicationAdapter {
      * @param d A double value
      * @return The double value converted to float
      */
-
     private static float convert(double d) {
         Double tmp = Double.valueOf(d);
         return tmp.floatValue();
@@ -169,7 +168,6 @@ public class RockGolf extends ApplicationAdapter {
      * the user decided to change the position and size of the target or the size
      * of the ball.
      */
-
     public void prepare_new_shot() {
         input = ((PhysicsEngine) engine).get_input();
         targetxPosition = metersToPixel(convert(input[2])) + originX;
@@ -189,7 +187,6 @@ public class RockGolf extends ApplicationAdapter {
      * This method calculates the coloration of the course based on the height
      * of the course in every position. (?)
      */
-
     private void generateField() {
         Function profile = InputModule.get_profile();
 
@@ -227,7 +224,6 @@ public class RockGolf extends ApplicationAdapter {
      * Create the map from the generation every frame
      *
      */
-
     private void createMap() {
         int sizeX = Gdx.graphics.getWidth();
         int sizeY = Gdx.graphics.getHeight();
@@ -248,7 +244,7 @@ public class RockGolf extends ApplicationAdapter {
             }
         }
     }
-
+    
     private void getIntensity(ShapeRenderer launchVector) { // get the intensity of the launch vector
         if (in.finalVectorX != 0) {
             launchVector.line(xPosition, yPosition, in.finalVectorX, (originY * 2) - in.finalVectorY);
@@ -304,6 +300,12 @@ public class RockGolf extends ApplicationAdapter {
             } else if (keycode == Input.Keys.CONTROL_LEFT) {
                 steepestDescent = new SteepestDescent(botEngine);
                 double[] shot = steepestDescent.getMove();
+                InputModule.set_new_velocity(shot[0], shot[1]);
+                prepare_new_shot();
+                executor.execute(botEngine);
+            } else if(keycode == Input.Keys.S){
+                exp = new SimulatedAnnealing(botEngine);
+                double[] shot = exp.getMove();
                 InputModule.set_new_velocity(shot[0], shot[1]);
                 prepare_new_shot();
                 executor.execute(botEngine);

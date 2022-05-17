@@ -1,7 +1,6 @@
 package com.rock.golf.Math;
 
 import org.mariuszgromada.math.mxparser.*;
-import org.mariuszgromada.math.mxparser.mathcollection.*;
 
 public class Derivation {
     private static double h = 0.000000000000001;

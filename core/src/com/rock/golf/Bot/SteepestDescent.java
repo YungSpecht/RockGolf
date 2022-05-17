@@ -25,9 +25,11 @@ public class SteepestDescent extends Bot {
         long time = System.currentTimeMillis();
         double xdiff = targetX - currentState.getXPos();
         double ydiff = targetY - currentState.getYPos();
-        currentShot = normalizeVelocity(new double[] { xdiff, ydiff }, 5);
+        double[][][] shots = generate_shot_range(Math.atan2(ydiff, xdiff), 5, 45, 3, 4.5, 10);
+        currentShot = process_shots(shots, Double.MAX_VALUE, 0.2);
         currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
         currentShotDistance = EuclideanDistance(currentShotCoords);
+        System.out.println("++HILL CLIMB STARTS NOW+++");
 
         int counter = 0;
         while (currentShotDistance >= targetRad && counter < 5) {
@@ -90,10 +92,10 @@ public class SteepestDescent extends Bot {
         double reference = currentShotDistance;
         int result = -1;
         for (int i = 0; i < successorCoords.length; i++) {
-            if (successorCoords[i] != null && EuclideanDistance(successorCoords[i]) < reference) {
+            if (!engine.is_in_water(successorCoords[i]) && successorCoords[i] != null && EuclideanDistance(successorCoords[i]) < reference) {
                 result = i;
                 reference = EuclideanDistance(successorCoords[i]);
-                System.out.println("New Shortest Distance: " + (reference - targetRad));
+                System.out.println("New Shortest Distance: " + reference);
                 if (reference < targetRad) {
                     return result;
                 }

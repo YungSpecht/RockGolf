@@ -10,8 +10,14 @@ public class SimulatedAnnealing extends Bot {
     private double[] currentShot;
     private double[] currentShotCoords;
     private double currentShotDistance;
+    private final double MAX_TEMP;
+    private double currentTemp;
+    private double coolingRate;
 
     public SimulatedAnnealing(PhysicsEngine engine) {
+        MAX_TEMP = 100;
+        currentTemp = MAX_TEMP;
+        coolingRate = 2;
         double[] input = InputModule.get_input();
         this.engine = engine;
         this.currentState = new StateVector(input[5], input[6], input[7], input[8]);
@@ -22,9 +28,10 @@ public class SimulatedAnnealing extends Bot {
 
     @Override
     public double[] getMove() {
+        long time = System.currentTimeMillis();
         double xdiff = targetX - currentState.getXPos();
         double ydiff = targetY - currentState.getYPos();
-        currentShot = normalizeVelocity(new double[] { xdiff, ydiff }, 5);
+        currentShot = normalizeVelocity(new double[] { xdiff, ydiff }, 4);
         currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
         currentShotDistance = EuclideanDistance(currentShotCoords);
 
@@ -35,29 +42,33 @@ public class SimulatedAnnealing extends Bot {
         }
 
         counter = 0;
-        while (currentShotDistance > targetRad && counter < 4) {
+        while (currentShotDistance >= targetRad && counter < 4) {
             mountain_climber(0.08 - (0.02 * counter));
             System.out.println("LOOP 2 || Iteration: " + ++counter);
         }
 
         counter = 0;
-        while (currentShotDistance > targetRad && counter < 5) {
+        while (currentShotDistance >= targetRad && counter < 5) {
             mountain_climber(0.01 - (0.002 * counter));
             System.out.println("LOOP 3 || Iteration: " + ++counter);
         }
+        System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
         return currentShot;
     }
 
     private void mountain_climber(double precision) {
         boolean successorAvailable;
-        do {
-            double[][] successors = new double[6][2];
-            successors[0] = new double[] { currentShot[0] - precision, currentShot[1] };
-            successors[1] = new double[] { currentShot[0] + precision, currentShot[1] };
-            successors[2] = new double[] { currentShot[0], currentShot[1] - precision };
-            successors[3] = new double[] { currentShot[0], currentShot[1] + precision };
-            successors[4] = new double[] { currentShot[0] - precision, currentShot[1] + precision };
-            successors[5] = new double[] { currentShot[0] + precision, currentShot[1] - precision };
+        do{
+            double[][] successors = new double[8][2];
+            successors[0] = new double[]{currentShot[0] - precision, currentShot[1]};
+            successors[1] = new double[]{currentShot[0] + precision, currentShot[1]};
+            successors[2] = new double[]{currentShot[0], currentShot[1] - precision};
+            successors[3] = new double[]{currentShot[0], currentShot[1] + precision};
+            successors[4] = new double[]{currentShot[0] - precision, currentShot[1] + precision};
+            successors[5] = new double[]{currentShot[0] + precision, currentShot[1] - precision};
+            successors[6] = new double[]{currentShot[0] - precision, currentShot[1] - precision};
+            successors[7] = new double[]{currentShot[0] + precision, currentShot[1] + precision};
+
             double[][] successorCoords = new double[successors.length][2];
             for (int i = 0; i < successors.length; i++) {
                 if (vel_is_legal(successors[i])) {
@@ -79,6 +90,13 @@ public class SimulatedAnnealing extends Bot {
             if (currentShotDistance < targetRad) {
                 return;
             }
+            if(currentTemp > 0){
+                currentTemp -= coolingRate;
+                System.out.println("Current Temperature: " + currentTemp);
+                if(currentTemp < 0){
+                    currentTemp = 0;
+                }
+            }
 
         } while (successorAvailable);
     }
@@ -87,7 +105,7 @@ public class SimulatedAnnealing extends Bot {
         double reference = currentShotDistance;
         int result = -1;
         for (int i = 0; i < successorCoords.length; i++) {
-            if (successorCoords[i] != null && EuclideanDistance(successorCoords[i]) < reference) {
+            if (successorCoords[i] != null && acceptance(successorCoords[i], reference)) {
                 result = i;
                 reference = EuclideanDistance(successorCoords[i]);
                 System.out.println("New Shortest Distance: " + (reference - targetRad));
@@ -99,8 +117,16 @@ public class SimulatedAnnealing extends Bot {
         return result;
     }
 
+    private boolean acceptance(double[] coords, double refDistance){
+        if(EuclideanDistance(coords) < refDistance){
+            return true;
+        }
+        double threshold = currentTemp / (MAX_TEMP * (refDistance - EuclideanDistance(coords)));
+        double rando = rand.nextDouble();
+        return rando < threshold;
+    }
+
     private boolean vel_is_legal(double[] velPair) {
         return Math.sqrt(Math.pow(velPair[0], 2) + Math.pow(velPair[1], 2)) <= 5.0;
     }
-
 }

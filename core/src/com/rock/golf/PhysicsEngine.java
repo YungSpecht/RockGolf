@@ -7,6 +7,7 @@ import com.rock.golf.Input.InputModule;
 import com.rock.golf.Math.Derivation;
 import com.rock.golf.Math.RK2Solver;
 import com.rock.golf.Math.RK4Solver;
+import com.rock.golf.Math.Solver;
 
 public class PhysicsEngine implements Runnable {
 
@@ -23,18 +24,9 @@ public class PhysicsEngine implements Runnable {
     private double[] input;
     private boolean abort;
     private List<Sandpit> sandpits;
-    private RK2Solver solver2;
-    private RK4Solver solver4;
+    private Solver solver;
     private char rkMode = 'h';
 
-    // constructor
-    public PhysicsEngine() {
-        input = InputModule.get_input();
-        set_variables();
-        abort = false;
-        sandpits = new ArrayList<Sandpit>();
-        // sandpits.add(new Sandpit(new double[]{-4, 4}, 1, uK, uS));
-    }
 
     // Bot constructor
     public PhysicsEngine(double h, char rkMode) {
@@ -56,18 +48,13 @@ public class PhysicsEngine implements Runnable {
      * This method starts a new golf shot based on the current parameters that are
      * set in the Input.txt file.
      */
-
     private void new_shot() {
         RockGolf.shotActive = true;
         RockGolf.shotCounter++;
         set_variables();
-        switch (rkMode) {
-            case 'l':
-                solver2 = new RK2Solver(uK, uS, h, golfCourse);
-                break;
-            case 'h':
-                solver4 = new RK4Solver(uK, uS, h, golfCourse);
-                break;
+        switch(rkMode){
+            case 'l' : solver = new RK2Solver(uK, uS, h, golfCourse); break;
+            case 'h' : solver = new RK4Solver(uK, uS, h, golfCourse); break;
         }
         Double step = h * 1000;
         long timestep = step.longValue();
@@ -77,21 +64,12 @@ public class PhysicsEngine implements Runnable {
             if(currentTime - checkpoint > timestep){
                 Sandpit currentSandpit = current_sandpit();
                 if(currentSandpit != null){
-                    switch(rkMode){
-                        case 'l' : solver2.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS()); break;
-                        case 'h' : solver4.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS()); break;
-                    }
+                    solver.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS());
                 }
                 else{
-                    switch(rkMode){
-                        case 'l' : solver2.update_friction(uK, uS); break;
-                        case 'h' : solver4.update_friction(uK, uS); break;
-                    }
+                    solver.update_friction(uK, uS);
                 }
-                switch(rkMode){
-                    case 'l' : vector = solver2.runge_kutta_two(vector); break;
-                    case 'h' : vector = solver4.RK4(vector); break;
-                }
+                vector = solver.compute_step(vector);
                 RockGolf.update_position(vector);
                 checkpoint = System.currentTimeMillis();
             }
@@ -121,27 +99,18 @@ public class PhysicsEngine implements Runnable {
         targetRadius = variables[4];
         vector = new StateVector(variables[5], variables[6], velX, velY);
         golfCourse = InputModule.get_profile();
-        switch (rkMode) {
-            case 'l': solver2 = new RK2Solver(uK, uS, h, golfCourse); break;
-            case 'h': solver4 = new RK4Solver(uK, uS, h, golfCourse); break;
+        switch(rkMode){
+            case 'l' : solver = new RK2Solver(uK, uS, h, golfCourse); break;
+            case 'h' : solver = new RK4Solver(uK, uS, h, golfCourse); break;
         }
         while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !is_in_water(new double[] { vector.getXPos(), vector.getYPos() }) && ball_in_screen(new double[] { vector.getXPos(), vector.getYPos() })) {
             Sandpit currentSandpit = current_sandpit();
             if (currentSandpit != null) {
-                switch (rkMode) {
-                    case 'l': solver2.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS()); break;
-                    case 'h': solver4.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS()); break;
-                }
+                solver.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS());
             } else {
-                switch (rkMode) {
-                    case 'l': solver2.update_friction(uK, uS); break;
-                    case 'h': solver4.update_friction(uK, uS); break;
-                }
+                solver.update_friction(uK, uS);
             }
-            switch (rkMode) {
-                case 'l': vector = solver2.runge_kutta_two(vector); break;
-                case 'h': vector = solver4.RK4(vector); break;
-            }
+            vector = solver.compute_step(vector);
             if (abort) {
                 break;
             }

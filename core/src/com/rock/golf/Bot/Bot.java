@@ -46,5 +46,75 @@ public abstract class Bot {
         return normalizeVelocity(new double[] { velX, velY }, 5);
     }
 
+    protected double[][][] generate_shot_range(double currentAngle, int divergentShots, double outermostAngle, double velocityStart, double velocityEnd, int velAmount) {
+        double[][][] result = new double[1 + 2 * divergentShots][velAmount][2];
+        for (int i = 0; i < velAmount; i++) {
+            if (velAmount == 1)
+                result[0][0] = get_velocity(currentAngle, velocityStart);
+            else
+                result[0][i] = get_velocity(currentAngle, velocityStart + i * ((velocityEnd - velocityStart) / (velAmount - 1)));
+        }
+        for (int i = 1; i < result.length; i = i + 2) {
+            for (int j = 0; j < result[0].length; j++) {
+                if (velAmount == 1) {
+                    result[i][j] = get_velocity(currentAngle + ((i + 1) / 2) * (outermostAngle / divergentShots), velocityStart);
+                    result[i + 1][j] = get_velocity(currentAngle - ((i + 1) / 2) * (outermostAngle / divergentShots), velocityStart);
+                } else {
+                    result[i][j] = get_velocity(currentAngle + ((i + 1) / 2) * (outermostAngle / divergentShots), velocityStart + j * ((velocityEnd - velocityStart) / (velAmount - 1)));
+                    result[i + 1][j] = get_velocity(currentAngle - ((i + 1) / 2) * (outermostAngle / divergentShots), velocityStart + j * ((velocityEnd - velocityStart) / (velAmount - 1)));
+                }
+            }
+        }
+        return result;
+    }
+
+    protected double[] process_shots(double[][][] shots, double referenceDistance, double instantReturn) {
+        double[] result = new double[2];
+        double refDist = referenceDistance;
+        for (int i = 0; i < shots[0].length; i++) {
+            double[] shotCoords = engine.get_shot(shots[0][i][0], shots[0][i][1]);
+            double distance = EuclideanDistance(shotCoords);
+            if(!engine.is_in_water(shotCoords) && distance < refDist){
+                result = shotCoords;
+                refDist = distance;
+                System.out.println("New Shortest Distance: " + refDist);
+            }
+            if(refDist < targetRadius || refDist < targetRadius + instantReturn){
+                return result;
+            }
+        }
+        for (int i = 1; i < shots.length; i = i + 2) {
+            for (int j = 0; j < shots[0].length; j++) {
+                double[] leftShotCoords = engine.get_shot(shots[i][j][0], shots[i][j][1]);
+                double leftDist = EuclideanDistance(leftShotCoords);
+                if(!engine.is_in_water(leftShotCoords) && leftDist < refDist){
+                    result = leftShotCoords;
+                    refDist = leftDist;
+                    System.out.println("New Shortest Distance: " + refDist);
+                }
+                if(refDist < targetRadius || refDist < (targetRadius + instantReturn)){
+                    return result;
+                }
+
+                double[] rightShotCoords = engine.get_shot(shots[i + 1][j][0], shots[i + 1][j][1]);
+                double rightDist = EuclideanDistance(rightShotCoords);
+                if(!engine.is_in_water(rightShotCoords) && rightDist < refDist){
+                    result = rightShotCoords;
+                    refDist = rightDist;
+                    System.out.println("New Shortest Distance: " + refDist);
+                }
+                if(refDist < targetRadius || refDist < (targetRadius + instantReturn)){
+                    return result;
+                }
+            }
+        }
+        return result;
+    }
+
+    private double[] get_velocity(double angle, double velocity) {
+        double[] result = new double[] { Math.cos(Math.toRadians(angle)), Math.sin(Math.toRadians(angle)) };
+        return normalizeVelocity(result, velocity);
+    }
+
     public abstract double[] getMove();
 }
