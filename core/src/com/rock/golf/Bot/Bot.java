@@ -74,7 +74,7 @@ public abstract class Bot {
         for (int i = 0; i < shots[0].length; i++) {
             double[] shotCoords = engine.get_shot(shots[0][i][0], shots[0][i][1]);
             double distance = EuclideanDistance(shotCoords);
-            if(!engine.is_in_water(shotCoords) && distance < refDist){
+            if(!engine.is_in_water(shotCoords) && engine.ball_in_screen(shotCoords) && distance < refDist){
                 result = shotCoords;
                 refDist = distance;
                 System.out.println("New Shortest Distance: " + refDist);
@@ -87,7 +87,7 @@ public abstract class Bot {
             for (int j = 0; j < shots[0].length; j++) {
                 double[] leftShotCoords = engine.get_shot(shots[i][j][0], shots[i][j][1]);
                 double leftDist = EuclideanDistance(leftShotCoords);
-                if(!engine.is_in_water(leftShotCoords) && leftDist < refDist){
+                if(!engine.is_in_water(leftShotCoords) && engine.ball_in_screen(leftShotCoords) && leftDist < refDist){
                     result = leftShotCoords;
                     refDist = leftDist;
                     System.out.println("New Shortest Distance: " + refDist);
@@ -98,7 +98,7 @@ public abstract class Bot {
 
                 double[] rightShotCoords = engine.get_shot(shots[i + 1][j][0], shots[i + 1][j][1]);
                 double rightDist = EuclideanDistance(rightShotCoords);
-                if(!engine.is_in_water(rightShotCoords) && rightDist < refDist){
+                if(!engine.is_in_water(rightShotCoords) && engine.ball_in_screen(rightShotCoords) && rightDist < refDist){
                     result = rightShotCoords;
                     refDist = rightDist;
                     System.out.println("New Shortest Distance: " + refDist);

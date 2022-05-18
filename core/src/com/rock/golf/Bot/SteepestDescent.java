@@ -1,50 +1,43 @@
 package com.rock.golf.Bot;
 
 import com.rock.golf.PhysicsEngine;
-import com.rock.golf.StateVector;
-import com.rock.golf.Input.InputModule;
 
 public class SteepestDescent extends Bot {
-    private StateVector currentState;
-    private double targetX, targetY, targetRad;
     private double[] currentShot;
     private double[] currentShotCoords;
     private double currentShotDistance;
 
     public SteepestDescent(PhysicsEngine engine) {
-        double[] input = InputModule.get_input();
+        super();
         this.engine = engine;
-        this.currentState = new StateVector(input[5], input[6], input[7], input[8]);
-        targetX = input[2];
-        targetY = input[3];
-        targetRad = input[4];
     }
 
     @Override
     public double[] getMove() {
         long time = System.currentTimeMillis();
-        double xdiff = targetX - currentState.getXPos();
-        double ydiff = targetY - currentState.getYPos();
-        double[][][] shots = generate_shot_range(Math.atan2(ydiff, xdiff), 5, 45, 3, 4.5, 10);
-        currentShot = process_shots(shots, Double.MAX_VALUE, 0.2);
+        currentShot = new double[2];
+        currentShotCoords = new double[]{ballPos[0], ballPos[1]};
+        currentShotDistance = EuclideanDistance(currentShotCoords);
+        double[][][] shots = generate_shot_range(convert(Math.atan2(targetPos[1] - currentShotCoords[1], targetPos[0] - ballPos[0])), 5, 45, 3, 4.5, 10);
+        currentShot = process_shots(shots, currentShotDistance, 0.2);
         currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
         currentShotDistance = EuclideanDistance(currentShotCoords);
         System.out.println("++HILL CLIMB STARTS NOW+++");
 
         int counter = 0;
-        while (currentShotDistance >= targetRad && counter < 5) {
+        while (currentShotDistance >= targetRadius && counter < 5) {
             mountain_climber(0.2 - (0.025 * counter));
             System.out.println("LOOP 1 || Iteration: " + ++counter);
         }
 
         counter = 0;
-        while (currentShotDistance >= targetRad && counter < 4) {
+        while (currentShotDistance >= targetRadius && counter < 4) {
             mountain_climber(0.08 - (0.02 * counter));
             System.out.println("LOOP 2 || Iteration: " + ++counter);
         }
 
         counter = 0;
-        while (currentShotDistance >= targetRad && counter < 5) {
+        while (currentShotDistance >= targetRadius && counter < 5) {
             mountain_climber(0.01 - (0.002 * counter));
             System.out.println("LOOP 3 || Iteration: " + ++counter);
         }
@@ -81,7 +74,7 @@ public class SteepestDescent extends Bot {
             } else {
                 successorAvailable = false;
             }
-            if (currentShotDistance < targetRad) {
+            if (currentShotDistance < targetRadius) {
                 return;
             }
 
@@ -92,11 +85,11 @@ public class SteepestDescent extends Bot {
         double reference = currentShotDistance;
         int result = -1;
         for (int i = 0; i < successorCoords.length; i++) {
-            if (successorCoords[i] != null && !engine.is_in_water(successorCoords[i]) &&EuclideanDistance(successorCoords[i]) < reference) {
+            if (successorCoords[i] != null && !engine.is_in_water(successorCoords[i]) && engine.ball_in_screen(successorCoords[i]) &&EuclideanDistance(successorCoords[i]) < reference) {
                 result = i;
                 reference = EuclideanDistance(successorCoords[i]);
                 System.out.println("New Shortest Distance: " + reference);
-                if (reference < targetRad) {
+                if (reference < targetRadius) {
                     return result;
                 }
             }
