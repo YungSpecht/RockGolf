@@ -92,7 +92,7 @@ public class SteepestDescent extends Bot {
         double reference = currentShotDistance;
         int result = -1;
         for (int i = 0; i < successorCoords.length; i++) {
-            if (!engine.is_in_water(successorCoords[i]) && successorCoords[i] != null && EuclideanDistance(successorCoords[i]) < reference) {
+            if (successorCoords[i] != null && !engine.is_in_water(successorCoords[i]) &&EuclideanDistance(successorCoords[i]) < reference) {
                 result = i;
                 reference = EuclideanDistance(successorCoords[i]);
                 System.out.println("New Shortest Distance: " + reference);
