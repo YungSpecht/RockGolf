@@ -75,11 +75,11 @@ public abstract class Bot {
             double[] shotCoords = engine.get_shot(shots[0][i][0], shots[0][i][1]);
             double distance = EuclideanDistance(shotCoords);
             if(!engine.is_in_water(shotCoords) && engine.ball_in_screen(shotCoords) && distance < refDist){
-                result = shotCoords;
+                result = shots[0][i];
                 refDist = distance;
-                System.out.println("New Shortest Distance: " + refDist);
+                System.out.println("New Shortest Distance: " + (refDist - targetRadius));
             }
-            if(refDist < targetRadius || refDist < targetRadius + instantReturn){
+            if(refDist < targetRadius || refDist < (instantReturn + targetRadius)){
                 return result;
             }
         }
@@ -88,22 +88,20 @@ public abstract class Bot {
                 double[] leftShotCoords = engine.get_shot(shots[i][j][0], shots[i][j][1]);
                 double leftDist = EuclideanDistance(leftShotCoords);
                 if(!engine.is_in_water(leftShotCoords) && engine.ball_in_screen(leftShotCoords) && leftDist < refDist){
-                    result = leftShotCoords;
+                    result = shots[i][j];
                     refDist = leftDist;
-                    System.out.println("New Shortest Distance: " + refDist);
                 }
-                if(refDist < targetRadius || refDist < (targetRadius + instantReturn)){
+                if(refDist < targetRadius || refDist < (instantReturn + targetRadius)){
                     return result;
                 }
 
                 double[] rightShotCoords = engine.get_shot(shots[i + 1][j][0], shots[i + 1][j][1]);
                 double rightDist = EuclideanDistance(rightShotCoords);
                 if(!engine.is_in_water(rightShotCoords) && engine.ball_in_screen(rightShotCoords) && rightDist < refDist){
-                    result = rightShotCoords;
-                    refDist = rightDist;
-                    System.out.println("New Shortest Distance: " + refDist);
+                    result = shots[i+1][j];
+                    refDist = leftDist;
                 }
-                if(refDist < targetRadius || refDist < (targetRadius + instantReturn)){
+                if(refDist < targetRadius || refDist < (instantReturn + targetRadius)){
                     return result;
                 }
             }
@@ -111,7 +109,11 @@ public abstract class Bot {
         return result;
     }
 
-    private double[] get_velocity(double angle, double velocity) {
+    protected boolean vel_is_legal(double[] velPair) {
+        return Math.sqrt(Math.pow(velPair[0], 2) + Math.pow(velPair[1], 2)) <= 5.0;
+    }
+
+    protected double[] get_velocity(double angle, double velocity) {
         double[] result = new double[] { Math.cos(Math.toRadians(angle)), Math.sin(Math.toRadians(angle)) };
         return normalizeVelocity(result, velocity);
     }

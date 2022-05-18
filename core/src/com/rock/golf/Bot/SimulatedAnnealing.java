@@ -126,7 +126,4 @@ public class SimulatedAnnealing extends Bot {
         return rando < threshold;
     }
 
-    private boolean vel_is_legal(double[] velPair) {
-        return Math.sqrt(Math.pow(velPair[0], 2) + Math.pow(velPair[1], 2)) <= 5.0;
-    }
 }

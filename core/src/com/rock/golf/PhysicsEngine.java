@@ -92,6 +92,8 @@ public class PhysicsEngine implements Runnable {
 
     public double[] get_shot(double velX, double velY) {
         set_variables();
+        vector.setXSpeed(velX);
+        vector.setYSpeed(velY);
         switch(rkMode){
             case 'l' : solver = new RK2Solver(uK, uS, h, golfCourse); break;
             case 'h' : solver = new RK4Solver(uK, uS, h, golfCourse); break;

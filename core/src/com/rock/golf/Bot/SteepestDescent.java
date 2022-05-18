@@ -88,16 +88,12 @@ public class SteepestDescent extends Bot {
             if (successorCoords[i] != null && !engine.is_in_water(successorCoords[i]) && engine.ball_in_screen(successorCoords[i]) &&EuclideanDistance(successorCoords[i]) < reference) {
                 result = i;
                 reference = EuclideanDistance(successorCoords[i]);
-                System.out.println("New Shortest Distance: " + reference);
+                System.out.println("New Shortest Distance: " + (reference - targetRadius));
                 if (reference < targetRadius) {
                     return result;
                 }
             }
         }
         return result;
-    }
-
-    private boolean vel_is_legal(double[] velPair) {
-        return Math.sqrt(Math.pow(velPair[0], 2) + Math.pow(velPair[1], 2)) <= 5.0;
     }
 }
