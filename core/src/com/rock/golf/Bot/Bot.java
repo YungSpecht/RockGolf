@@ -1,15 +1,17 @@
 package com.rock.golf.Bot;
 
 import java.util.Random;
+
 import com.rock.golf.PhysicsEngine;
 import com.rock.golf.Input.InputModule;
 
 public abstract class Bot {
 
     PhysicsEngine engine;
-    double[] targetPos = new double[] { InputModule.get_input()[2], InputModule.get_input()[3] };
-    double[] ballPos = new double[] { InputModule.get_input()[5], InputModule.get_input()[6] };
-    double targetRadius = InputModule.get_input()[4];
+    double[] input = InputModule.get_input();
+    double[] targetPos = new double[] {input[2], input[3] };
+    double[] ballPos = new double[] {input[5], input[6] };
+    double targetRadius = input[4];
     Random rand = new Random();
 
     protected double getFitness(double[] ballPos, double[] targetPos) {
@@ -57,11 +59,11 @@ public abstract class Bot {
         for (int i = 1; i < result.length; i = i + 2) {
             for (int j = 0; j < result[0].length; j++) {
                 if (velAmount == 1) {
-                    result[i][j] = get_velocity(currentAngle + ((i + 1) / 2) * (outermostAngle / divergentShots), velocityStart);
-                    result[i + 1][j] = get_velocity(currentAngle - ((i + 1) / 2) * (outermostAngle / divergentShots), velocityStart);
+                    result[i][j] = get_velocity((currentAngle + ((i + 1) / 2) * (outermostAngle / divergentShots)) % 360, velocityStart);
+                    result[i + 1][j] = get_velocity((currentAngle - ((i + 1) / 2) * (outermostAngle / divergentShots)) % 360, velocityStart);
                 } else {
-                    result[i][j] = get_velocity(currentAngle + ((i + 1) / 2) * (outermostAngle / divergentShots), velocityStart + j * ((velocityEnd - velocityStart) / (velAmount - 1)));
-                    result[i + 1][j] = get_velocity(currentAngle - ((i + 1) / 2) * (outermostAngle / divergentShots), velocityStart + j * ((velocityEnd - velocityStart) / (velAmount - 1)));
+                    result[i][j] = get_velocity((currentAngle + ((i + 1) / 2) * (outermostAngle / divergentShots)) % 360, velocityStart + j * ((velocityEnd - velocityStart) / (velAmount - 1)));
+                    result[i + 1][j] = get_velocity((currentAngle - ((i + 1) / 2) * (outermostAngle / divergentShots)) % 360, velocityStart + j * ((velocityEnd - velocityStart) / (velAmount - 1)));
                 }
             }
         }
@@ -74,7 +76,7 @@ public abstract class Bot {
         for (int i = 0; i < shots[0].length; i++) {
             double[] shotCoords = engine.get_shot(shots[0][i][0], shots[0][i][1]);
             double distance = EuclideanDistance(shotCoords);
-            if(!engine.is_in_water(shotCoords) && engine.ball_in_screen(shotCoords) && distance < refDist){
+            if(distance < refDist && !engine.is_in_water(shotCoords)){
                 result = shots[0][i];
                 refDist = distance;
                 System.out.println("New Shortest Distance: " + (refDist - targetRadius));
@@ -87,9 +89,10 @@ public abstract class Bot {
             for (int j = 0; j < shots[0].length; j++) {
                 double[] leftShotCoords = engine.get_shot(shots[i][j][0], shots[i][j][1]);
                 double leftDist = EuclideanDistance(leftShotCoords);
-                if(!engine.is_in_water(leftShotCoords) && engine.ball_in_screen(leftShotCoords) && leftDist < refDist){
+                if( leftDist < refDist && !engine.is_in_water(leftShotCoords)){
                     result = shots[i][j];
                     refDist = leftDist;
+                    System.out.println("New Shortest Distance: " + (refDist - targetRadius));
                 }
                 if(refDist < targetRadius || refDist < (instantReturn + targetRadius)){
                     return result;
@@ -97,9 +100,10 @@ public abstract class Bot {
 
                 double[] rightShotCoords = engine.get_shot(shots[i + 1][j][0], shots[i + 1][j][1]);
                 double rightDist = EuclideanDistance(rightShotCoords);
-                if(!engine.is_in_water(rightShotCoords) && engine.ball_in_screen(rightShotCoords) && rightDist < refDist){
+                if( rightDist < refDist && !engine.is_in_water(rightShotCoords)){
                     result = shots[i+1][j];
                     refDist = leftDist;
+                    System.out.println("New Shortest Distance: " + (refDist - targetRadius));
                 }
                 if(refDist < targetRadius || refDist < (instantReturn + targetRadius)){
                     return result;

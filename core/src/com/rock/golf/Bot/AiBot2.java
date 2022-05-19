@@ -32,7 +32,6 @@ public class AiBot2 {
 
         double[][][] shots = generate_shot_range(bestShotAngle, 3, 45, 5, 5, 1);
         process_shots(shots, 0);
-        System.out.println("First best Shot: " +(bestShotDistance-targetRad));
         if(bestShotDistance < targetRad){
             System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
             return bestShot;
@@ -40,6 +39,7 @@ public class AiBot2 {
         
         shots = generate_shot_range(bestShotAngle, 5, 20, 3.5, 4.5, 10);
         process_shots(shots, 0.15);
+        System.out.println("|| PRIMING DONE ||");
 
         if(bestShotDistance < targetRad){
             System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
@@ -158,7 +158,7 @@ public class AiBot2 {
             bestShotCoords = shotCoords;
             bestShotDistance = distance;
             bestShotAngle = convert(Math.atan2(bestShot[1], bestShot[0]));
-            System.out.println("Current shortest Distance to Target: " + (bestShotDistance - targetRad));
+            System.out.println("New Shortest Distance: " + (bestShotDistance - targetRad));
         }
     }
 

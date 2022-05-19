@@ -17,8 +17,8 @@ import com.rock.golf.Bot.AiBot2;
 import com.rock.golf.Bot.Bruteforce;
 import com.rock.golf.Bot.PSOBot;
 import com.rock.golf.Bot.RuleBasedBot;
-import com.rock.golf.Bot.SimulatedAnnealing;
-import com.rock.golf.Bot.SteepestDescent;
+import com.rock.golf.Bot.HillClimb;
+import com.rock.golf.Bot.HillClimb;
 import com.rock.golf.Bot.StochasticBot;
 import com.rock.golf.Input.*;
 import com.rock.golf.Math.Derivation;
@@ -57,8 +57,8 @@ public class RockGolf extends ApplicationAdapter {
     private Bruteforce hillClimb;
     private AIBot veryDumbBot;
     private AiBot2 botWhosMid;
-    private SimulatedAnnealing exp;
-    private SteepestDescent steepestDescent;
+    private HillClimb exp;
+    private HillClimb steepestDescent;
     private RuleBasedBot RuleBasedBot;
     private PSOBot PSOBot;
     private ExecutorService executor;
@@ -297,15 +297,9 @@ public class RockGolf extends ApplicationAdapter {
                 prepare_new_shot();
                 executor.execute(botEngine);
 
-            } else if (keycode == Input.Keys.CONTROL_LEFT) {
-                steepestDescent = new SteepestDescent(botEngine);
+            } else if (keycode == Input.Keys.H) {
+                steepestDescent = new HillClimb(botEngine, 1000, 10);
                 double[] shot = steepestDescent.getMove();
-                InputModule.set_new_velocity(shot[0], shot[1]);
-                prepare_new_shot();
-                executor.execute(botEngine);
-            } else if(keycode == Input.Keys.S){
-                exp = new SimulatedAnnealing(botEngine);
-                double[] shot = exp.getMove();
                 InputModule.set_new_velocity(shot[0], shot[1]);
                 prepare_new_shot();
                 executor.execute(botEngine);

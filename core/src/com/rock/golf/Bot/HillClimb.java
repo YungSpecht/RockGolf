@@ -2,27 +2,29 @@ package com.rock.golf.Bot;
 
 import com.rock.golf.PhysicsEngine;
 
-public class SteepestDescent extends Bot {
+public class HillClimb extends Bot {
     private double[] currentShot;
     private double[] currentShotCoords;
     private double currentShotDistance;
+    private final double MAX_TEMP;
+    private double currentTemp;
+    private double coolingRate;
 
-    public SteepestDescent(PhysicsEngine engine) {
+    public HillClimb(PhysicsEngine engine, double MAX_TEMP, double coolingRate) {
         super();
         this.engine = engine;
+        this.MAX_TEMP = MAX_TEMP;
+        currentTemp = MAX_TEMP;
+        this.coolingRate = coolingRate;
     }
 
     @Override
     public double[] getMove() {
         long time = System.currentTimeMillis();
-        currentShot = new double[2];
-        currentShotCoords = new double[]{ballPos[0], ballPos[1]};
-        currentShotDistance = EuclideanDistance(currentShotCoords);
-        double[][][] shots = generate_shot_range(convert(Math.atan2(targetPos[1] - currentShotCoords[1], targetPos[0] - ballPos[0])), 5, 45, 3, 4.5, 10);
-        currentShot = process_shots(shots, currentShotDistance, 0.2);
+
+        currentShot = normalizeVelocity(new double[]{targetPos[0]-ballPos[0], targetPos[1]-ballPos[1]}, 4);
         currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
         currentShotDistance = EuclideanDistance(currentShotCoords);
-        System.out.println("++HILL CLIMB STARTS NOW+++");
 
         int counter = 0;
         while (currentShotDistance >= targetRadius && counter < 5) {
@@ -48,13 +50,15 @@ public class SteepestDescent extends Bot {
     private void mountain_climber(double precision) {
         boolean successorAvailable;
         do{
-            double[][] successors = new double[6][2];
+            double[][] successors = new double[8][2];
             successors[0] = new double[]{currentShot[0] - precision, currentShot[1]};
             successors[1] = new double[]{currentShot[0] + precision, currentShot[1]};
             successors[2] = new double[]{currentShot[0], currentShot[1] - precision};
             successors[3] = new double[]{currentShot[0], currentShot[1] + precision};
             successors[4] = new double[]{currentShot[0] - precision, currentShot[1] + precision};
             successors[5] = new double[]{currentShot[0] + precision, currentShot[1] - precision};
+            successors[6] = new double[]{currentShot[0] - precision, currentShot[1] - precision};
+            successors[7] = new double[]{currentShot[0] + precision, currentShot[1] + precision};
 
             double[][] successorCoords = new double[successors.length][2];
             for (int i = 0; i < successors.length; i++) {
@@ -77,6 +81,13 @@ public class SteepestDescent extends Bot {
             if (currentShotDistance < targetRadius) {
                 return;
             }
+            if(currentTemp > 0){
+                currentTemp -= coolingRate;
+                System.out.println("Current Temperature: " + currentTemp);
+                if(currentTemp < 0){
+                    currentTemp = 0;
+                }
+            }
 
         } while (successorAvailable);
     }
@@ -85,7 +96,7 @@ public class SteepestDescent extends Bot {
         double reference = currentShotDistance;
         int result = -1;
         for (int i = 0; i < successorCoords.length; i++) {
-            if (successorCoords[i] != null && !engine.is_in_water(successorCoords[i]) && engine.ball_in_screen(successorCoords[i]) &&EuclideanDistance(successorCoords[i]) < reference) {
+            if (successorCoords[i] != null && acceptance(successorCoords[i], reference)) {
                 result = i;
                 reference = EuclideanDistance(successorCoords[i]);
                 System.out.println("New Shortest Distance: " + (reference - targetRadius));
@@ -96,4 +107,14 @@ public class SteepestDescent extends Bot {
         }
         return result;
     }
+
+    private boolean acceptance(double[] coords, double refDistance){
+        if(EuclideanDistance(coords) < refDistance){
+            return true;
+        }
+        double threshold = currentTemp / (MAX_TEMP * (EuclideanDistance(coords) - refDistance));
+        double rando = rand.nextDouble();
+        return rando < threshold;
+    }
+
 }
