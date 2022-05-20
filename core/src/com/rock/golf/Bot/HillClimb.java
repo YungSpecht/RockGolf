@@ -105,7 +105,7 @@ public class HillClimb extends Bot {
         double reference = currentShotDistance;
         int result = -1;
         for (int i = 0; i < successorCoords.length; i++) {
-            if (successorCoords[i] != null && !engine.is_in_water(successorCoords[i]) && acceptance(successorCoords[i], reference)) {
+            if (successorCoords[i] != null && !engine.is_in_water(successorCoords[i][0], successorCoords[i][0]) && acceptance(successorCoords[i], reference)) {
                 result = i;
                 reference = EuclideanDistance(successorCoords[i]);
                 System.out.println("New Shortest Distance: " + (reference - targetRadius));

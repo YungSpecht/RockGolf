@@ -15,7 +15,7 @@ public abstract class Bot {
     Random rand = new Random();
 
     protected double getFitness(double[] ballPos, double[] targetPos) {
-        if (engine.is_in_water(ballPos)) return Integer.MAX_VALUE;
+        if (engine.is_in_water(ballPos[0], ballPos[1])) return Integer.MAX_VALUE;
         if (Math.pow(ballPos[0] - targetPos[0], 2) + Math.pow(ballPos[1] - targetPos[1], 2) <= Math.pow(targetRadius, 2))
             return 0;
         return Math.sqrt(Math.pow((targetPos[0] - ballPos[0]), 2) + Math.pow((targetPos[1] - ballPos[1]), 2));
@@ -56,7 +56,7 @@ public abstract class Bot {
         for (int i = 0; i < shots[0].length; i++) {
             double[] shotCoords = engine.get_shot(shots[0][i][0], shots[0][i][1]);
             double distance = EuclideanDistance(shotCoords);
-            if (distance < refDist && !engine.is_in_water(shotCoords)) {
+            if (distance < refDist && !engine.is_in_water(shotCoords[0], ballPos[1])) {
                 result = shots[0][i];
                 refDist = distance;
                 System.out.println("New Shortest Distance: " + (refDist - targetRadius));
@@ -69,7 +69,7 @@ public abstract class Bot {
             for (int j = 0; j < shots[0].length; j++) {
                 double[] shotCoords = engine.get_shot(shots[i][j][0], shots[i][j][1]);
                 double distance = EuclideanDistance(shotCoords);
-                if (distance < refDist && !engine.is_in_water(shotCoords)) {
+                if (distance < refDist && !engine.is_in_water(shotCoords[0], ballPos[1])) {
                     result = shots[i][j];
                     refDist = distance;
                     System.out.println("New Shortest Distance: " + (refDist - targetRadius));
@@ -80,7 +80,7 @@ public abstract class Bot {
 
                 shotCoords = engine.get_shot(shots[i+1][j][0], shots[i+1][j][1]);
                 distance = EuclideanDistance(shotCoords);
-                if (distance < refDist && !engine.is_in_water(shotCoords)) {
+                if (distance < refDist && !engine.is_in_water(shotCoords[0], ballPos[1])) {
                     result = shots[i+1][j];
                     refDist = distance;
                     System.out.println("New Shortest Distance: " + (refDist - targetRadius));

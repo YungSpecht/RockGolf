@@ -54,7 +54,7 @@ public class AIBot extends Bot{
                 for (double j = bestShot[1] - rangeBackY; j < bestShot[1] + rangeForwardY; j += prezi) {
                     double[] shotCoords = engine.get_shot(i, j);
                     double distance = EuclideanDistance(shotCoords);
-                    if(distance < bestShotDistance && !engine.is_in_water(new double[]{i, j})){
+                    if(distance < bestShotDistance && !engine.is_in_water(shotCoords[0], shotCoords[1])){
                         bestShot = new double[]{i, j};
                         bestShotCoords = shotCoords;
                         bestShotDistance = distance;

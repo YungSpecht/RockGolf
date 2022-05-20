@@ -35,8 +35,10 @@ public class RockGolf extends ApplicationAdapter {
     private float targetxPosition;
     private float targetyPosition;
     private List<Sandpit> sandpits;
+    private List<Tree> trees;
     private ShapeRenderer ball;
     private ShapeRenderer sandpit;
+    private ShapeRenderer tree;
     private ShapeRenderer target;
     private ShapeRenderer shapeRenderer;
     private ShapeRenderer launchVector;
@@ -48,10 +50,12 @@ public class RockGolf extends ApplicationAdapter {
     ExecutorService executor;
     private SpriteBatch position, shot;
     private BitmapFont font;
-    static int shotCounter;
-    static boolean shotActive;
-    static boolean newShotPossible;
-    InputHandling in = new InputHandling();
+    private String status;
+    private BitmapFont condition;
+    public static int shotCounter;
+    public static boolean shotActive;
+    public static boolean newShotPossible;
+    public InputHandling in = new InputHandling();
     private ShapeRenderer background;
 
     @Override
@@ -64,6 +68,7 @@ public class RockGolf extends ApplicationAdapter {
         target = new ShapeRenderer();
         sandpit = new ShapeRenderer();
         background = new ShapeRenderer();
+        tree = new ShapeRenderer();
         launchVector = new ShapeRenderer();
         engine = new PhysicsEngine(0.01, 'h');
         executor = Executors.newFixedThreadPool(1);
@@ -71,6 +76,7 @@ public class RockGolf extends ApplicationAdapter {
         position = new SpriteBatch();
         shot = new SpriteBatch();
         font = new BitmapFont();
+        condition = new BitmapFont();
         shotCounter = 0;
         shapeRenderer = new ShapeRenderer();
         prepareNewShot();
@@ -78,7 +84,8 @@ public class RockGolf extends ApplicationAdapter {
         yPosition = metersToPixel(convert(input[6])) + originY;
         initialState = new double[] { input[5], input[6] };
         generateField();
-        sandpits = ((PhysicsEngine) engine).getSandpits();
+        sandpits = ((PhysicsEngine) engine).get_sandpits();
+        trees = ((PhysicsEngine) engine).get_trees();
         shotActive = false;
         newShotPossible = true;
     }
@@ -99,8 +106,18 @@ public class RockGolf extends ApplicationAdapter {
             double[] pos = sandpits.get(i).getPosition();
             sandpit.begin(ShapeRenderer.ShapeType.Filled);
             sandpit.setColor(255, 255, 0, 1);
-            sandpit.circle(metersToPixel(convert(pos[0])) + originX, metersToPixel(convert(pos[1])) + originY, metersToPixel(convert(sandpits.get(i).getRadius())));
+            sandpit.circle(metersToPixel(convert(pos[0])) + originX, metersToPixel(convert(pos[1])) + originY,
+                    metersToPixel(convert(sandpits.get(i).getRadius())));
             sandpit.end();
+        }
+
+        for (int i = 0; i < trees.size(); i++) {
+            double[] pos = trees.get(i).get_position();
+            tree.begin(ShapeRenderer.ShapeType.Filled);
+            tree.setColor(Color.BROWN);
+            tree.circle(metersToPixel(convert(pos[0])) + originX, metersToPixel(convert(pos[1])) + originY,
+                    metersToPixel(convert(trees.get(i).get_radius())));
+            tree.end();
         }
 
         target.begin(ShapeRenderer.ShapeType.Filled);
@@ -260,7 +277,7 @@ public class RockGolf extends ApplicationAdapter {
             }
         }
     }
-    
+
     private void getIntensity(ShapeRenderer launchVector) { // get the intensity of the launch vector
         if (in.finalVectorX != 0) {
             launchVector.line(xPosition, yPosition, in.finalVectorX, (originY * 2) - in.finalVectorY);
