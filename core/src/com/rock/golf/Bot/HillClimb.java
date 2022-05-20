@@ -21,10 +21,19 @@ public class HillClimb extends Bot {
     @Override
     public double[] getMove() {
         long time = System.currentTimeMillis();
+        double angle = convert(Math.atan2(targetPos[1] - ballPos[1], targetPos[0] -ballPos[0]));
 
-        currentShot = normalizeVelocity(new double[]{targetPos[0]-ballPos[0], targetPos[1]-ballPos[1]}, 4);
+        double[][][] shots = generate_shot_range(angle, 4, 45, 5, 5, 1);
+        currentShot = process_shots(shots, EuclideanDistance(ballPos), 0);
         currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
         currentShotDistance = EuclideanDistance(currentShotCoords);
+
+        angle = convert(Math.atan2(currentShot[1], currentShot[0]));
+        shots = generate_shot_range(angle, 5, 20, 3, 4.5, 10);
+        currentShot = process_shots(shots, EuclideanDistance(ballPos), 0);
+        currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
+        currentShotDistance = EuclideanDistance(currentShotCoords);
+
 
         int counter = 0;
         while (currentShotDistance >= targetRadius && counter < 5) {
@@ -96,7 +105,7 @@ public class HillClimb extends Bot {
         double reference = currentShotDistance;
         int result = -1;
         for (int i = 0; i < successorCoords.length; i++) {
-            if (successorCoords[i] != null && acceptance(successorCoords[i], reference)) {
+            if (successorCoords[i] != null && !engine.is_in_water(successorCoords[i]) && acceptance(successorCoords[i], reference)) {
                 result = i;
                 reference = EuclideanDistance(successorCoords[i]);
                 System.out.println("New Shortest Distance: " + (reference - targetRadius));

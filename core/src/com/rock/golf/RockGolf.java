@@ -1,6 +1,7 @@
 package com.rock.golf;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,12 +13,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.rock.golf.Bot.AngleBot;
 import com.rock.golf.Bot.AIBot;
-import com.rock.golf.Bot.AiBot2;
 import com.rock.golf.Bot.Bruteforce;
-import com.rock.golf.Bot.PSOBot;
 import com.rock.golf.Bot.RuleBasedBot;
-import com.rock.golf.Bot.HillClimb;
 import com.rock.golf.Bot.HillClimb;
 import com.rock.golf.Bot.StochasticBot;
 import com.rock.golf.Input.*;
@@ -55,12 +54,10 @@ public class RockGolf extends ApplicationAdapter {
     private Runnable engine;
     private StochasticBot stochasticBot;
     private Bruteforce hillClimb;
-    private AIBot veryDumbBot;
-    private AiBot2 botWhosMid;
-    private HillClimb exp;
+    private AngleBot angleBot;
+    private AIBot aiBot;
     private HillClimb steepestDescent;
     private RuleBasedBot RuleBasedBot;
-    private PSOBot PSOBot;
     private ExecutorService executor;
     private SpriteBatch position, shot;
     private BitmapFont font;
@@ -284,35 +281,40 @@ public class RockGolf extends ApplicationAdapter {
                 executor.execute(engine);
             } else if (keycode == Input.Keys.ALT_RIGHT) {
                 stochasticBot = new StochasticBot(botEngine, 1);
-                double[] vel = stochasticBot.getMove();
-                InputModule.set_new_velocity(vel[0], vel[1]);
+                double[] shot = stochasticBot.getMove();
+                System.out.println("Best shot found: [x-velocity, y-velocity] = " + Arrays.toString(shot));
+                InputModule.set_new_velocity(shot[0], shot[1]);
                 prepare_new_shot();
                 executor.execute(botEngine);
-                System.out.println("Shot! Distance from target: " + vel[2]);
 
             } else if (keycode == Input.Keys.CONTROL_RIGHT) {
                 hillClimb = new Bruteforce(botEngine, 1);
-                double[] vel = hillClimb.getMove();
-                InputModule.set_new_velocity(vel[0], vel[1]);
+                double[] shot = hillClimb.getMove();
+                System.out.println("Best shot found: [x-velocity, y-velocity] = " + Arrays.toString(shot));
+                InputModule.set_new_velocity(shot[0], shot[1]);
                 prepare_new_shot();
                 executor.execute(botEngine);
 
             } else if (keycode == Input.Keys.H) {
-                steepestDescent = new HillClimb(botEngine, 1000, 10);
+                steepestDescent = new HillClimb(botEngine, 800, 100);
                 double[] shot = steepestDescent.getMove();
+                System.out.println("Best shot found: [x-velocity, y-velocity] = " + Arrays.toString(shot));
                 InputModule.set_new_velocity(shot[0], shot[1]);
                 prepare_new_shot();
                 executor.execute(botEngine);
+
             } else if (keycode == Input.Keys.TAB) {
-                veryDumbBot = new AIBot(botEngine);
-                double[] shot = veryDumbBot.get_shot();
+                angleBot = new AngleBot(botEngine);
+                double[] shot = angleBot.getMove();
+                System.out.println("Best shot found: [x-velocity, y-velocity] = " + Arrays.toString(shot));
                 InputModule.set_new_velocity(shot[0], shot[1]);
                 prepare_new_shot();
                 executor.execute(botEngine);
 
             } else if (keycode == Input.Keys.SHIFT_LEFT) {
-                botWhosMid = new AiBot2(botEngine);
-                double[] shot = botWhosMid.get_shot();
+                aiBot = new AIBot(botEngine);
+                double[] shot = aiBot.getMove();
+                System.out.println("Best shot found: [x-velocity, y-velocity] = " + Arrays.toString(shot));
                 InputModule.set_new_velocity(shot[0], shot[1]);
                 prepare_new_shot();
                 executor.execute(botEngine);
@@ -324,6 +326,7 @@ public class RockGolf extends ApplicationAdapter {
                 shotCounter = 0;
                 ((PhysicsEngine) engine).resume();
                 newShotPossible = true;
+
             } else if (keycode == Input.Keys.V) {
                 // PSOBot = new PSOBot(botEngine, 50);
                 // double[] vel = PSOBot.run();
@@ -331,8 +334,9 @@ public class RockGolf extends ApplicationAdapter {
                 // prepare_new_shot();
                 // executor.execute(botEngine);
                 RuleBasedBot = new RuleBasedBot(botEngine);
-                double[] vel = RuleBasedBot.getMove();
-                InputModule.set_new_velocity(vel[0], vel[1]);
+                double[] shot = RuleBasedBot.getMove();
+                System.out.println("Best shot found: [x-velocity, y-velocity] = " + Arrays.toString(shot));
+                InputModule.set_new_velocity(shot[0], shot[1]);
                 prepare_new_shot();
                 executor.execute(botEngine);
             }

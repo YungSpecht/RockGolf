@@ -1,13 +1,11 @@
 package com.rock.golf.Bot;
 
-import java.util.Random;
 import com.rock.golf.PhysicsEngine;
 
 public class Particle extends Bot {
     private double bestFitness = Integer.MAX_VALUE;
     private double[] bestVel;
     private double[] vel;
-    private Random rand = new Random();
     private double fitness;
     private double[] ballPos;
 
