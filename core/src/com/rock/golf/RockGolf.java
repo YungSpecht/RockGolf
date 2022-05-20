@@ -5,40 +5,33 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import javax.swing.JOptionPane;
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.rock.golf.Bot.AngleBot;
-import com.rock.golf.Bot.AIBot;
-import com.rock.golf.Bot.Bruteforce;
-import com.rock.golf.Bot.RuleBasedBot;
-import com.rock.golf.Bot.HillClimb;
-import com.rock.golf.Bot.StochasticBot;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.rock.golf.Input.*;
 import com.rock.golf.Math.Derivation;
-
 import org.mariuszgromada.math.mxparser.Function;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class RockGolf extends ApplicationAdapter {
-    public static final float metertoPixelRatio = 100;
-    public static float width;
-    public static float height;
-    float ballRadius;
+
+    final static float metertoPixelRatio = 100;
+    String state = "game";
+    static float width;
+    static float height;
+    private float ballRadius;
     private float targetRadius;
     private static float originX;
     private static float originY;
-    private static float xPosition;
-    private static float yPosition;
+    static float xPosition;
+    static float yPosition;
     private float targetxPosition;
     private float targetyPosition;
     private List<Sandpit> sandpits;
@@ -50,21 +43,16 @@ public class RockGolf extends ApplicationAdapter {
     private ArrayList<float[]> map = new ArrayList<>();
     private ArrayList<float[]> color = new ArrayList<>();
     private double[] input;
-    private double[] initialState;
+    double[] initialState;
     private Runnable engine;
-    private StochasticBot stochasticBot;
-    private Bruteforce hillClimb;
-    private AngleBot angleBot;
-    private AIBot aiBot;
-    private HillClimb steepestDescent;
-    private RuleBasedBot RuleBasedBot;
-    private ExecutorService executor;
+    ExecutorService executor;
     private SpriteBatch position, shot;
     private BitmapFont font;
-    public static int shotCounter;
-    public static boolean shotActive;
-    public static boolean newShotPossible;
-    public InputHandling in = new InputHandling();
+    static int shotCounter;
+    static boolean shotActive;
+    static boolean newShotPossible;
+    InputHandling in = new InputHandling();
+    private ShapeRenderer background;
 
     @Override
     public void create() {
@@ -75,6 +63,7 @@ public class RockGolf extends ApplicationAdapter {
         ball = new ShapeRenderer();
         target = new ShapeRenderer();
         sandpit = new ShapeRenderer();
+        background = new ShapeRenderer();
         launchVector = new ShapeRenderer();
         engine = new PhysicsEngine(0.01, 'h');
         executor = Executors.newFixedThreadPool(1);
@@ -84,25 +73,33 @@ public class RockGolf extends ApplicationAdapter {
         font = new BitmapFont();
         shotCounter = 0;
         shapeRenderer = new ShapeRenderer();
-        prepare_new_shot();
+        prepareNewShot();
         xPosition = metersToPixel(convert(input[5])) + originX;
         yPosition = metersToPixel(convert(input[6])) + originY;
         initialState = new double[] { input[5], input[6] };
         generateField();
-        sandpits = ((PhysicsEngine) engine).get_sandpits();
+        sandpits = ((PhysicsEngine) engine).getSandpits();
         shotActive = false;
         newShotPossible = true;
     }
 
     @Override
     public void render() {
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         createMap();
+
+        if(state.equals("menu")) {
+            renderMenu();
+            return;
+        }
+
         for (int i = 0; i < sandpits.size(); i++) {
-            double[] pos = sandpits.get(i).get_position();
+            double[] pos = sandpits.get(i).getPosition();
             sandpit.begin(ShapeRenderer.ShapeType.Filled);
             sandpit.setColor(255, 255, 0, 1);
-            sandpit.circle(metersToPixel(convert(pos[0])) + originX, metersToPixel(convert(pos[1])) + originY, metersToPixel(convert(sandpits.get(i).get_radius())));
+            sandpit.circle(metersToPixel(convert(pos[0])) + originX, metersToPixel(convert(pos[1])) + originY, metersToPixel(convert(sandpits.get(i).getRadius())));
             sandpit.end();
         }
 
@@ -116,8 +113,7 @@ public class RockGolf extends ApplicationAdapter {
         ball.end();
 
         position.begin();
-        font.draw(position, "X: " + (xPosition - originX) + " Y: " + (yPosition - originY), 20,
-                Gdx.graphics.getHeight() - 20);
+        font.draw(position, "X: " + (xPosition - originX) + " Y: " + (yPosition - originY), 20, Gdx.graphics.getHeight() - 20);
         position.end();
 
         shot.begin();
@@ -129,6 +125,18 @@ public class RockGolf extends ApplicationAdapter {
         launchVector.end();
     }
 
+    private void renderMenu() {
+
+        background.begin(ShapeRenderer.ShapeType.Filled);
+        background.setColor(new Color(0, 0, 0, 0.8f));
+        background.rect(0, 0, width, height);
+        background.end();
+
+        shot.begin();
+        font.draw(shot, "Select the bot:\n\n S: Stochastic\n B: Bruteforce\n H: HillClimb\n A: AngleBot\n I: AIBot\n R: Rule-based", originX - 50, originY+100);
+        shot.end();
+    }
+
     /**
      * This method is used to update the display of the x- and y- position in the
      * UI.
@@ -136,7 +144,7 @@ public class RockGolf extends ApplicationAdapter {
      * 
      * @param vector The state vector containing the updated x- and y- position.
      */
-    public static void update_position(StateVector vector) {
+    public static void updatePosition(StateVector vector) {
         xPosition = originX + metersToPixel(convert(vector.getXPos()));
         yPosition = originY + metersToPixel(convert(vector.getYPos()));
     }
@@ -151,12 +159,20 @@ public class RockGolf extends ApplicationAdapter {
      * @param d A double value
      * @return The double value converted to float
      */
+
     private static float convert(double d) {
         Double tmp = Double.valueOf(d);
         return tmp.floatValue();
     }
 
-    private static float metersToPixel(float e) {
+    /**
+     * This method converts meters to pixel using a global ratio
+     * 
+     * @param e meters
+     * @return pixels
+     */
+
+    static float metersToPixel(float e) {
         return e * metertoPixelRatio;
     }
 
@@ -165,7 +181,8 @@ public class RockGolf extends ApplicationAdapter {
      * the user decided to change the position and size of the target or the size
      * of the ball.
      */
-    public void prepare_new_shot() {
+
+    public void prepareNewShot() {
         input = ((PhysicsEngine) engine).get_input();
         targetxPosition = metersToPixel(convert(input[2])) + originX;
         targetyPosition = metersToPixel(convert(input[3])) + originY;
@@ -182,8 +199,9 @@ public class RockGolf extends ApplicationAdapter {
 
     /**
      * This method calculates the coloration of the course based on the height
-     * of the course in every position. (?)
+     * of the course in every position.
      */
+
     private void generateField() {
         Function profile = InputModule.get_profile();
 
@@ -221,6 +239,7 @@ public class RockGolf extends ApplicationAdapter {
      * Create the map from the generation every frame
      *
      */
+
     private void createMap() {
         int sizeX = Gdx.graphics.getWidth();
         int sizeY = Gdx.graphics.getHeight();
@@ -261,64 +280,29 @@ public class RockGolf extends ApplicationAdapter {
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
 
-    public class InputHandling implements InputProcessor {
+    /**
+     *
+     * This class handles the user inputs
+     *
+     */
+
+    public class InputHandling implements InputProcessor  {
         private int downX;
         private int downY;
-        public double distanceX;
-        public double distanceY;
-        public double finalVelocity;
-        public int finalVectorX;
-        public int finalVectorY;
+        private double distanceX;
+        private double distanceY;
+        private int finalVectorX;
+        private int finalVectorY;
 
         @Override
         public boolean keyDown(int keycode) {
-            PhysicsEngine botEngine = new PhysicsEngine(0.01, 'h');
+            
             if (keycode == Input.Keys.ENTER && !shotActive && newShotPossible) {
                 String x = JOptionPane.showInputDialog("Insert x speed:");
                 String y = JOptionPane.showInputDialog("Insert y speed:");
                 InputModule.set_new_velocity(Double.parseDouble(x), Double.parseDouble(y));
-                prepare_new_shot();
+                prepareNewShot();
                 executor.execute(engine);
-            } else if (keycode == Input.Keys.ALT_RIGHT) {
-                stochasticBot = new StochasticBot(botEngine, 1);
-                double[] shot = stochasticBot.getMove();
-                System.out.println("Best shot found: [x-velocity, y-velocity] = " + Arrays.toString(shot));
-                InputModule.set_new_velocity(shot[0], shot[1]);
-                prepare_new_shot();
-                executor.execute(botEngine);
-
-            } else if (keycode == Input.Keys.CONTROL_RIGHT) {
-                hillClimb = new Bruteforce(botEngine, 1);
-                double[] shot = hillClimb.getMove();
-                System.out.println("Best shot found: [x-velocity, y-velocity] = " + Arrays.toString(shot));
-                InputModule.set_new_velocity(shot[0], shot[1]);
-                prepare_new_shot();
-                executor.execute(botEngine);
-
-            } else if (keycode == Input.Keys.H) {
-                steepestDescent = new HillClimb(botEngine, 800, 100);
-                double[] shot = steepestDescent.getMove();
-                System.out.println("Best shot found: [x-velocity, y-velocity] = " + Arrays.toString(shot));
-                InputModule.set_new_velocity(shot[0], shot[1]);
-                prepare_new_shot();
-                executor.execute(botEngine);
-
-            } else if (keycode == Input.Keys.TAB) {
-                angleBot = new AngleBot(botEngine);
-                double[] shot = angleBot.getMove();
-                System.out.println("Best shot found: [x-velocity, y-velocity] = " + Arrays.toString(shot));
-                InputModule.set_new_velocity(shot[0], shot[1]);
-                prepare_new_shot();
-                executor.execute(botEngine);
-
-            } else if (keycode == Input.Keys.SHIFT_LEFT) {
-                aiBot = new AIBot(botEngine);
-                double[] shot = aiBot.getMove();
-                System.out.println("Best shot found: [x-velocity, y-velocity] = " + Arrays.toString(shot));
-                InputModule.set_new_velocity(shot[0], shot[1]);
-                prepare_new_shot();
-                executor.execute(botEngine);
-
             } else if (keycode == Input.Keys.ESCAPE) {
                 xPosition = metersToPixel(convert(initialState[0])) + originX;
                 yPosition = metersToPixel(convert(initialState[1])) + originY;
@@ -326,20 +310,12 @@ public class RockGolf extends ApplicationAdapter {
                 shotCounter = 0;
                 ((PhysicsEngine) engine).resume();
                 newShotPossible = true;
-
-            } else if (keycode == Input.Keys.V) {
-                // PSOBot = new PSOBot(botEngine, 50);
-                // double[] vel = PSOBot.run();
-                // InputModule.set_new_velocity(vel[0], vel[1]);
-                // prepare_new_shot();
-                // executor.execute(botEngine);
-                RuleBasedBot = new RuleBasedBot(botEngine);
-                double[] shot = RuleBasedBot.getMove();
-                System.out.println("Best shot found: [x-velocity, y-velocity] = " + Arrays.toString(shot));
-                InputModule.set_new_velocity(shot[0], shot[1]);
-                prepare_new_shot();
-                executor.execute(botEngine);
+            } else if(keycode == Input.Keys.M) {
+                switchState();
+            } else if(keycode == Input.Keys.D) {
+                System.out.println(((PhysicsEngine) engine).tolerance);
             }
+
             return false;
         }
 
@@ -362,29 +338,21 @@ public class RockGolf extends ApplicationAdapter {
 
         @Override
         public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-            this.distanceX = (downX - screenX) / 40;
-            this.distanceY = (screenY - downY) / 40;
-            finalVelocity = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+            this.distanceX = (downX - screenX) / 100;
+            this.distanceY = (screenY - downY) / 100;
+            double finalVelocity = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
 
-            while (finalVelocity > 5) {
-                if (distanceX > 0)
-                    distanceX = distanceX - 0.1;
-                else
-                    distanceX = distanceX + 0.1;
-
-                if (distanceY > 0)
-                    distanceY = distanceY - 0.1;
-                else
-                    distanceY = distanceY + 0.1;
-
-                finalVelocity = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+            if(finalVelocity > 5) {
+                double[] vel = normalizeVelocity(new double[]{distanceX, distanceY}, 5);
+                distanceX = vel[0];
+                distanceY = vel[1];
             }
-
             if (!shotActive && newShotPossible) {
                 InputModule.set_new_velocity(distanceX, distanceY);
-                prepare_new_shot();
+                prepareNewShot();
                 executor.execute(engine);
             }
+
             finalVectorX = 0;
             finalVectorY = 0;
             return false;
@@ -409,5 +377,22 @@ public class RockGolf extends ApplicationAdapter {
         public boolean scrolled(float amountX, float amountY) {
             return false;
         }
+
+        private double[] normalizeVelocity(double[] velocities, double velocity) {
+            double currentVel = Math.sqrt(Math.pow(velocities[0], 2) + Math.pow(velocities[1], 2));
+            double scalar = velocity / currentVel;
+            return new double[] { velocities[0] * scalar, velocities[1] * scalar };
+
+        }
+    }
+
+    public void switchState() {
+        if(state.equals("menu")) {
+            state = "game";
+            Gdx.input.setInputProcessor(in);
+        } else {
+            state = "menu";
+            Gdx.input.setInputProcessor(new BotHandler(this, (PhysicsEngine) engine));
+        };
     }
 }

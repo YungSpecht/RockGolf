@@ -26,7 +26,7 @@ public class PhysicsEngine implements Runnable {
     private List<Sandpit> sandpits;
     private Solver solver;
     private char rkMode = 'h';
-
+    public double tolerance = 0.1;
 
     // Bot constructor
     public PhysicsEngine(double h, char rkMode) {
@@ -59,24 +59,30 @@ public class PhysicsEngine implements Runnable {
         Double step = h * 1000;
         long timestep = step.longValue();
         long checkpoint = System.currentTimeMillis();
-        while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !is_in_water(new double[]{vector.getXPos(), vector.getYPos()}) && ball_in_screen(new double[]{vector.getXPos(), vector.getYPos()})) {
+        System.out.println(ball_in_screen(new double[]{vector.getXPos(), vector.getYPos()}, tolerance));
+        while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !is_in_water(new double[]{vector.getXPos(), vector.getYPos()}) && ball_in_screen(new double[]{vector.getXPos(), vector.getYPos()}, tolerance)) {
+            
             long currentTime = System.currentTimeMillis();
             if(currentTime - checkpoint > timestep){
                 Sandpit currentSandpit = current_sandpit();
                 if(currentSandpit != null){
-                    solver.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS());
+                    solver.update_friction(currentSandpit.getUK(), currentSandpit.getUS());
                 }
                 else{
                     solver.update_friction(uK, uS);
                 }
                 vector = solver.compute_step(vector);
-                RockGolf.update_position(vector);
+                RockGolf.updatePosition(vector);
                 checkpoint = System.currentTimeMillis();
             }
             if (abort) {
                 break;
             }
         }
+
+        if(!ball_in_screen(new double[]{vector.getXPos(), vector.getYPos()}, -tolerance)) tolerance = 0.1;
+        else tolerance = 0;
+
         InputModule.set_new_position(vector.getXPos(), vector.getYPos());
         RockGolf.shotActive = false;
     }
@@ -98,10 +104,11 @@ public class PhysicsEngine implements Runnable {
             case 'l' : solver = new RK2Solver(uK, uS, h, golfCourse); break;
             case 'h' : solver = new RK4Solver(uK, uS, h, golfCourse); break;
         }
-        while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !is_in_water(new double[]{vector.getXPos(), vector.getYPos()}) && ball_in_screen(new double[]{vector.getXPos(), vector.getYPos()})) {
+        while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !is_in_water(new double[]{vector.getXPos(), vector.getYPos()}) && ball_in_screen(new double[]{vector.getXPos(), vector.getYPos()}, tolerance)) {
+            
             Sandpit currentSandpit = current_sandpit();
             if (currentSandpit != null) {
-                solver.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS());
+                solver.update_friction(currentSandpit.getUK(), currentSandpit.getUS());
             } else {
                 solver.update_friction(uK, uS);
             }
@@ -110,6 +117,10 @@ public class PhysicsEngine implements Runnable {
                 break;
             }
         }
+
+        if(!ball_in_screen(new double[]{vector.getXPos(), vector.getYPos()}, -tolerance)) tolerance = 0.1;
+        else tolerance = 0;
+
         return new double[] { vector.getXPos(), vector.getYPos() };
     }
 
@@ -211,9 +222,9 @@ public class PhysicsEngine implements Runnable {
      * @return        Boolean value: true if ball is about to start rolling again, false if
      *                not.
      */
-    public boolean ball_in_screen(double[] ballPos) {
-        boolean xIn = ballPos[0] < ((RockGolf.width/2) / RockGolf.metertoPixelRatio) && ballPos[0] > -((RockGolf.width/2) / RockGolf.metertoPixelRatio);
-        boolean yIn = ballPos[1] < ((RockGolf.height/2) / RockGolf.metertoPixelRatio) && ballPos[1] > -((RockGolf.height/2) / RockGolf.metertoPixelRatio);
+    public boolean ball_in_screen(double[] ballPos, double tolerance) {
+        boolean xIn = ballPos[0] - tolerance < ((RockGolf.width/2) / RockGolf.metertoPixelRatio) && ballPos[0] + tolerance > -((RockGolf.width/2) / RockGolf.metertoPixelRatio);
+        boolean yIn = ballPos[1] - tolerance < ((RockGolf.height/2) / RockGolf.metertoPixelRatio) && ballPos[1] + tolerance > -((RockGolf.height/2) / RockGolf.metertoPixelRatio);
         return xIn && yIn;
     }
 
@@ -237,7 +248,7 @@ public class PhysicsEngine implements Runnable {
         abort = false;
     }
 
-    public List<Sandpit> get_sandpits() {
+    public List<Sandpit> getSandpits() {
         return sandpits;
     }
 }

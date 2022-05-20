@@ -58,7 +58,6 @@ public class StateVector {
     }
 
     public String toString() {
-        return "X Position: " + XPos + "  Y Position: " + YPos + " || X Velocity: " + XSpeed + "  Y Velocity: "
-                + YSpeed;
+        return "X Position: " + XPos + "  Y Position: " + YPos + " || X Velocity: " + XSpeed + "  Y Velocity: " + YSpeed;
     }
 }

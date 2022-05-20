@@ -20,19 +20,19 @@ public class Sandpit {
         return false;
     }
 
-    public double[] get_position() {
+    public double[] getPosition() {
         return position;
     }
 
-    public double get_radius() {
+    public double getRadius() {
         return radius;
     }
 
-    public double get_uK() {
+    public double getUK() {
         return uK;
     }
 
-    public double get_uS() {
+    public double getUS() {
         return uS;
     }
 

@@ -30,6 +30,6 @@ public class StochasticBot extends Bot {
             vel = getRandomVelocities();
         }
 
-        return new double[] { best[0], best[1], previousFitness };
+        return new double[] { best[0], best[1] };
     }
 }

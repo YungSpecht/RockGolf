@@ -15,8 +15,7 @@ public abstract class Bot {
     Random rand = new Random();
 
     protected double getFitness(double[] ballPos, double[] targetPos) {
-        if (engine.is_in_water(ballPos) || !engine.ball_in_screen(ballPos))
-            return Integer.MAX_VALUE;
+        if (engine.is_in_water(ballPos)) return Integer.MAX_VALUE;
         if (Math.pow(ballPos[0] - targetPos[0], 2) + Math.pow(ballPos[1] - targetPos[1], 2) <= Math.pow(targetRadius, 2))
             return 0;
         return Math.sqrt(Math.pow((targetPos[0] - ballPos[0]), 2) + Math.pow((targetPos[1] - ballPos[1]), 2));
@@ -109,8 +108,15 @@ public abstract class Bot {
     public double[] getRandomVelocities() {
         double velX = (rand.nextDouble() * 10) - 5;
         double velY = (rand.nextDouble() * 10) - 5;
+        double finalVelocity = Math.sqrt(Math.pow(velX, 2) + Math.pow(velY, 2));
 
-        return normalizeVelocity(new double[] { velX, velY }, 5);
+        if(finalVelocity > 5) {
+            double[] vel = normalizeVelocity(new double[]{velX, velY}, 5);
+            velX = vel[0];
+            velY = vel[1];
+        }
+
+        return new double[]{velX,velY};
     }
 
     protected double[] get_velocity_range(double[] velocity, double range) {
