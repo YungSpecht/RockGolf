@@ -53,6 +53,7 @@ public class RockGolf extends ApplicationAdapter {
     public static boolean newShotPossible;
     public InputHandling in = new InputHandling();
     private ShapeRenderer background;
+    private SpriteBatch water;
 
     @Override
     public void create() {
@@ -70,6 +71,7 @@ public class RockGolf extends ApplicationAdapter {
         executor = Executors.newFixedThreadPool(1);
         Gdx.input.setInputProcessor(in);
         position = new SpriteBatch();
+        water = new SpriteBatch();
         shot = new SpriteBatch();
         font = new BitmapFont();
         shotCounter = 0;
@@ -83,11 +85,13 @@ public class RockGolf extends ApplicationAdapter {
         trees = ((PhysicsEngine) engine).get_trees();
         shotActive = false;
         newShotPossible = true;
+        
     }
 
     @Override
     public void render() {
         Gdx.gl.glEnable(GL20.GL_BLEND);
+        
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         createMap();
@@ -97,6 +101,8 @@ public class RockGolf extends ApplicationAdapter {
             return;
         }
 
+        checkStuckStatus();
+        
         for (int i = 0; i < sandpits.size(); i++) {
             double[] pos = sandpits.get(i).getPosition();
             sandpit.begin(ShapeRenderer.ShapeType.Filled);
@@ -135,6 +141,13 @@ public class RockGolf extends ApplicationAdapter {
         launchVector.begin(ShapeRenderer.ShapeType.Line);
         getIntensity(launchVector);
         launchVector.end();
+    }
+
+    private void checkStuckStatus() {
+        if(!((PhysicsEngine) engine).stuck) return;
+        water.begin();
+        font.draw(water, "Oh no, you got stuck! Press esc to reset.", 300, Gdx.graphics.getHeight() - 20);
+        water.end();
     }
 
     private void renderMenu() {
@@ -320,6 +333,7 @@ public class RockGolf extends ApplicationAdapter {
                 yPosition = metersToPixel(convert(initialState[1])) + originY;
                 InputModule.set_new_position(initialState[0], initialState[1]);
                 shotCounter = 0;
+                ((PhysicsEngine) engine).stuck = false;
                 ((PhysicsEngine) engine).resume();
                 newShotPossible = true;
             } else if(keycode == Input.Keys.M) {

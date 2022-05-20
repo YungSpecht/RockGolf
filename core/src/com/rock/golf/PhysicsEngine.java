@@ -29,6 +29,7 @@ public class PhysicsEngine implements Runnable {
     private Solver solver;
     private char rkMode = 'h';
     public double tolerance = 0.1;
+    public boolean stuck;
 
     // Bot constructor
     public PhysicsEngine(double h, char rkMode) {
@@ -68,6 +69,10 @@ public class PhysicsEngine implements Runnable {
         long timestep = step.longValue();
         long checkpoint = System.currentTimeMillis();
         while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !collidedWithTree(vector.getXPos(), vector.getYPos()) && !is_in_water(vector.getXPos(), vector.getYPos()) && ball_in_screen(new double[]{vector.getXPos(), vector.getYPos()}, tolerance)) {
+            
+            if(!ball_in_screen(new double[]{vector.getXPos(), vector.getYPos()}, 0)) tolerance = 0.1;
+            else tolerance = 0;
+
             long currentTime = System.currentTimeMillis();
             if (currentTime - checkpoint > timestep) {
                 Sandpit currentSandpit = current_sandpit();
@@ -116,6 +121,9 @@ public class PhysicsEngine implements Runnable {
         }
         while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !is_in_water(vector.getXPos(), vector.getYPos()) && ball_in_screen(new double[]{vector.getXPos(), vector.getYPos()}, tolerance)) {
             
+            if(!ball_in_screen(new double[]{vector.getXPos(), vector.getYPos()}, 0)) tolerance = 0.1;
+            else tolerance = 0;
+
             Sandpit currentSandpit = current_sandpit();
             if (currentSandpit != null) {
                 solver.update_friction(currentSandpit.getUK(), currentSandpit.getUS());
@@ -219,6 +227,7 @@ public class PhysicsEngine implements Runnable {
     public boolean is_in_water(double xPos, double yPos) {
         if (Derivation.compute(xPos, yPos, golfCourse) < 0) {
             RockGolf.newShotPossible = false;
+            stuck = true;
             return true;
         }
         return false;
