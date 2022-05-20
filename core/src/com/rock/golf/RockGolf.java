@@ -42,9 +42,10 @@ public class RockGolf extends ApplicationAdapter {
     private float targetxPosition;
     private float targetyPosition;
     private List<Sandpit> sandpits;
-    private ShapeRenderer Trees;
+    private List<Tree> trees;
     private ShapeRenderer ball;
     private ShapeRenderer sandpit;
+    private ShapeRenderer tree;
     private ShapeRenderer target;
     private ShapeRenderer shapeRenderer;
     private ShapeRenderer launchVector;
@@ -73,12 +74,12 @@ public class RockGolf extends ApplicationAdapter {
     public void create() {
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
-        Trees = new ShapeRenderer();
         originX = width / 2;
         originY = height / 2;
         ball = new ShapeRenderer();
         target = new ShapeRenderer();
         sandpit = new ShapeRenderer();
+        tree = new ShapeRenderer();
         launchVector = new ShapeRenderer();
         engine = new PhysicsEngine(0.01, 'h');
         executor = Executors.newFixedThreadPool(1);
@@ -95,6 +96,7 @@ public class RockGolf extends ApplicationAdapter {
         initialState = new double[] { input[5], input[6] };
         generateField();
         sandpits = ((PhysicsEngine) engine).get_sandpits();
+        trees = ((PhysicsEngine) engine).get_trees();
         shotActive = false;
         newShotPossible = true;
     }
@@ -112,16 +114,14 @@ public class RockGolf extends ApplicationAdapter {
             sandpit.end();
         }
 
-        Trees tree = new Trees();
-        Trees.begin(ShapeRenderer.ShapeType.Filled);
-        double[] location = tree.get_position();
-        double rad = tree.get_radius();
-        Trees.circle(metersToPixel((float) location[0]), metersToPixel((float) location[1]),
-                metersToPixel((float) rad));
-        Trees.circle(metersToPixel((float) location[2]), metersToPixel((float) location[3]),
-                metersToPixel((float) rad));
-        Trees.setColor(Color.BROWN);
-        Trees.end();
+        for (int i = 0; i < trees.size(); i++) {
+            double[] pos = trees.get(i).get_position();
+            tree.begin(ShapeRenderer.ShapeType.Filled);
+            tree.setColor(Color.BROWN);
+            tree.circle(metersToPixel(convert(pos[0])) + originX, metersToPixel(convert(pos[1])) + originY,
+                    metersToPixel(convert(trees.get(i).get_radius())));
+            tree.end();
+        }
 
         target.begin(ShapeRenderer.ShapeType.Filled);
         target.setColor(Color.BLACK);
