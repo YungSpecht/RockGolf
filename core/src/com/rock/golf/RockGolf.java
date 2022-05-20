@@ -62,6 +62,8 @@ public class RockGolf extends ApplicationAdapter {
     private ExecutorService executor;
     private SpriteBatch position, shot;
     private BitmapFont font;
+    private String status;
+    private BitmapFont condition;
     public static int shotCounter;
     public static boolean shotActive;
     public static boolean newShotPossible;
@@ -84,6 +86,7 @@ public class RockGolf extends ApplicationAdapter {
         position = new SpriteBatch();
         shot = new SpriteBatch();
         font = new BitmapFont();
+        condition = new BitmapFont();
         shotCounter = 0;
         shapeRenderer = new ShapeRenderer();
         prepare_new_shot();

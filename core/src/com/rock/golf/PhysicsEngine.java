@@ -4,7 +4,6 @@ import org.mariuszgromada.math.mxparser.Function;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.rock.golf.Input.InputModule;
 import com.rock.golf.Math.Derivation;
 import com.rock.golf.Math.RK2Solver;
@@ -12,6 +11,8 @@ import com.rock.golf.Math.RK4Solver;
 import com.rock.golf.Math.Solver;
 
 public class PhysicsEngine implements Runnable {
+
+    Trees tree = new Trees();
 
     // constants
     public static final double g = 9.81;
@@ -37,7 +38,7 @@ public class PhysicsEngine implements Runnable {
         abort = false;
         this.h = h;
         sandpits = new ArrayList<Sandpit>();
-        // sandpits.add(new Sandpit(new double[]{-4, 4}, 1, uK, uS));
+        // sandpits.add(new Sandpit(new double[] { -4, 4 }, 1, uK, uS));
     }
 
     @Override
@@ -65,9 +66,9 @@ public class PhysicsEngine implements Runnable {
         long timestep = step.longValue();
         long checkpoint = System.currentTimeMillis();
         while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target())
+                && !is_at_tree(new double[] { vector.getXPos(), vector.getYPos() }, 0.4)
                 && !is_in_water(new double[] { vector.getXPos(), vector.getYPos() })
-                && ball_in_screen(new double[] { vector.getXPos(), vector.getYPos() })
-                && !is_at_tree(new double[] { vector.getXPos(), vector.getYPos() })) {
+                && ball_in_screen(new double[] { vector.getXPos(), vector.getYPos() })) {
             long currentTime = System.currentTimeMillis();
             if (currentTime - checkpoint > timestep) {
                 Sandpit currentSandpit = current_sandpit();
@@ -110,9 +111,9 @@ public class PhysicsEngine implements Runnable {
                 break;
         }
         while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target())
+                && !is_at_tree(new double[] { vector.getXPos(), vector.getYPos() }, 0.4)
                 && !is_in_water(new double[] { vector.getXPos(), vector.getYPos() })
-                && ball_in_screen(new double[] { vector.getXPos(), vector.getYPos() })
-                && !is_at_tree(new double[] { vector.getXPos(), vector.getYPos() })) {
+                && ball_in_screen(new double[] { vector.getXPos(), vector.getYPos() })) {
             Sandpit currentSandpit = current_sandpit();
             if (currentSandpit != null) {
                 solver.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS());
@@ -204,11 +205,18 @@ public class PhysicsEngine implements Runnable {
         return false;
     }
 
-    public boolean is_at_tree(double[] ballPos) {
-        Trees tree = new Trees();
+    /**
+     * This method determines wether the ball collided with a tree.
+     * 
+     * @param ballPos Array containing the current x and y position of the ball.
+     * @return Boolean value: true if ball is inside target, false if not.
+     */
 
-        if (tree.collision_with_tree(ballPos[0], ballPos[1]) == true) {
-            RockGolf.newShotPossible = false;
+    public boolean is_at_tree(double[] ballPos, double radius) {
+        double[] position = tree.get_position();
+        if (Math.pow(ballPos[0] - position[0], 2) + Math.pow(ballPos[1] - position[1], 2) <= Math.pow(radius, 2)
+                || Math.pow(ballPos[0] - position[2], 2) + Math.pow(ballPos[1] - position[3], 2) <= Math.pow(radius,
+                        2)) {
             return true;
         }
         return false;
