@@ -1,7 +1,6 @@
 package com.rock.golf;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,7 +10,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.rock.golf.Input.*;
 import com.rock.golf.Math.Derivation;
 import org.mariuszgromada.math.mxparser.Function;
@@ -50,8 +48,6 @@ public class RockGolf extends ApplicationAdapter {
     ExecutorService executor;
     private SpriteBatch position, shot;
     private BitmapFont font;
-    private String status;
-    private BitmapFont condition;
     public static int shotCounter;
     public static boolean shotActive;
     public static boolean newShotPossible;
@@ -76,7 +72,6 @@ public class RockGolf extends ApplicationAdapter {
         position = new SpriteBatch();
         shot = new SpriteBatch();
         font = new BitmapFont();
-        condition = new BitmapFont();
         shotCounter = 0;
         shapeRenderer = new ShapeRenderer();
         prepareNewShot();

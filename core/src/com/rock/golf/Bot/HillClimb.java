@@ -129,7 +129,7 @@ public class HillClimb extends Bot {
         if(EuclideanDistance(coords) < refDistance){
             return true;
         }
-        double control = currentTemp / (MAX_TEMP * (EuclideanDistance(coords)*2 - refDistance));
+        double control = currentTemp / (MAX_TEMP * (EuclideanDistance(coords)*12 - refDistance));
         double rando = rand.nextDouble();
         return rando < control;
     }

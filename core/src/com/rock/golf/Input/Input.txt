@@ -6,8 +6,8 @@ target-y-position: 1
 target-radius: 0.15
 ball-x-position: -3.0
 ball-y-position: 0.0
-x-velocity: 4.162277157444283
-y-velocity: 0.1912066309745802
+x-velocity: 3.3843633509894224
+y-velocity: 1.4108611387815926
 
 
 
