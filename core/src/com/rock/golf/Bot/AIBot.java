@@ -18,8 +18,9 @@ public class AIBot extends Bot{
     public double[] getMove() {
         long time = System.currentTimeMillis();
         bestShotAngle = convert(Math.atan2(targetPos[1] - ballPos[1], targetPos[0] - ballPos[0]));
+        bestShotDistance = EuclideanDistance(ballPos);
 
-        double[][][] shots = generate_shot_range(bestShotAngle, 3, 45, 5, 5, 1);
+        double[][][] shots = generate_shot_range(bestShotAngle, 4, 45, 5, 5, 1);
         evaluate(shots, 0.2);
         if(bestShotDistance < targetRadius){
             System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
