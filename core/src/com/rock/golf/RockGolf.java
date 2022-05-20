@@ -109,7 +109,7 @@ public class RockGolf extends ApplicationAdapter {
             sandpit.end();
         }
 
-        Tree tree = new Tree();
+        Trees tree = new Trees();
         Trees.begin(ShapeRenderer.ShapeType.Filled);
         double[] location = tree.get_position();
         double rad = tree.get_radius();

@@ -3,6 +3,8 @@ package com.rock.golf;
 import org.mariuszgromada.math.mxparser.Function;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.badlogic.gdx.scenes.scene2d.ui.Tree;
 import com.rock.golf.Input.InputModule;
 import com.rock.golf.Math.Derivation;
 import com.rock.golf.Math.RK2Solver;
@@ -26,7 +28,6 @@ public class PhysicsEngine implements Runnable {
     private List<Sandpit> sandpits;
     private Solver solver;
     private char rkMode = 'h';
-
 
     // Bot constructor
     public PhysicsEngine(double h, char rkMode) {
@@ -52,21 +53,26 @@ public class PhysicsEngine implements Runnable {
         RockGolf.shotActive = true;
         RockGolf.shotCounter++;
         set_variables();
-        switch(rkMode){
-            case 'l' : solver = new RK2Solver(uK, uS, h, golfCourse); break;
-            case 'h' : solver = new RK4Solver(uK, uS, h, golfCourse); break;
+        switch (rkMode) {
+            case 'l':
+                solver = new RK2Solver(uK, uS, h, golfCourse);
+                break;
+            case 'h':
+                solver = new RK4Solver(uK, uS, h, golfCourse);
+                break;
         }
         Double step = h * 1000;
         long timestep = step.longValue();
         long checkpoint = System.currentTimeMillis();
-        while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !is_in_water(new double[]{vector.getXPos(), vector.getYPos()}) && ball_in_screen(new double[]{vector.getXPos(), vector.getYPos()})) {
+        while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target())
+                && !is_in_water(new double[] { vector.getXPos(), vector.getYPos() })
+                && ball_in_screen(new double[] { vector.getXPos(), vector.getYPos() })) {
             long currentTime = System.currentTimeMillis();
-            if(currentTime - checkpoint > timestep){
+            if (currentTime - checkpoint > timestep) {
                 Sandpit currentSandpit = current_sandpit();
-                if(currentSandpit != null){
+                if (currentSandpit != null) {
                     solver.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS());
-                }
-                else{
+                } else {
                     solver.update_friction(uK, uS);
                 }
                 vector = solver.compute_step(vector);
@@ -86,19 +92,25 @@ public class PhysicsEngine implements Runnable {
      * 
      * @param velX The initial x velocity of the shot.
      * @param velY The initial y velocity of the shot
-     * @return     Array containing the final x and y position resulting
-     *             from the shot.
+     * @return Array containing the final x and y position resulting
+     *         from the shot.
      */
 
     public double[] get_shot(double velX, double velY) {
         set_variables();
         vector.setXSpeed(velX);
         vector.setYSpeed(velY);
-        switch(rkMode){
-            case 'l' : solver = new RK2Solver(uK, uS, h, golfCourse); break;
-            case 'h' : solver = new RK4Solver(uK, uS, h, golfCourse); break;
+        switch (rkMode) {
+            case 'l':
+                solver = new RK2Solver(uK, uS, h, golfCourse);
+                break;
+            case 'h':
+                solver = new RK4Solver(uK, uS, h, golfCourse);
+                break;
         }
-        while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target()) && !is_in_water(new double[]{vector.getXPos(), vector.getYPos()}) && ball_in_screen(new double[]{vector.getXPos(), vector.getYPos()})) {
+        while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target())
+                && !is_in_water(new double[] { vector.getXPos(), vector.getYPos() })
+                && ball_in_screen(new double[] { vector.getXPos(), vector.getYPos() })) {
             Sandpit currentSandpit = current_sandpit();
             if (currentSandpit != null) {
                 solver.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS());
@@ -179,7 +191,7 @@ public class PhysicsEngine implements Runnable {
      * This method determines wether the ball is currently in a body of water.
      * 
      * @param ballPos Array containing the current x and y position of the ball.
-     * @return        Boolean value: true if ball is inside target, false if not.
+     * @return Boolean value: true if ball is inside target, false if not.
      */
 
     public boolean is_in_water(double[] ballPos) {
@@ -190,11 +202,24 @@ public class PhysicsEngine implements Runnable {
         return false;
     }
 
+    public boolean is_at_tree(double[] ballPos) {
+        Trees tree = new Trees();
+
+        if (tree.collision_with_tree(ballPos[0], ballPos[1]) == false) {
+            RockGolf.newShotPossible = false;
+            return true;
+        }
+        return false;
+    }
+
     /**
-     * This method determines wether the downhillforce acting upon the golf ball in rest
-     * is greater than the static friction, which would cause it to start rolling again.
+     * This method determines wether the downhillforce acting upon the golf ball in
+     * rest
+     * is greater than the static friction, which would cause it to start rolling
+     * again.
      * 
-     * @return Boolean value: true if ball is about to start rolling again, false if not.
+     * @return Boolean value: true if ball is about to start rolling again, false if
+     *         not.
      */
 
     private boolean hill_is_steep() {
@@ -208,12 +233,14 @@ public class PhysicsEngine implements Runnable {
      * bounds of the graphical application.
      * 
      * @param ballPos Array containing the current x and y position of the ball.
-     * @return        Boolean value: true if ball is about to start rolling again, false if
-     *                not.
+     * @return Boolean value: true if ball is about to start rolling again, false if
+     *         not.
      */
     public boolean ball_in_screen(double[] ballPos) {
-        boolean xIn = ballPos[0] < ((RockGolf.width/2) / RockGolf.metertoPixelRatio) && ballPos[0] > -((RockGolf.width/2) / RockGolf.metertoPixelRatio);
-        boolean yIn = ballPos[1] < ((RockGolf.height/2) / RockGolf.metertoPixelRatio) && ballPos[1] > -((RockGolf.height/2) / RockGolf.metertoPixelRatio);
+        boolean xIn = ballPos[0] < ((RockGolf.width / 2) / RockGolf.metertoPixelRatio)
+                && ballPos[0] > -((RockGolf.width / 2) / RockGolf.metertoPixelRatio);
+        boolean yIn = ballPos[1] < ((RockGolf.height / 2) / RockGolf.metertoPixelRatio)
+                && ballPos[1] > -((RockGolf.height / 2) / RockGolf.metertoPixelRatio);
         return xIn && yIn;
     }
 

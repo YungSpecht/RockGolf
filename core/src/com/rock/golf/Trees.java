@@ -1,12 +1,12 @@
 package com.rock.golf;
 
-public class Tree {
+public class Trees {
 
     private double position[] = { 1, 5, 8, 3 };
     private double radius = 0.4;
 
     public boolean collision_with_tree(double xPos, double yPos) {
-        if (Math.pow(xPos - position[0], 2) + Math.pow(yPos - position[1], 2) <= Math.pow(radius, 2)) {
+        if (Math.pow(xPos - position[0], 0.4) + Math.pow(yPos - position[1], 0.4) <= Math.pow(radius, 0.4)) {
             return true;
         }
         return false;
