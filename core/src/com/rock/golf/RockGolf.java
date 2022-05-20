@@ -42,6 +42,7 @@ public class RockGolf extends ApplicationAdapter {
     private float targetxPosition;
     private float targetyPosition;
     private List<Sandpit> sandpits;
+    private ShapeRenderer Trees;
     private ShapeRenderer ball;
     private ShapeRenderer sandpit;
     private ShapeRenderer target;
@@ -70,6 +71,7 @@ public class RockGolf extends ApplicationAdapter {
     public void create() {
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
+        Trees = new ShapeRenderer();
         originX = width / 2;
         originY = height / 2;
         ball = new ShapeRenderer();
@@ -102,9 +104,21 @@ public class RockGolf extends ApplicationAdapter {
             double[] pos = sandpits.get(i).get_position();
             sandpit.begin(ShapeRenderer.ShapeType.Filled);
             sandpit.setColor(255, 255, 0, 1);
-            sandpit.circle(metersToPixel(convert(pos[0])) + originX, metersToPixel(convert(pos[1])) + originY, metersToPixel(convert(sandpits.get(i).get_radius())));
+            sandpit.circle(metersToPixel(convert(pos[0])) + originX, metersToPixel(convert(pos[1])) + originY,
+                    metersToPixel(convert(sandpits.get(i).get_radius())));
             sandpit.end();
         }
+
+        Tree tree = new Tree();
+        Trees.begin(ShapeRenderer.ShapeType.Filled);
+        double[] location = tree.get_position();
+        double rad = tree.get_radius();
+        Trees.circle(metersToPixel((float) location[0]), metersToPixel((float) location[1]),
+                metersToPixel((float) rad));
+        Trees.circle(metersToPixel((float) location[2]), metersToPixel((float) location[3]),
+                metersToPixel((float) rad));
+        Trees.setColor(Color.BROWN);
+        Trees.end();
 
         target.begin(ShapeRenderer.ShapeType.Filled);
         target.setColor(Color.BLACK);
@@ -241,7 +255,7 @@ public class RockGolf extends ApplicationAdapter {
             }
         }
     }
-    
+
     private void getIntensity(ShapeRenderer launchVector) { // get the intensity of the launch vector
         if (in.finalVectorX != 0) {
             launchVector.line(xPosition, yPosition, in.finalVectorX, (originY * 2) - in.finalVectorY);
