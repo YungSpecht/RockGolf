@@ -66,7 +66,8 @@ public class PhysicsEngine implements Runnable {
         long checkpoint = System.currentTimeMillis();
         while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target())
                 && !is_in_water(new double[] { vector.getXPos(), vector.getYPos() })
-                && ball_in_screen(new double[] { vector.getXPos(), vector.getYPos() })) {
+                && ball_in_screen(new double[] { vector.getXPos(), vector.getYPos() })
+                && !is_at_tree(new double[] { vector.getXPos(), vector.getYPos() })) {
             long currentTime = System.currentTimeMillis();
             if (currentTime - checkpoint > timestep) {
                 Sandpit currentSandpit = current_sandpit();
@@ -110,7 +111,8 @@ public class PhysicsEngine implements Runnable {
         }
         while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target())
                 && !is_in_water(new double[] { vector.getXPos(), vector.getYPos() })
-                && ball_in_screen(new double[] { vector.getXPos(), vector.getYPos() })) {
+                && ball_in_screen(new double[] { vector.getXPos(), vector.getYPos() })
+                && !is_at_tree(new double[] { vector.getXPos(), vector.getYPos() })) {
             Sandpit currentSandpit = current_sandpit();
             if (currentSandpit != null) {
                 solver.update_friction(currentSandpit.get_uK(), currentSandpit.get_uS());
@@ -205,7 +207,7 @@ public class PhysicsEngine implements Runnable {
     public boolean is_at_tree(double[] ballPos) {
         Trees tree = new Trees();
 
-        if (tree.collision_with_tree(ballPos[0], ballPos[1]) == false) {
+        if (tree.collision_with_tree(ballPos[0], ballPos[1]) == true) {
             RockGolf.newShotPossible = false;
             return true;
         }
