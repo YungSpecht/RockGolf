@@ -34,6 +34,7 @@ public class AngleBot extends Bot{
      
     @Override
     public double[] getMove() {
+        long time = System.currentTimeMillis();
         bestShot = new double[2];
         bestShotCoords = new double[] { currentState.getXPos(), currentState.getYPos() };
         bestShotDistance = EuclideanDistance(bestShotCoords);
@@ -45,6 +46,7 @@ public class AngleBot extends Bot{
         double[][][] rightShots = arrange_shots(shotsArray, 'r');
         get_best_shot(centerShots, leftShots, rightShots, 6);
         if (bestShotDistance < targetRad) {
+            System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
             return bestShot;
         }
 
@@ -60,10 +62,12 @@ public class AngleBot extends Bot{
             rightShots = arrange_shots(shotsArray, 'r');
             get_best_shot(centerShots, leftShots, rightShots, counter);
             if (bestShotDistance < targetRad) {
+                System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
                 return bestShot;
             }
             System.out.println("Iteration: " + ++counter);
         }
+        System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
         return bestShot;
     }
 

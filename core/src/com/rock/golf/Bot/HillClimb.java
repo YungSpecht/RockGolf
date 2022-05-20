@@ -27,12 +27,20 @@ public class HillClimb extends Bot {
         currentShot = process_shots(shots, EuclideanDistance(ballPos), 0);
         currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
         currentShotDistance = EuclideanDistance(currentShotCoords);
+        if(currentShotDistance < targetRadius){
+            System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
+            return currentShot;
+        }
 
         angle = convert(Math.atan2(currentShot[1], currentShot[0]));
         shots = generate_shot_range(angle, 5, 20, 3, 4.5, 10);
         currentShot = process_shots(shots, EuclideanDistance(ballPos), 0);
         currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
         currentShotDistance = EuclideanDistance(currentShotCoords);
+        if(currentShotDistance < targetRadius){
+            System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
+            return currentShot;
+        }
 
 
         int counter = 0;
@@ -105,7 +113,7 @@ public class HillClimb extends Bot {
         double reference = currentShotDistance;
         int result = -1;
         for (int i = 0; i < successorCoords.length; i++) {
-            if (successorCoords[i] != null && !engine.is_in_water(successorCoords[i][0], successorCoords[i][0]) && acceptance(successorCoords[i], reference)) {
+            if (successorCoords[i] != null && !engine.is_in_water(successorCoords[i][0], successorCoords[i][0]) && annealing(successorCoords[i], reference)) {
                 result = i;
                 reference = EuclideanDistance(successorCoords[i]);
                 System.out.println("New Shortest Distance: " + (reference - targetRadius));
@@ -117,13 +125,13 @@ public class HillClimb extends Bot {
         return result;
     }
 
-    private boolean acceptance(double[] coords, double refDistance){
+    private boolean annealing(double[] coords, double refDistance){
         if(EuclideanDistance(coords) < refDistance){
             return true;
         }
-        double threshold = currentTemp / (MAX_TEMP * (EuclideanDistance(coords) - refDistance));
+        double control = currentTemp / (MAX_TEMP * (EuclideanDistance(coords)*2 - refDistance));
         double rando = rand.nextDouble();
-        return rando < threshold;
+        return rando < control;
     }
 
 }
