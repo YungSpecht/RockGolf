@@ -104,9 +104,8 @@ public class PhysicsEngine implements Runnable {
 
         if (ball_in_target() == true) {
             RockGolf.winStatus = true;
-        } else if (is_in_water(vector.getXPos(), vector.getYPos())
-                || collidedWithTree(vector.getXPos(), vector.getYPos())) {
-            RockGolf.losingStatus = true;
+        } else if (collidedWithTree(vector.getXPos(), vector.getYPos())) {
+            RockGolf.collisionTreeStatus = true;
         }
 
         InputModule.set_new_position(vector.getXPos(), vector.getYPos());

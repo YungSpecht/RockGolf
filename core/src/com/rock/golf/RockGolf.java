@@ -25,6 +25,7 @@ public class RockGolf extends ApplicationAdapter {
     String state = "game";
     static boolean winStatus;
     static boolean losingStatus;
+    static boolean collisionTreeStatus;
     static float width;
     static float height;
     private float ballRadius;
@@ -154,12 +155,20 @@ public class RockGolf extends ApplicationAdapter {
                     (Gdx.graphics.getWidth() / 2) - 50,
                     Gdx.graphics.getHeight() - 20);
             endGame.end();
-        } // else if (losingStatus == true) {
-          // endGame.begin();
-          // font.draw(endGame, "You lost!", (Gdx.graphics.getWidth() / 2),
-          // Gdx.graphics.getHeight() - 20);
-          // endGame.end();
-          // }
+        } else if (collisionTreeStatus == true) {
+            endGame.begin();
+            font.draw(endGame, "You hit the tree, you lost!",
+                    (Gdx.graphics.getWidth() / 2) - 50,
+                    Gdx.graphics.getHeight() - 20);
+            endGame.end();
+        }
+
+        // else if (losingStatus == true) {
+        // endGame.begin();
+        // font.draw(endGame, "You lost!", (Gdx.graphics.getWidth() / 2),
+        // Gdx.graphics.getHeight() - 20);
+        // endGame.end();
+        // }
 
         launchVector.begin(ShapeRenderer.ShapeType.Line);
         getIntensity(launchVector);
