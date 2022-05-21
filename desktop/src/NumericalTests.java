@@ -24,7 +24,4 @@ public class NumericalTests {
         StateVector testedVector = computationEngine.Test_For_Flat_Surface_RK4();
         assertEquals(vector, testedVector);
     }
-
-
-
 }
