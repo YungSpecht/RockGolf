@@ -20,7 +20,7 @@ public class HillClimb extends Bot {
 
     @Override
     public double[] getMove() {
-        long time = System.currentTimeMillis();
+        long checkpoint = System.currentTimeMillis();
         double angle = convert(Math.atan2(targetPos[1] - ballPos[1], targetPos[0] -ballPos[0]));
 
         double[][][] shots = generate_shot_range(angle, 4, 45, 5, 5, 1);
@@ -28,7 +28,7 @@ public class HillClimb extends Bot {
         currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
         currentShotDistance = EuclideanDistance(currentShotCoords);
         if(currentShotDistance < targetRadius){
-            System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
+            time = System.currentTimeMillis()-checkpoint;
             return currentShot;
         }
 
@@ -38,7 +38,7 @@ public class HillClimb extends Bot {
         currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
         currentShotDistance = EuclideanDistance(currentShotCoords);
         if(currentShotDistance < targetRadius){
-            System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
+            time = System.currentTimeMillis()-checkpoint;
             return currentShot;
         }
 
@@ -61,6 +61,7 @@ public class HillClimb extends Bot {
             System.out.println("LOOP 3 || Iteration: " + ++counter);
         }
         System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
+        System.out.println("Amount of simulated shots: [" + iterationsCounter + "]");
         return currentShot;
     }
 
@@ -81,6 +82,7 @@ public class HillClimb extends Bot {
             for (int i = 0; i < successors.length; i++) {
                 if (vel_is_legal(successors[i])) {
                     successorCoords[i] = engine.get_shot(successors[i][0], successors[i][1]);
+                    iterationsCounter++;
                 } else {
                     successorCoords[i] = null;
                 }

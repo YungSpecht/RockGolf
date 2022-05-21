@@ -33,8 +33,7 @@ public class RuleBasedBot extends Bot {
         int counter = 0;
         for(double i = 0; i < distance; i+=0.05){
             counter++;
-            //TODO also add a check wether the ball is in a tree (at the same coordinates)
-            if(engine.is_in_water(ballPos[0] + counter*downScaledXDir, ballPos[1] + counter*downScaledyDir)){
+            if(engine.is_in_water(ballPos[0] + counter*downScaledXDir, ballPos[1] + counter*downScaledyDir) || engine.collidedWithTree(ballPos[0] + counter*downScaledXDir, ballPos[1] + counter*downScaledyDir)){
                 return true;
             }
         }

@@ -1,7 +1,7 @@
 package com.rock.golf.Math;
 
 public class Derivative {
-    private static double h = 0.000000000000001;
+    private static double h = 0.000001;
 
     private static double f(double x, double y){
         return ((1.0/20) * (Math.pow(Math.E, (Math.pow(x, 2) + Math.pow(y, 2)) / 10))-0.06);

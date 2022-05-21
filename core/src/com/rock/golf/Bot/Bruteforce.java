@@ -4,6 +4,7 @@ import com.rock.golf.PhysicsEngine;
 
 public class Bruteforce extends Bot {
     double precision;
+    long checkpoint;
 
     public Bruteforce(PhysicsEngine engine, double precision) {
         this.engine = engine;
@@ -12,6 +13,7 @@ public class Bruteforce extends Bot {
 
     public double[] isMoveGoal(double[] velocities) {
         double[] ballPos = engine.get_shot(velocities[0], velocities[1]);
+        iterationsCounter++;
         boolean isGoal = Math.pow(ballPos[0] - targetPos[0], 2) + Math.pow(ballPos[1] - targetPos[1], 2) <= Math.pow(targetRadius, 2);
         if (isGoal)
             return velocities;
@@ -34,6 +36,7 @@ public class Bruteforce extends Bot {
                 }
 
                 if (isMoveGoal(new double[] { i, j }) != null) {
+                    time = System.currentTimeMillis()-checkpoint;
                     return new double[] { distanceX, distanceY };
                 }
             }
@@ -43,6 +46,7 @@ public class Bruteforce extends Bot {
 
     @Override
     public double[] getMove() {
+        checkpoint = System.currentTimeMillis();
         return getMove(precision);
     }
 }

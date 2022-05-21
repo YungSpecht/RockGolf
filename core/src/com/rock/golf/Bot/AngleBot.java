@@ -12,6 +12,7 @@ public class AngleBot extends Bot{
     private double[] bestShotCoords;
     private double bestShotDistance;
     private double bestShotAngle;
+    private int iterationsCounter;
 
     // constructor
     public AngleBot(PhysicsEngine engine) {
@@ -21,6 +22,7 @@ public class AngleBot extends Bot{
         targetX = input[2];
         targetY = input[3];
         targetRad = input[4];
+        iterationsCounter = 0;
     }
 
     /**
@@ -34,7 +36,7 @@ public class AngleBot extends Bot{
      
     @Override
     public double[] getMove() {
-        long time = System.currentTimeMillis();
+        long checkpoint = System.currentTimeMillis();
         bestShot = new double[2];
         bestShotCoords = new double[] { currentState.getXPos(), currentState.getYPos() };
         bestShotDistance = EuclideanDistance(bestShotCoords);
@@ -46,7 +48,7 @@ public class AngleBot extends Bot{
         double[][][] rightShots = arrange_shots(shotsArray, 'r');
         get_best_shot(centerShots, leftShots, rightShots, 6);
         if (bestShotDistance < targetRad) {
-            System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
+            time = System.currentTimeMillis()-checkpoint;
             return bestShot;
         }
 
@@ -62,12 +64,12 @@ public class AngleBot extends Bot{
             rightShots = arrange_shots(shotsArray, 'r');
             get_best_shot(centerShots, leftShots, rightShots, counter);
             if (bestShotDistance < targetRad) {
-                System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
+                time = System.currentTimeMillis()-checkpoint;
                 return bestShot;
             }
             System.out.println("Iteration: " + ++counter);
         }
-        System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
+        time = System.currentTimeMillis()-checkpoint;
         return bestShot;
     }
 
@@ -90,6 +92,7 @@ public class AngleBot extends Bot{
         int rCount = 0;
         for (int i = 0; i < centerShots.length; i++) {
             double[] shotCoords = engine.get_shot(centerShots[i][0], centerShots[i][1]);
+            iterationsCounter++;
             double distance = EuclideanDistance(shotCoords);
             compare_shot(centerShots[i], shotCoords, distance);
         }
@@ -101,6 +104,7 @@ public class AngleBot extends Bot{
             for (int j = 0; j < leftShots[0].length; j++) {
                 if (!leftPruned && !cancelLeft) {
                     double[] leftShotCoords = engine.get_shot(leftShots[i][j][0], leftShots[i][j][1]);
+                    iterationsCounter++;
                     double leftShotDistance = EuclideanDistance(leftShotCoords);
                     if (leftShotDistance < bestShotDistance) {
                         tracker = 0;
@@ -127,6 +131,7 @@ public class AngleBot extends Bot{
                 }
                 if (!rightPruned && !cancelRight) {
                     double[] rightShotCoords = engine.get_shot(rightShots[i][j][0], rightShots[i][j][1]);
+                    iterationsCounter++;
                     double rightShotDistance = EuclideanDistance(rightShotCoords);
                     if (rightShotDistance - targetRad < bestShotDistance) {
                         rightCounter = 0;

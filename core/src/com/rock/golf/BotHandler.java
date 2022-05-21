@@ -1,5 +1,6 @@
 package com.rock.golf;
 import com.rock.golf.Bot.AngleBot;
+import com.rock.golf.Bot.AngleBott;
 import com.rock.golf.Bot.Bot;
 
 import java.util.Arrays;
@@ -50,10 +51,15 @@ public class BotHandler implements InputProcessor {
         } else if (keycode == Input.Keys.R) {
             bot = new RuleBasedBot(botEngine);
         }
+        else if (keycode == Input.Keys.U){
+            bot = new AngleBott(botEngine);
+        }
 
         if(bot != null) {
             shot = bot.getMove();
             System.out.println("Best shot found: [x-velocity, y-velocity] = " + Arrays.toString(shot));
+            System.out.println("Shot found in " + bot.getTime() + "ms");
+            System.out.println("Amount of simulated shots: " + bot.getIterations());
             InputModule.set_new_velocity(shot[0], shot[1]);
             golf.prepareNewShot();
             golf.executor.execute(botEngine);

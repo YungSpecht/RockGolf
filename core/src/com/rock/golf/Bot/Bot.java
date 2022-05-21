@@ -13,6 +13,8 @@ public abstract class Bot {
     double[] ballPos = new double[] {input[5], input[6] };
     double targetRadius = input[4];
     Random rand = new Random();
+    int iterationsCounter = 0;
+    long time = 0;
 
     protected double getFitness(double[] ballPos, double[] targetPos) {
         if (engine.is_in_water(ballPos[0], ballPos[1])) return Integer.MAX_VALUE;
@@ -55,6 +57,7 @@ public abstract class Bot {
         double refDist = referenceDistance;
         for (int i = 0; i < shots[0].length; i++) {
             double[] shotCoords = engine.get_shot(shots[0][i][0], shots[0][i][1]);
+            iterationsCounter++;
             double distance = EuclideanDistance(shotCoords);
             if (distance < refDist && !engine.is_in_water(shotCoords[0], ballPos[1])) {
                 result = shots[0][i];
@@ -68,6 +71,7 @@ public abstract class Bot {
         for (int i = 1; i < shots.length; i = i + 2) {
             for (int j = 0; j < shots[0].length; j++) {
                 double[] shotCoords = engine.get_shot(shots[i][j][0], shots[i][j][1]);
+                iterationsCounter++;
                 double distance = EuclideanDistance(shotCoords);
                 if (distance < refDist && !engine.is_in_water(shotCoords[0], ballPos[1])) {
                     result = shots[i][j];
@@ -79,6 +83,7 @@ public abstract class Bot {
                 }
 
                 shotCoords = engine.get_shot(shots[i+1][j][0], shots[i+1][j][1]);
+                iterationsCounter++;
                 distance = EuclideanDistance(shotCoords);
                 if (distance < refDist && !engine.is_in_water(shotCoords[0], ballPos[1])) {
                     result = shots[i+1][j];
@@ -138,6 +143,14 @@ public abstract class Bot {
     protected double[] get_velocity(double angle, double velocity) {
         double[] result = new double[] { Math.cos(Math.toRadians(angle)), Math.sin(Math.toRadians(angle)) };
         return normalizeVelocity(result, velocity);
+    }
+    
+    public long getTime(){
+        return time;
+    }
+
+    public int getIterations(){
+        return iterationsCounter;
     }
 
     public abstract double[] getMove();
