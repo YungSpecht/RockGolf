@@ -16,12 +16,16 @@ import org.mariuszgromada.math.mxparser.Function;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class RockGolf extends ApplicationAdapter {
 
     final static float metertoPixelRatio = 100;
     String state = "game";
+    static boolean winStatus;
+    static boolean losingStatus;
+    static boolean collisionTreeStatus;
     static float width;
     static float height;
     private float ballRadius;
@@ -46,7 +50,7 @@ public class RockGolf extends ApplicationAdapter {
     double[] initialState;
     private Runnable engine;
     ExecutorService executor;
-    private SpriteBatch position, shot;
+    private SpriteBatch position, shot, endGame;
     private BitmapFont font;
     public static int shotCounter;
     public static boolean shotActive;
@@ -61,6 +65,7 @@ public class RockGolf extends ApplicationAdapter {
         height = Gdx.graphics.getHeight();
         originX = width / 2;
         originY = height / 2;
+        endGame = new SpriteBatch();
         ball = new ShapeRenderer();
         target = new ShapeRenderer();
         sandpit = new ShapeRenderer();
@@ -85,24 +90,24 @@ public class RockGolf extends ApplicationAdapter {
         trees = ((PhysicsEngine) engine).get_trees();
         shotActive = false;
         newShotPossible = true;
-        
+
     }
 
     @Override
     public void render() {
         Gdx.gl.glEnable(GL20.GL_BLEND);
-        
+
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         createMap();
 
-        if(state.equals("menu")) {
+        if (state.equals("menu")) {
             renderMenu();
             return;
         }
 
         checkStuckStatus();
-        
+
         for (int i = 0; i < sandpits.size(); i++) {
             double[] pos = sandpits.get(i).getPosition();
             sandpit.begin(ShapeRenderer.ShapeType.Filled);
@@ -131,12 +136,39 @@ public class RockGolf extends ApplicationAdapter {
         ball.end();
 
         position.begin();
-        font.draw(position, "X: " + (xPosition - originX) + " Y: " + (yPosition - originY), 20, Gdx.graphics.getHeight() - 20);
+        font.draw(position, "X: " + (xPosition - originX) + " Y: " + (yPosition - originY), 20,
+                Gdx.graphics.getHeight() - 20);
         position.end();
 
         shot.begin();
         font.draw(shot, "Shots: " + shotCounter, Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 20);
         shot.end();
+
+        if (winStatus == true && shotCounter == 1) {
+            endGame.begin();
+            font.draw(endGame, "You got a hole in one!", (Gdx.graphics.getWidth() / 2) - 50,
+                    Gdx.graphics.getHeight() - 20);
+            endGame.end();
+        } else if (winStatus == true && shotCounter > 1) {
+            endGame.begin();
+            font.draw(endGame, "You took " + shotCounter + " swings to get it in the hole!",
+                    (Gdx.graphics.getWidth() / 2) - 50,
+                    Gdx.graphics.getHeight() - 20);
+            endGame.end();
+        } else if (collisionTreeStatus == true) {
+            endGame.begin();
+            font.draw(endGame, "You hit the tree, you lost!",
+                    (Gdx.graphics.getWidth() / 2) - 50,
+                    Gdx.graphics.getHeight() - 20);
+            endGame.end();
+        }
+
+        // else if (losingStatus == true) {
+        // endGame.begin();
+        // font.draw(endGame, "You lost!", (Gdx.graphics.getWidth() / 2),
+        // Gdx.graphics.getHeight() - 20);
+        // endGame.end();
+        // }
 
         launchVector.begin(ShapeRenderer.ShapeType.Line);
         getIntensity(launchVector);
@@ -144,9 +176,11 @@ public class RockGolf extends ApplicationAdapter {
     }
 
     private void checkStuckStatus() {
-        if(!((PhysicsEngine) engine).stuck) return;
+        if (!((PhysicsEngine) engine).stuck)
+            return;
         water.begin();
         font.draw(water, "Oh no, you got stuck! Press esc to reset.", 300, Gdx.graphics.getHeight() - 20);
+        // losingStatus = false;
         water.end();
     }
 
@@ -158,7 +192,9 @@ public class RockGolf extends ApplicationAdapter {
         background.end();
 
         shot.begin();
-        font.draw(shot, "Select the bot:\n\n S: Stochastic\n B: Bruteforce\n H: HillClimb\n A: AngleBot\n I: AIBot\n R: Rule-based", originX - 50, originY+100);
+        font.draw(shot,
+                "Select the bot:\n\n S: Stochastic\n B: Bruteforce\n H: HillClimb\n A: AngleBot\n I: AIBot\n R: Rule-based",
+                originX - 50, originY + 100);
         shot.end();
     }
 
@@ -311,7 +347,7 @@ public class RockGolf extends ApplicationAdapter {
      *
      */
 
-    public class InputHandling implements InputProcessor  {
+    public class InputHandling implements InputProcessor {
         private int downX;
         private int downY;
         private double distanceX;
@@ -321,7 +357,7 @@ public class RockGolf extends ApplicationAdapter {
 
         @Override
         public boolean keyDown(int keycode) {
-            
+
             if (keycode == Input.Keys.ENTER && !shotActive && newShotPossible) {
                 String x = JOptionPane.showInputDialog("Insert x speed:");
                 String y = JOptionPane.showInputDialog("Insert y speed:");
@@ -336,9 +372,9 @@ public class RockGolf extends ApplicationAdapter {
                 ((PhysicsEngine) engine).stuck = false;
                 ((PhysicsEngine) engine).resume();
                 newShotPossible = true;
-            } else if(keycode == Input.Keys.M) {
+            } else if (keycode == Input.Keys.M) {
                 switchState();
-            } else if(keycode == Input.Keys.D) {
+            } else if (keycode == Input.Keys.D) {
                 System.out.println(((PhysicsEngine) engine).tolerance);
             }
 
@@ -368,8 +404,8 @@ public class RockGolf extends ApplicationAdapter {
             this.distanceY = (screenY - downY) / 100;
             double finalVelocity = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
 
-            if(finalVelocity > 5) {
-                double[] vel = normalizeVelocity(new double[]{distanceX, distanceY}, 5);
+            if (finalVelocity > 5) {
+                double[] vel = normalizeVelocity(new double[] { distanceX, distanceY }, 5);
                 distanceX = vel[0];
                 distanceY = vel[1];
             }
@@ -413,12 +449,13 @@ public class RockGolf extends ApplicationAdapter {
     }
 
     public void switchState() {
-        if(state.equals("menu")) {
+        if (state.equals("menu")) {
             state = "game";
             Gdx.input.setInputProcessor(in);
         } else {
             state = "menu";
             Gdx.input.setInputProcessor(new BotHandler(this, (PhysicsEngine) engine));
-        };
+        }
+        ;
     }
 }
