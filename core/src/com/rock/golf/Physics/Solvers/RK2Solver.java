@@ -1,7 +1,8 @@
-package com.rock.golf.Math;
+package com.rock.golf.Physics.Solvers;
+
+import com.rock.golf.Physics.Engine.StateVector;
 
 import org.mariuszgromada.math.mxparser.*;
-import com.rock.golf.StateVector;
 
 public class RK2Solver extends Solver{
 

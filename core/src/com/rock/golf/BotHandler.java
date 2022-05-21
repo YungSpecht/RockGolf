@@ -1,18 +1,17 @@
 package com.rock.golf;
 import com.rock.golf.Bot.AngleBot;
-import com.rock.golf.Bot.AngleBott;
 import com.rock.golf.Bot.Bot;
 
 import java.util.Arrays;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.rock.golf.Bot.AIBot;
 import com.rock.golf.Bot.Bruteforce;
 import com.rock.golf.Bot.RuleBasedBot;
 import com.rock.golf.Bot.HillClimb;
 import com.rock.golf.Bot.StochasticBot;
 import com.rock.golf.Input.InputModule;
+import com.rock.golf.Physics.Engine.PhysicsEngine;
 
 public class BotHandler implements InputProcessor {
 
@@ -44,15 +43,9 @@ public class BotHandler implements InputProcessor {
 
         } else if (keycode == Input.Keys.A) {
             bot = new AngleBot(botEngine);
-
-        } else if (keycode == Input.Keys.I) {
-            bot = new AIBot(botEngine);
-            
+   
         } else if (keycode == Input.Keys.R) {
             bot = new RuleBasedBot(botEngine);
-        }
-        else if (keycode == Input.Keys.U){
-            bot = new AngleBott(botEngine);
         }
 
         if(bot != null) {

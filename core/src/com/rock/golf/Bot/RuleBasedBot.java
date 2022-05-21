@@ -1,6 +1,6 @@
 package com.rock.golf.Bot;
 
-import com.rock.golf.PhysicsEngine;
+import com.rock.golf.Physics.Engine.PhysicsEngine;
 
 public class RuleBasedBot extends Bot {
     double powerCoefficient = 1;
@@ -20,7 +20,7 @@ public class RuleBasedBot extends Bot {
             velX = divShot[0];
             velY = divShot[1];
         }
-        return normalizeVelocity(new double[]{velX, velY}, 4);
+        return normalizeVelocity(new double[]{velX, velY}, 5);
 
     }
 

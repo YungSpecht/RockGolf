@@ -1,6 +1,6 @@
 package com.rock.golf.Bot;
 
-import com.rock.golf.PhysicsEngine;
+import com.rock.golf.Physics.Engine.PhysicsEngine;
 
 public class StochasticBot extends Bot {
 

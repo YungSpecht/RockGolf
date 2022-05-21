@@ -1,10 +1,11 @@
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import com.rock.golf.Physics.Engine.StateVector;
+
 import org.junit.jupiter.api.Test;
 import test.RKMethods;
-
-import com.rock.golf.StateVector;
 
 public class NumericalTests {
 

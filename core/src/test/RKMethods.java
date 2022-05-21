@@ -1,7 +1,8 @@
 package test;
 
-import com.rock.golf.StateVector;
-import com.rock.golf.Math.RK2Solver;
+import com.rock.golf.Physics.Engine.StateVector;
+import com.rock.golf.Physics.Solvers.RK2Solver;
+
 import org.mariuszgromada.math.mxparser.Function;
 
 public class RKMethods {

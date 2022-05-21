@@ -2,8 +2,8 @@ package com.rock.golf.Bot;
 
 import java.util.Random;
 
-import com.rock.golf.PhysicsEngine;
 import com.rock.golf.Input.InputModule;
+import com.rock.golf.Physics.Engine.PhysicsEngine;
 
 public abstract class Bot {
 

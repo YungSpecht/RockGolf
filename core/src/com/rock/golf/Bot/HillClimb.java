@@ -1,6 +1,6 @@
 package com.rock.golf.Bot;
 
-import com.rock.golf.PhysicsEngine;
+import com.rock.golf.Physics.Engine.PhysicsEngine;
 
 public class HillClimb extends Bot {
     private double[] currentShot;
@@ -34,15 +34,35 @@ public class HillClimb extends Bot {
 
         angle = convert(Math.atan2(currentShot[1], currentShot[0]));
         shots = generate_shot_range(angle, 5, 20, 3, 4.5, 10);
-        currentShot = process_shots(shots, EuclideanDistance(ballPos), 0);
+        currentShot = process_shots(shots, currentShotDistance, 0);
         currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
         currentShotDistance = EuclideanDistance(currentShotCoords);
         if(currentShotDistance < targetRadius){
             time = System.currentTimeMillis()-checkpoint;
             return currentShot;
         }
+        
+        int counter = 0;
+        while(currentShotDistance >= targetRadius && counter < 3){
+            if(counter == 0){
+                driver();
+            }
+            if(engine.is_in_water(currentShotCoords[0], currentShotCoords[1])){
+                StochasticBot randomRestart = new StochasticBot(engine, 10);
+                currentShot = randomRestart.getMove();
+                iterationsCounter += randomRestart.getIterations();
+                currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
+                currentShotDistance = EuclideanDistance(currentShotCoords);
+                driver();
+            }
+            counter++;
+        }
+       
+        time = System.currentTimeMillis()-checkpoint;
+        return currentShot;
+    }
 
-
+    private void driver(){
         int counter = 0;
         while (currentShotDistance >= targetRadius && counter < 5) {
             mountain_climber(0.2 - (0.025 * counter));
@@ -60,9 +80,6 @@ public class HillClimb extends Bot {
             mountain_climber(0.01 - (0.002 * counter));
             System.out.println("LOOP 3 || Iteration: " + ++counter);
         }
-        System.out.println("Shot found in " + (System.currentTimeMillis()-time) + "ms");
-        System.out.println("Amount of simulated shots: [" + iterationsCounter + "]");
-        return currentShot;
     }
 
     private void mountain_climber(double precision) {

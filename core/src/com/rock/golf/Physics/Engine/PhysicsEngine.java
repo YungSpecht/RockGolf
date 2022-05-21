@@ -1,14 +1,14 @@
-package com.rock.golf;
+package com.rock.golf.Physics.Engine;
 
 import org.mariuszgromada.math.mxparser.Function;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.rock.golf.RockGolf;
 import com.rock.golf.Input.InputModule;
-import com.rock.golf.Math.Derivation;
-import com.rock.golf.Math.RK2Solver;
-import com.rock.golf.Math.RK4Solver;
-import com.rock.golf.Math.Solver;
+import com.rock.golf.Physics.Solvers.RK2Solver;
+import com.rock.golf.Physics.Solvers.RK4Solver;
+import com.rock.golf.Physics.Solvers.Solver;
 
 public class PhysicsEngine implements Runnable {
 
@@ -70,6 +70,11 @@ public class PhysicsEngine implements Runnable {
         Double step = h * 1000;
         long timestep = step.longValue();
         long checkpoint = System.currentTimeMillis();
+        if (!ball_in_screen(new double[] { vector.getXPos(), vector.getYPos() }, 0))
+                tolerance = 0.1;
+        else
+            tolerance = 0;
+
         while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target())
                 && !collidedWithTree(vector.getXPos(), vector.getYPos())
                 && !is_in_water(vector.getXPos(), vector.getYPos())
@@ -102,12 +107,12 @@ public class PhysicsEngine implements Runnable {
         else
             tolerance = 0;
 
-        if (ball_in_target() == true) {
+        if (ball_in_target()) {
             RockGolf.winStatus = true;
         } else if (collidedWithTree(vector.getXPos(), vector.getYPos())) {
             RockGolf.collisionTreeStatus = true;
         }
-
+        stuck = is_in_water(vector.getXPos(), vector.getYPos()) || collidedWithTree(vector.getXPos(), vector.getXSpeed());
         InputModule.set_new_position(vector.getXPos(), vector.getYPos());
         RockGolf.shotActive = false;
     }
@@ -133,7 +138,12 @@ public class PhysicsEngine implements Runnable {
                 solver = new RK4Solver(uK, uS, h, golfCourse);
                 break;
         }
+        if (!ball_in_screen(new double[] { vector.getXPos(), vector.getYPos() }, 0))
+            tolerance = 0.1;
+        else
+            tolerance = 0;
         while ((ball_is_moving() && !ball_in_target() || hill_is_steep() && !ball_in_target())
+                && !collidedWithTree(vector.getXPos(), vector.getYPos())
                 && !is_in_water(vector.getXPos(), vector.getYPos())
                 && ball_in_screen(new double[] { vector.getXPos(), vector.getYPos() }, tolerance)) {
 
@@ -181,7 +191,7 @@ public class PhysicsEngine implements Runnable {
         return sandpits;
     }
 
-    private boolean collidedWithTree(double xPos, double yPos) {
+    public boolean collidedWithTree(double xPos, double yPos) {
         for (int i = 0; i < trees.size(); i++) {
             if (trees.get(i).collidedWithTree(xPos, yPos)) {
                 return true;
@@ -247,7 +257,6 @@ public class PhysicsEngine implements Runnable {
     public boolean is_in_water(double xPos, double yPos) {
         if (Derivation.compute(xPos, yPos, golfCourse) < 0) {
             RockGolf.newShotPossible = false;
-            stuck = true;
             return true;
         }
         return false;

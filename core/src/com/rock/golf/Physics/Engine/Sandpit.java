@@ -1,4 +1,4 @@
-package com.rock.golf;
+package com.rock.golf.Physics.Engine;
 
 public class Sandpit {
     private double[] position;

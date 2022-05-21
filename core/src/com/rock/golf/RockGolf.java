@@ -11,23 +11,27 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.rock.golf.Input.*;
-import com.rock.golf.Math.Derivation;
+import com.rock.golf.Physics.Engine.Derivation;
+import com.rock.golf.Physics.Engine.PhysicsEngine;
+import com.rock.golf.Physics.Engine.Sandpit;
+import com.rock.golf.Physics.Engine.StateVector;
+import com.rock.golf.Physics.Engine.Tree;
+
 import org.mariuszgromada.math.mxparser.Function;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class RockGolf extends ApplicationAdapter {
 
-    final static float metertoPixelRatio = 100;
+    public final static float metertoPixelRatio = 100;
     String state = "game";
-    static boolean winStatus;
-    static boolean losingStatus;
-    static boolean collisionTreeStatus;
-    static float width;
-    static float height;
+    public static boolean winStatus;
+    public static boolean losingStatus;
+    public static boolean collisionTreeStatus;
+    public static float width;
+    public static float height;
     private float ballRadius;
     private float targetRadius;
     private static float originX;
@@ -193,7 +197,7 @@ public class RockGolf extends ApplicationAdapter {
 
         shot.begin();
         font.draw(shot,
-                "Select the bot:\n\n S: Stochastic\n B: Bruteforce\n H: HillClimb\n A: AngleBot\n I: AIBot\n R: Rule-based",
+                "Select the bot:\n\n S: Stochastic\n B: Bruteforce\n H: HillClimb\n A: AngleBot\n R: Rule-based",
                 originX - 50, originY + 100);
         shot.end();
     }
