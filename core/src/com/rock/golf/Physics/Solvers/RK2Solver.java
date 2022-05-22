@@ -27,8 +27,14 @@ public class RK2Solver extends Solver{
 
         StateVector k1 = StateVector.multiply(function(current), h);
         StateVector k2 = StateVector.multiply(function(StateVector.add(current, StateVector.multiply(k1, 2.0 / 3.0))), h);
-        StateVector result = StateVector.add(StateVector.add(current, StateVector.multiply(k1, 1.0 / 4.0)),  StateVector.multiply(k2, 3 / 4));
+        StateVector result = StateVector.add(StateVector.add(current, StateVector.multiply(k1, 1.0 / 4.0)),  StateVector.multiply(k2, 3.0 / 4.0));
 
         return result;
+    }
+
+    public static void main(String[] args) {
+        RK2Solver test = new RK2Solver(0.1, 0.2, 0.1, new Function("h(x,y)=0"));
+        StateVector initial = new StateVector(0, 0, 1, 0);
+        System.out.println(test.compute_step(initial));
     }
 }
