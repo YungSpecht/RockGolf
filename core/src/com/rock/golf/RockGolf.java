@@ -105,13 +105,51 @@ public class RockGolf extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         createMap();
 
+
         if (state.equals("menu")) {
             renderMenu();
             return;
         }
 
-        checkStuckStatus();
 
+        checkStuckStatus();
+        generateObstacles();
+
+
+        target.begin(ShapeRenderer.ShapeType.Filled);
+        target.setColor(Color.BLACK);
+        target.circle(targetxPosition, targetyPosition, metersToPixel(targetRadius));
+        target.end();
+
+        ball.begin(ShapeRenderer.ShapeType.Filled);
+        ball.circle(xPosition, yPosition, metersToPixel(ballRadius));
+        ball.end();
+
+        position.begin();
+        font.draw(position, "X: " + (xPosition - originX) + " Y: " + (yPosition - originY), 20, Gdx.graphics.getHeight() - 20);
+        position.end();
+
+        shot.begin();
+        font.draw(shot, "Shots: " + shotCounter, Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 20);
+        shot.end();
+
+
+        checkLosingStatus();
+
+        launchVector.begin(ShapeRenderer.ShapeType.Line);
+        getIntensity(launchVector);
+        launchVector.end();
+    }
+
+    private void checkStuckStatus() {
+        
+        if (!((PhysicsEngine) engine).stuck) return;
+        water.begin();
+        font.draw(water, "Oh no, you got stuck! Press esc to reset.", 300, Gdx.graphics.getHeight() - 20);
+        water.end();
+    }
+
+    private void generateObstacles() {
         for (int i = 0; i < sandpits.size(); i++) {
             double[] pos = sandpits.get(i).getPosition();
             sandpit.begin(ShapeRenderer.ShapeType.Filled);
@@ -129,25 +167,9 @@ public class RockGolf extends ApplicationAdapter {
                     metersToPixel(convert(trees.get(i).get_radius())));
             tree.end();
         }
+    }
 
-        target.begin(ShapeRenderer.ShapeType.Filled);
-        target.setColor(Color.BLACK);
-        target.circle(targetxPosition, targetyPosition, metersToPixel(targetRadius));
-        target.end();
-
-        ball.begin(ShapeRenderer.ShapeType.Filled);
-        ball.circle(xPosition, yPosition, metersToPixel(ballRadius));
-        ball.end();
-
-        position.begin();
-        font.draw(position, "X: " + (xPosition - originX) + " Y: " + (yPosition - originY), 20,
-                Gdx.graphics.getHeight() - 20);
-        position.end();
-
-        shot.begin();
-        font.draw(shot, "Shots: " + shotCounter, Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 20);
-        shot.end();
-
+    private void checkLosingStatus() {
         if (winStatus == true && shotCounter == 1) {
             endGame.begin();
             font.draw(endGame, "You got a hole in one!", (Gdx.graphics.getWidth() / 2) - 50,
@@ -159,33 +181,13 @@ public class RockGolf extends ApplicationAdapter {
                     (Gdx.graphics.getWidth() / 2) - 50,
                     Gdx.graphics.getHeight() - 20);
             endGame.end();
-        } else if (collisionTreeStatus == true) {
-            endGame.begin();
-            font.draw(endGame, "You hit the tree, you lost!",
-                    (Gdx.graphics.getWidth() / 2) - 50,
-                    Gdx.graphics.getHeight() - 20);
-            endGame.end();
         }
-
-        // else if (losingStatus == true) {
+                // else if (losingStatus == true) {
         // endGame.begin();
         // font.draw(endGame, "You lost!", (Gdx.graphics.getWidth() / 2),
         // Gdx.graphics.getHeight() - 20);
         // endGame.end();
         // }
-
-        launchVector.begin(ShapeRenderer.ShapeType.Line);
-        getIntensity(launchVector);
-        launchVector.end();
-    }
-
-    private void checkStuckStatus() {
-        if (!((PhysicsEngine) engine).stuck)
-            return;
-        water.begin();
-        font.draw(water, "Oh no, you got stuck! Press esc to reset.", 300, Gdx.graphics.getHeight() - 20);
-        // losingStatus = false;
-        water.end();
     }
 
     private void renderMenu() {
