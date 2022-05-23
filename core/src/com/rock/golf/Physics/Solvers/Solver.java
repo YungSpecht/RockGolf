@@ -19,7 +19,7 @@ public abstract class Solver {
         this.golfCourse = golfCourse;
     }
 
-    public abstract StateVector compute_step(StateVector vector);
+    public abstract StateVector computeStep(StateVector vector);
 
     protected StateVector function(StateVector vector) {
         double xSlope = Derivation.derivativeX(vector.getXPos(), vector.getYPos(), golfCourse);
@@ -36,7 +36,7 @@ public abstract class Solver {
         return new StateVector(vector.getXSpeed(), vector.getYSpeed(), formulaX, formulaY);
     }
 
-    public void update_friction(double uK, double uS) {
+    public void updateFriction(double uK, double uS) {
         this.uK = uK;
         this.uS = uS;
     }

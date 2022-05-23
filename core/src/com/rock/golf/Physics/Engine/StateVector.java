@@ -1,7 +1,5 @@
 package com.rock.golf.Physics.Engine;
 
-import java.lang.Thread.State;
-
 public class StateVector {
     private double XPos;
     private double YPos;

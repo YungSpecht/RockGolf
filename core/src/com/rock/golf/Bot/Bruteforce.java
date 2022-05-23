@@ -2,17 +2,32 @@ package com.rock.golf.Bot;
 
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 
+
+ /**
+ * BruteForce Bot
+ */ 
+
 public class Bruteforce extends Bot {
     double precision;
     long checkpoint;
 
-    public Bruteforce(PhysicsEngine engine, double precision) {
+    public Bruteforce(PhysicsEngine engine, double precision) { 
+
         this.engine = engine;
         this.precision = precision;
     }
 
-    public double[] isMoveGoal(double[] velocities) {
-        double[] ballPos = engine.get_shot(velocities[0], velocities[1]);
+
+    /** 
+     *
+     * Check if the current move is considered an hole
+     *
+     * @return null / hole velocities
+     */
+
+    public double[] isMoveGoal(double[] velocities) { 
+
+        double[] ballPos = engine.getSimulatedShot(velocities[0], velocities[1]);
         iterationsCounter++;
         boolean isGoal = Math.pow(ballPos[0] - targetPos[0], 2) + Math.pow(ballPos[1] - targetPos[1], 2) <= Math.pow(targetRadius, 2);
         if (isGoal)
@@ -21,7 +36,13 @@ public class Bruteforce extends Bot {
             return null;
     }
 
-    public double[] getMove(double precision) {
+
+    /** 
+     * Inherited abstract class from super
+     */
+
+    public double[] getMove(double precision) { 
+
 
         for (double i = -5; i < 5; i += precision) {
             for (double j = -5; j < 5; j += precision) {
@@ -45,7 +66,8 @@ public class Bruteforce extends Bot {
     }
 
     @Override
-    public double[] getMove() {
+    public double[] getMove() { 
+
         checkpoint = System.currentTimeMillis();
         return getMove(precision);
     }

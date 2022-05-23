@@ -18,7 +18,7 @@ public class RK4Solver extends Solver{
      * @return            updated state vector after one RK4 iteration
      */
     @Override
-    public StateVector compute_step(StateVector vector) {
+    public StateVector computeStep(StateVector vector) {
         StateVector k1 = StateVector.multiply(function(vector), h);
         StateVector k2 = StateVector.multiply(function(StateVector.add(vector, StateVector.multiply(k1, 1.0 / 2.0))), h);
         StateVector k3 = StateVector.multiply(function(StateVector.add(vector, StateVector.multiply(k2, 1.0 / 2.0))), h);

@@ -12,7 +12,7 @@ import org.mariuszgromada.math.mxparser.Function;
 
 public class InputModule {
 
-    public static double[] get_input() {
+    public static double[] getInput() {
         double[] result = new double[9];
         FileReader reader;
         try {
@@ -33,7 +33,7 @@ public class InputModule {
         return result;
     }
 
-    public static void set_new_position(double xPos, double yPos) {
+    public static void setNewPosition(double xPos, double yPos) {
         try {
             File file = new File("core/src/com/rock/golf/Input/Input.txt");
             List<String> lines = Files.readAllLines(file.toPath());
@@ -46,7 +46,7 @@ public class InputModule {
         }
     }
 
-    public static void set_new_friction(float kineticFriction, float staticFriction) {
+    public static void setNewFriction(float kineticFriction, float staticFriction) {
         try {
             File file = new File("core/src/com/rock/golf/Input/Input.txt");
             List<String> lines = Files.readAllLines(file.toPath());
@@ -59,7 +59,7 @@ public class InputModule {
         }
     }
 
-    public static void set_new_velocity(double xSpeed, double ySpeed) {
+    public static void setNewVelocity(double xSpeed, double ySpeed) {
         try {
             File file = new File("core/src/com/rock/golf/Input/Input.txt");
             List<String> lines = Files.readAllLines(file.toPath());
@@ -72,7 +72,7 @@ public class InputModule {
         }
     }
 
-    public static Function get_profile() {
+    public static Function getProfile() {
         FileReader reader;
         try {
             reader = new FileReader("core/src/com/rock/golf/Input/Input.txt");

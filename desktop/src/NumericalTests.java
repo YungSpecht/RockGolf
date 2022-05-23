@@ -1,6 +1,5 @@
 
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.rock.golf.Physics.Engine.StateVector;

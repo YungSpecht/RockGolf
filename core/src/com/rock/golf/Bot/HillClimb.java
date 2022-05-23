@@ -2,6 +2,11 @@ package com.rock.golf.Bot;
 
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 
+
+ /**
+ * HillClimb bot
+ */ 
+
 public class HillClimb extends Bot {
     private double[] currentShot;
     private double[] currentShotCoords;
@@ -10,7 +15,8 @@ public class HillClimb extends Bot {
     private double currentTemp;
     private double coolingRate;
 
-    public HillClimb(PhysicsEngine engine, double MAX_TEMP, double coolingRate) {
+    public HillClimb(PhysicsEngine engine, double MAX_TEMP, double coolingRate) { 
+
         super();
         this.engine = engine;
         this.MAX_TEMP = MAX_TEMP;
@@ -19,13 +25,19 @@ public class HillClimb extends Bot {
     }
 
     @Override
-    public double[] getMove() {
+
+    /** 
+     * Inherited abstract class from super
+     */
+
+    public double[] getMove() { 
+
         long checkpoint = System.currentTimeMillis();
         double angle = convert(Math.atan2(targetPos[1] - ballPos[1], targetPos[0] -ballPos[0]));
 
-        double[][][] shots = generate_shot_range(angle, 4, 45, 5, 5, 1);
-        currentShot = process_shots(shots, EuclideanDistance(ballPos), 0);
-        currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
+        double[][][] shots = GenerateShotRange(angle, 4, 45, 5, 5, 1);
+        currentShot = processShots(shots, EuclideanDistance(ballPos), 0);
+        currentShotCoords = engine.getSimulatedShot(currentShot[0], currentShot[1]);
         currentShotDistance = EuclideanDistance(currentShotCoords);
         if(currentShotDistance < targetRadius){
             time = System.currentTimeMillis()-checkpoint;
@@ -33,9 +45,9 @@ public class HillClimb extends Bot {
         }
 
         angle = convert(Math.atan2(currentShot[1], currentShot[0]));
-        shots = generate_shot_range(angle, 5, 20, 3.5, 5, 10);
-        currentShot = process_shots(shots, currentShotDistance, 0);
-        currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
+        shots = GenerateShotRange(angle, 5, 20, 3.5, 5, 10);
+        currentShot = processShots(shots, currentShotDistance, 0);
+        currentShotCoords = engine.getSimulatedShot(currentShot[0], currentShot[1]);
         currentShotDistance = EuclideanDistance(currentShotCoords);
 
         if(currentShotDistance < targetRadius){
@@ -44,26 +56,35 @@ public class HillClimb extends Bot {
         }
         int counter = 0;
         while (currentShotDistance >= targetRadius && counter < 5) {
-            mountain_climber(0.2 - (0.025 * counter));
+            mountainClimber(0.2 - (0.025 * counter));
             System.out.println("LOOP 1 || Iteration: " + ++counter);
         }
 
         counter = 0;
         while (currentShotDistance >= targetRadius && counter < 4) {
-            mountain_climber(0.08 - (0.02 * counter));
+            mountainClimber(0.08 - (0.02 * counter));
             System.out.println("LOOP 2 || Iteration: " + ++counter);
         }
 
         counter = 0;
         while (currentShotDistance >= targetRadius && counter < 5) {
-            mountain_climber(0.01 - (0.002 * counter));
+            mountainClimber(0.01 - (0.002 * counter));
             System.out.println("LOOP 3 || Iteration: " + ++counter);
         }
         time = System.currentTimeMillis()-checkpoint;
         return currentShot;
     }
 
-    private void mountain_climber(double precision) {
+
+    /** 
+     *
+     * Mountain_climber
+     *
+     * @param precision  the precision
+     */
+
+    private void mountainClimber(double precision) { 
+
         boolean successorAvailable;
         do{
             double[][] successors = new double[8][2];
@@ -78,14 +99,14 @@ public class HillClimb extends Bot {
 
             double[][] successorCoords = new double[successors.length][2];
             for (int i = 0; i < successors.length; i++) {
-                if (vel_is_legal(successors[i])) {
-                    successorCoords[i] = engine.get_shot(successors[i][0], successors[i][1]);
+                if (velIsLegal(successors[i])) {
+                    successorCoords[i] = engine.getSimulatedShot(successors[i][0], successors[i][1]);
                     iterationsCounter++;
                 } else {
                     successorCoords[i] = null;
                 }
             }
-            int bestSuccessor = compare_successors(successorCoords);
+            int bestSuccessor = compareSuccessors(successorCoords);
 
             if (bestSuccessor != -1) {
                 currentShot = successors[bestSuccessor];
@@ -109,11 +130,21 @@ public class HillClimb extends Bot {
         } while (successorAvailable);
     }
 
-    private int compare_successors(double[][] successorCoords) {
+
+    /** 
+     *
+     * Compare_successors
+     *
+     * @param successorCoords  the successor coords
+     * @return int
+     */
+
+    private int compareSuccessors(double[][] successorCoords) { 
+
         double reference = currentShotDistance;
         int result = -1;
         for (int i = 0; i < successorCoords.length; i++) {
-            if (successorCoords[i] != null && !engine.is_in_water(successorCoords[i][0], successorCoords[i][1]) && annealing(successorCoords[i], reference)) {
+            if (successorCoords[i] != null && !engine.isInWater(successorCoords[i][0], successorCoords[i][1]) && annealing(successorCoords[i], reference)) {
                 result = i;
                 reference = EuclideanDistance(successorCoords[i]);
                 System.out.println("New Shortest Distance: " + (reference - targetRadius));
@@ -125,7 +156,18 @@ public class HillClimb extends Bot {
         return result;
     }
 
-    private boolean annealing(double[] coords, double refDistance){
+
+    /** 
+     *
+     * Annealing
+     *
+     * @param coords  the coords
+     * @param refDistance  the ref distance
+     * @return boolean
+     */
+    
+    private boolean annealing(double[] coords, double refDistance){ 
+
         if(EuclideanDistance(coords) < refDistance){
             return true;
         }

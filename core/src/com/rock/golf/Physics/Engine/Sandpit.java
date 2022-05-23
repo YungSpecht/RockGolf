@@ -13,7 +13,7 @@ public class Sandpit {
         this.uS = Math.random() * (1 - this.uK) + this.uK;
     }
 
-    public boolean is_in_sandpit(double xPos, double yPos) {
+    public boolean isInSandpit(double xPos, double yPos) {
         if (Math.pow(xPos - position[0], 2) + Math.pow(yPos - position[1], 2) <= Math.pow(radius, 2)) {
             return true;
         }

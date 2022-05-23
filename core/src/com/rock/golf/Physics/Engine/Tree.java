@@ -17,11 +17,11 @@ public class Tree{
         return false;
     }
 
-    public double[] get_position() {
+    public double[] getPosition() {
         return position;
     }
 
-    public double get_radius() {
+    public double getRadius() {
         return radius;
     }
 }

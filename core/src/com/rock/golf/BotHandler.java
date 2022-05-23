@@ -53,7 +53,7 @@ public class BotHandler implements InputProcessor {
             System.out.println("Best shot found: [x-velocity, y-velocity] = " + Arrays.toString(shot));
             System.out.println("Shot found in " + bot.getTime() + "ms");
             System.out.println("Amount of simulated shots: " + bot.getIterations());
-            InputModule.set_new_velocity(shot[0], shot[1]);
+            InputModule.setNewVelocity(shot[0], shot[1]);
             golf.prepareNewShot();
             golf.executor.execute(botEngine);
         }
