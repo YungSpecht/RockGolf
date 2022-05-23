@@ -1,5 +1,7 @@
 package com.rock.golf.Physics.Engine;
 
+import java.lang.Thread.State;
+
 public class StateVector {
     private double XPos;
     private double YPos;
@@ -59,5 +61,16 @@ public class StateVector {
 
     public String toString() {
         return "X Position: " + XPos + "  Y Position: " + YPos + " || X Velocity: " + XSpeed + "  Y Velocity: " + YSpeed;
+    }
+
+    public static boolean isEqual(StateVector vector, StateVector testedVector) {
+        double epsilon = 0.001;
+        boolean xPos = Math.abs(vector.getXPos() - testedVector.getXPos()) < epsilon;
+        boolean yPos = Math.abs(vector.getYPos() - testedVector.getYPos()) < epsilon;
+        boolean xSpeed = Math.abs(vector.getXSpeed() - testedVector.getXSpeed()) < epsilon;
+        boolean ySpeed =  Math.abs(vector.getYSpeed() - testedVector.getYSpeed()) < epsilon;
+
+        return xPos && yPos && xSpeed && ySpeed;
+
     }
 }

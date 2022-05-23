@@ -1,6 +1,7 @@
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.rock.golf.Physics.Engine.StateVector;
 
@@ -13,15 +14,17 @@ public class NumericalTests {
 
     @Test
     public void Test_For_Flat_Surface_RK2(){
-        StateVector vector = new StateVector(0.01715,0,1.049,0);
+        StateVector vector = new StateVector(0.095,0,0.901,0);
         StateVector testedVector = computationEngine.Test_For_Flat_Surface_RK2();
-        assertEquals(vector, testedVector);
+        boolean isEqual = StateVector.isEqual(vector, testedVector);
+        assertTrue(isEqual);
     }
 
     @Test
     public void Test_For_Flat_Surface_RK4(){
-        StateVector vector = new StateVector(0.23038,0,0.9019,0);
+        StateVector vector = new StateVector(0.095095,0,0.9019,0);
         StateVector testedVector = computationEngine.Test_For_Flat_Surface_RK4();
-        assertEquals(vector, testedVector);
+        boolean isEqual = StateVector.isEqual(vector, testedVector);
+        assertTrue(isEqual);
     }
 }
