@@ -78,9 +78,11 @@ public class HillClimb extends Bot {
 
     /** 
      *
-     * Mountain_climber
+     * This method performs the hill climbing algorithm by generating the successor nodes
+     * by in/decreasing the velocity.
      *
-     * @param precision  the precision
+     * @param precision  The amount by which the x and/or y velocity will be altered to 
+     *                   generate the successor states.
      */
 
     private void mountainClimber(double precision) { 
@@ -133,10 +135,11 @@ public class HillClimb extends Bot {
 
     /** 
      *
-     * Compare_successors
+     * This method compares the successor states and return the best one according
+     * to the means of steepest descent hill climbing and simulated annealing
      *
-     * @param successorCoords  the successor coords
-     * @return int
+     * @param successorCoords  The coordinates resulting from the shots of the successor states
+     * @return                 The index of the successor state that was selected
      */
 
     private int compareSuccessors(double[][] successorCoords) { 
@@ -159,11 +162,13 @@ public class HillClimb extends Bot {
 
     /** 
      *
-     * Annealing
+     * This function determines wether a state that worsenes the current state
+     * will be accepted as the new current state based on the current temperature
+     * and the amount by which it worsenes the current state
      *
-     * @param coords  the coords
-     * @param refDistance  the ref distance
-     * @return boolean
+     * @param coords       The ball coordinate of the successor state
+     * @param refDistance  The target distance of the current best state
+     * @return             true if the state was accepted by the function false otherwise
      */
     
     private boolean annealing(double[] coords, double refDistance){ 
