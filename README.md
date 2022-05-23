@@ -48,7 +48,7 @@ We  implemented three numerical solvers in order to solve the differential equat
   To open the menu used to select these bots, you just have to press "M".</p>
   <br>
  <h2 align="center">Trees and Sandpit</h2><br>
- <p> Trees and Sandpit are not included by default, yet they're implemented. To add them to the game, you have to add them manually to the dedicated lists inside the constructor of the PhysicsEngine class. An exoample on how to add both is already commented out to provide guidance.</p>
+ <p> Trees and Sandpit are not included by default, yet they're implemented. To add them to the game, you have to add them manually to the dedicated lists inside the constructor of the PhysicsEngine class. An example on how to add both is already commented out to provide guidance.</p>
  <br>
 <h2 align="center">Additional documentation</h2><br>
 <p> Additional information about the details of the methods and the algorithms can be found in the report submitted. The code is provided with JavaDoc support, so additional documentation can be found by running the following command:</p>
