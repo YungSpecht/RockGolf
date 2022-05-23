@@ -42,20 +42,7 @@ public class HillClimb extends Bot {
             time = System.currentTimeMillis()-checkpoint;
             return currentShot;
         }
-        int counter = 0;
-        while(currentShotDistance >= targetRadius && counter < 1){
-            if(counter == 0){
-                driver();
-            }else if(engine.is_in_water(currentShotCoords[0], currentShotCoords[1])){
-                StochasticBot randomRestart = new StochasticBot(engine, 100);
-                currentShot = randomRestart.getMove();
-                iterationsCounter += randomRestart.getIterations();
-                currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
-                currentShotDistance = EuclideanDistance(currentShotCoords);
-                driver();
-            }
-            counter++;
-        }
+        driver();
         time = System.currentTimeMillis()-checkpoint;
         return currentShot;
     }
