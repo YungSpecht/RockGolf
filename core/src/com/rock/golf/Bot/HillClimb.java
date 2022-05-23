@@ -33,7 +33,7 @@ public class HillClimb extends Bot {
         }
 
         angle = convert(Math.atan2(currentShot[1], currentShot[0]));
-        shots = generate_shot_range(angle, 5, 20, 3, 4.5, 10);
+        shots = generate_shot_range(angle, 5, 20, 3.5, 5, 10);
         currentShot = process_shots(shots, currentShotDistance, 0);
         currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
         currentShotDistance = EuclideanDistance(currentShotCoords);
@@ -42,12 +42,6 @@ public class HillClimb extends Bot {
             time = System.currentTimeMillis()-checkpoint;
             return currentShot;
         }
-        driver();
-        time = System.currentTimeMillis()-checkpoint;
-        return currentShot;
-    }
-
-    private void driver(){
         int counter = 0;
         while (currentShotDistance >= targetRadius && counter < 5) {
             mountain_climber(0.2 - (0.025 * counter));
@@ -65,6 +59,8 @@ public class HillClimb extends Bot {
             mountain_climber(0.01 - (0.002 * counter));
             System.out.println("LOOP 3 || Iteration: " + ++counter);
         }
+        time = System.currentTimeMillis()-checkpoint;
+        return currentShot;
     }
 
     private void mountain_climber(double precision) {

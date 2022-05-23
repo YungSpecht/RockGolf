@@ -29,7 +29,7 @@ public class AngleBot extends Bot{
         }
 
         int counter = 0;
-        while(bestShotDistance >= targetRadius && counter < 5){
+        while(bestShotDistance >= targetRadius && counter < 3){
             bestShotAngle = convert(Math.atan2(bestShot[1], bestShot[0]));
             double[] velRange = get_velocity_range(bestShot, 0.4 - (counter * 0.05));
             
