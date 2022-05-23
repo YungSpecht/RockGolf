@@ -43,7 +43,13 @@ We  implemented three numerical solvers in order to solve the differential equat
 - Bruteforce, that will try every possible combination with a recursively smaller precision in order to get the perfect shot. <br>
 - Hillclimb, that improved with Simulated Annealing manages to escape the local minima and find the local optimum with great consistency.<br>
 - Stochastic bot, simple yet impressive. Considering this very narrow search space, the stochastic bot utilise an heuristic to classify each shot and takes the best out of n iterations.<br>
-- AngleBot, an experimental AI that uses trigonometry to optimize the shot each iteration.<br>
+- AngleBot, an experimental AI that uses trigonometry to optimize the shot each iteration.
+  
+  To open the menu used to select these bots, you just have to press "M".</p>
+  <br>
+ <h2 align="center">Trees and Sandpit</h2><br>
+ <p> Trees and Sandpit are not included by default, yet they're implemented. To add them to the game, you have to add them manually to the dedicated lists inside the PhysicsEngine class. </p>
+ <br>
 <h2 align="center">Additional documentation</h2><br>
 <p> Additional information about the details of the methods and the algorithms can be found in the report submitted. The code is provided with JavaDoc support, so additional documentation can be found by running the following command:</p>
 
@@ -56,11 +62,13 @@ javadoc PACKAGE|SOURCE_FILE OPTIONS @ARGFILES
 #`@ARGFILES` are used to provide arguments to the javadoc command.
 ```
 <h2 align="center">How to run the code</h2><br>
-<p> In order to run the code, your machine has to have the JDK 16 correctly installed and set in the correct enviroment. After that, you should be able to run the program. To start, run the DesktopLauncher.java class located at desktop\src\com\crazyputting\game\DesktopLauncher.java and follow the instructions to select between the two available modes:
+<p> In order to run the code, your machine has to have the JDK 16 correctly installed and set in the correct enviroment. It is beneficial to have Gradle installed, but it's not necessary to run the app. <br> 
+  
+Start with Gradle:
 
 ```bash
 $ cd RockGolf # change directory to the repo
-$ cd src/com/crazyputting/game # change directory to the correct folder
-$ javac DesktopLauncher.java # compile DesktopLauncher.java
-$ java DesktopLauncher # run DesktopLauncher.class
+$ gradle run # run the project via Gradle
 ```
+  
+To start without Gradle, run the main class in the DesktopLauncher situated in "RockGolf\desktop\src\com\rock\golf"
