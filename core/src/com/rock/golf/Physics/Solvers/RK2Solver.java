@@ -31,10 +31,4 @@ public class RK2Solver extends Solver{
 
         return result;
     }
-
-    public static void main(String[] args) {
-        RK2Solver test = new RK2Solver(0.1, 0.2, 0.1, new Function("h(x,y)=0"));
-        StateVector initial = new StateVector(0, 0, 1, 0);
-        System.out.println(test.compute_step(initial));
-    }
 }

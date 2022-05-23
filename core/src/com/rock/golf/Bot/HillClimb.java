@@ -37,18 +37,17 @@ public class HillClimb extends Bot {
         currentShot = process_shots(shots, currentShotDistance, 0);
         currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
         currentShotDistance = EuclideanDistance(currentShotCoords);
+
         if(currentShotDistance < targetRadius){
             time = System.currentTimeMillis()-checkpoint;
             return currentShot;
         }
-        
         int counter = 0;
-        while(currentShotDistance >= targetRadius && counter < 3){
+        while(currentShotDistance >= targetRadius && counter < 1){
             if(counter == 0){
                 driver();
-            }
-            if(engine.is_in_water(currentShotCoords[0], currentShotCoords[1])){
-                StochasticBot randomRestart = new StochasticBot(engine, 10);
+            }else if(engine.is_in_water(currentShotCoords[0], currentShotCoords[1])){
+                StochasticBot randomRestart = new StochasticBot(engine, 100);
                 currentShot = randomRestart.getMove();
                 iterationsCounter += randomRestart.getIterations();
                 currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
@@ -57,7 +56,6 @@ public class HillClimb extends Bot {
             }
             counter++;
         }
-       
         time = System.currentTimeMillis()-checkpoint;
         return currentShot;
     }
@@ -132,7 +130,7 @@ public class HillClimb extends Bot {
         double reference = currentShotDistance;
         int result = -1;
         for (int i = 0; i < successorCoords.length; i++) {
-            if (successorCoords[i] != null && !engine.is_in_water(successorCoords[i][0], successorCoords[i][0]) && annealing(successorCoords[i], reference)) {
+            if (successorCoords[i] != null && !engine.is_in_water(successorCoords[i][0], successorCoords[i][1]) && annealing(successorCoords[i], reference)) {
                 result = i;
                 reference = EuclideanDistance(successorCoords[i]);
                 System.out.println("New Shortest Distance: " + (reference - targetRadius));
