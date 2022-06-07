@@ -1,8 +1,5 @@
 package com.rock.golf.Physics.Solvers;
 
-
-import java.util.Currency;
-
 import com.rock.golf.Physics.Engine.StateVector;
 import org.mariuszgromada.math.mxparser.Function;
 
