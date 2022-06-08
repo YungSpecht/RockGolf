@@ -24,10 +24,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-
- /**
+/**
  * Main GUI class
- */ 
+ */
 
 public class RockGolf extends ApplicationAdapter {
 
@@ -73,7 +72,7 @@ public class RockGolf extends ApplicationAdapter {
     private static ShapeRenderer graphNodes;
 
     @Override
-    public void create() { 
+    public void create() {
 
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
@@ -110,7 +109,7 @@ public class RockGolf extends ApplicationAdapter {
     }
 
     @Override
-    public void render() { 
+    public void render() {
 
         Gdx.gl.glEnable(GL20.GL_BLEND);
 
@@ -118,16 +117,18 @@ public class RockGolf extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         createMap();
 
-
         if (state.equals("menu")) {
             renderMenu();
             return;
         }
 
+        if (state.equals("OBS menu")) {
+            renderObstacleMenu();
+            return;
+        }
 
         checkStuckStatus();
         generateObstacles();
-        
         target.begin(ShapeRenderer.ShapeType.Filled);
         target.setColor(Color.BLACK);
         target.circle(targetxPosition, targetyPosition, metersToPixel(targetRadius));
@@ -138,13 +139,13 @@ public class RockGolf extends ApplicationAdapter {
         ball.end();
 
         position.begin();
-        font.draw(position, "X: " + (xPosition - originX) + " Y: " + (yPosition - originY), 20, Gdx.graphics.getHeight() - 20);
+        font.draw(position, "X: " + (xPosition - originX) + " Y: " + (yPosition - originY), 20,
+                Gdx.graphics.getHeight() - 20);
         position.end();
 
         shot.begin();
         font.draw(shot, "Shots: " + shotCounter, Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 20);
         shot.end();
-
 
         checkLosingStatus();
 
@@ -153,30 +154,28 @@ public class RockGolf extends ApplicationAdapter {
         launchVector.end();
     }
 
-
-    /** 
+    /**
      *
      * Check if the engine is stuck
      *
      */
 
-    private void checkStuckStatus() { 
+    private void checkStuckStatus() {
 
-        
-        if (!((PhysicsEngine) engine).stuck) return;
+        if (!((PhysicsEngine) engine).stuck)
+            return;
         water.begin();
         font.draw(water, "Oh no, you got stuck! Press esc to reset.", 300, Gdx.graphics.getHeight() - 20);
         water.end();
     }
 
-
-    /** 
+    /**
      *
      * Generate obstacles
      *
      */
 
-    private void generateObstacles() { 
+    private void generateObstacles() {
 
         for (int i = 0; i < sandpits.size(); i++) {
             double[] pos = sandpits.get(i).getPosition();
@@ -197,14 +196,13 @@ public class RockGolf extends ApplicationAdapter {
         }
     }
 
-
-    /** 
+    /**
      *
      * Check losing status
      *
      */
 
-    private void checkLosingStatus() { 
+    private void checkLosingStatus() {
 
         if (winStatus == true && shotCounter == 1) {
             endGame.begin();
@@ -220,15 +218,13 @@ public class RockGolf extends ApplicationAdapter {
         }
     }
 
-
-    /** 
+    /**
      *
      * Render menu
      *
      */
 
-    private void renderMenu() { 
-
+    private void renderMenu() {
 
         background.begin(ShapeRenderer.ShapeType.Filled);
         background.setColor(new Color(0, 0, 0, 0.8f));
@@ -243,6 +239,26 @@ public class RockGolf extends ApplicationAdapter {
     }
 
     /**
+     *
+     * Render Obstacle menu
+     *
+     */
+
+    private void renderObstacleMenu() {
+
+        background.begin(ShapeRenderer.ShapeType.Filled);
+        background.setColor(new Color(0, 0, 0, 0.8f));
+        background.rect(0, 0, width, height);
+        background.end();
+
+        shot.begin();
+        font.draw(shot,
+                "Select an obstacle to place:\n\n T: Tree\n R: Rectangle\n",
+                originX - 50, originY + 100);
+        shot.end();
+    }
+
+    /**
      * This method is used to update the display of the x- and y- position in the
      * UI.
      * It is called from the PhysicsEngine.java class.
@@ -250,7 +266,7 @@ public class RockGolf extends ApplicationAdapter {
      * @param vector The state vector containing the updated x- and y- position.
      */
 
-    public static void updatePosition(StateVector vector) { 
+    public static void updatePosition(StateVector vector) {
 
         xPosition = originX + metersToPixel(convert(vector.getXPos()));
         yPosition = originY + metersToPixel(convert(vector.getYPos()));
@@ -267,7 +283,7 @@ public class RockGolf extends ApplicationAdapter {
      * @return The double value converted to float
      */
 
-    private static float convert(double d) { 
+    private static float convert(double d) {
 
         Double tmp = Double.valueOf(d);
         return tmp.floatValue();
@@ -290,7 +306,7 @@ public class RockGolf extends ApplicationAdapter {
      * of the ball.
      */
 
-    public void prepareNewShot() { 
+    public void prepareNewShot() {
 
         input = ((PhysicsEngine) engine).getInputArray();
         targetxPosition = metersToPixel(convert(input[2])) + originX;
@@ -300,7 +316,7 @@ public class RockGolf extends ApplicationAdapter {
     }
 
     @Override
-    public void dispose() { 
+    public void dispose() {
 
         ((PhysicsEngine) engine).abort();
         executor.shutdown();
@@ -312,7 +328,7 @@ public class RockGolf extends ApplicationAdapter {
      * of the course in every position.
      */
 
-    private void generateField() { 
+    private void generateField() {
 
         Function profile = InputModule.getProfile();
 
@@ -351,7 +367,7 @@ public class RockGolf extends ApplicationAdapter {
      *
      */
 
-    private void createMap() { 
+    private void createMap() {
 
         int sizeX = Gdx.graphics.getWidth();
         int sizeY = Gdx.graphics.getHeight();
@@ -374,16 +390,14 @@ public class RockGolf extends ApplicationAdapter {
         }
     }
 
-
-
-    /** 
+    /**
      *
      * Gets the intensity of the shot
      *
-     * @param launchVector  the dedicated shapeRendered
+     * @param launchVector the dedicated shapeRendered
      */
 
-    private void getIntensity(ShapeRenderer launchVector) { // get the intensity of the launch vector 
+    private void getIntensity(ShapeRenderer launchVector) { // get the intensity of the launch vector
         if (in.finalVectorX != 0) {
 
             launchVector.line(xPosition, yPosition, in.finalVectorX, (originY * 2) - in.finalVectorY);
@@ -399,16 +413,14 @@ public class RockGolf extends ApplicationAdapter {
         }
     }
 
-
-
-    /** 
+    /**
      *
      * Euclidean distance between two points
      *
-     * @param x2  the x2
-     * @param x1  the x1
-     * @param y2  the y2
-     * @param y1  the y1
+     * @param x2 the x2
+     * @param x1 the x1
+     * @param y2 the y2
+     * @param y1 the y1
      * @return double
      */
 
@@ -432,8 +444,7 @@ public class RockGolf extends ApplicationAdapter {
         private int finalVectorY;
 
         @Override
-        public boolean keyDown(int keycode) { 
-
+        public boolean keyDown(int keycode) {
 
             if (keycode == Input.Keys.ENTER && !shotActive && newShotPossible) {
                 String x = JOptionPane.showInputDialog("Insert x speed:");
@@ -453,25 +464,27 @@ public class RockGolf extends ApplicationAdapter {
                 switchState();
             } else if (keycode == Input.Keys.D) {
                 System.out.println(((PhysicsEngine) engine).tolerance);
+            } else if (keycode == Input.Keys.B) {
+                switchToObstacle();
             }
 
             return false;
         }
 
         @Override
-        public boolean keyUp(int keycode) { 
+        public boolean keyUp(int keycode) {
 
             return false;
         }
 
         @Override
-        public boolean keyTyped(char character) { 
+        public boolean keyTyped(char character) {
 
             return false;
         }
 
         @Override
-        public boolean touchDown(int screenX, int screenY, int pointer, int button) { 
+        public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
             this.downX = screenX;
             this.downY = screenY;
@@ -479,7 +492,7 @@ public class RockGolf extends ApplicationAdapter {
         }
 
         @Override
-        public boolean touchUp(int screenX, int screenY, int pointer, int button) { 
+        public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
             this.distanceX = (downX - screenX) / 100;
             this.distanceY = (screenY - downY) / 100;
@@ -502,7 +515,7 @@ public class RockGolf extends ApplicationAdapter {
         }
 
         @Override
-        public boolean touchDragged(int screenX, int screenY, int pointer) { 
+        public boolean touchDragged(int screenX, int screenY, int pointer) {
 
             if (!shotActive) {
                 finalVectorX = screenX;
@@ -513,44 +526,59 @@ public class RockGolf extends ApplicationAdapter {
         }
 
         @Override
-        public boolean mouseMoved(int screenX, int screenY) { 
+        public boolean mouseMoved(int screenX, int screenY) {
 
             return false;
         }
 
         @Override
-        public boolean scrolled(float amountX, float amountY) { 
+        public boolean scrolled(float amountX, float amountY) {
 
             return false;
         }
 
+        /**
+         *
+         * Normalize velocity
+         *
+         * @param velocities the velocities
+         * @param velocity   the velocity
+         * @return double[]
+         */
 
-    /** 
+        private double[] normalizeVelocity(double[] velocities, double velocity) {
+
+            double currentVel = Math.sqrt(Math.pow(velocities[0], 2) + Math.pow(velocities[1], 2));
+            double scalar = velocity / currentVel;
+            return new double[] { velocities[0] * scalar, velocities[1] * scalar };
+
+        }
+    }
+
+    /**
      *
-     * Normalize velocity
+     * Switch state from game to obstacle creator
      *
-     * @param velocities  the velocities
-     * @param velocity  the velocity
-     * @return double[]
      */
 
-    private double[] normalizeVelocity(double[] velocities, double velocity) { 
+    public void switchToObstacle() {
 
-        double currentVel = Math.sqrt(Math.pow(velocities[0], 2) + Math.pow(velocities[1], 4));
-        double scalar = velocity / currentVel;
-        return new double[] { velocities[0] * scalar, velocities[1] * scalar };
-
+        if (state.equals("OBS menu")) {
+            state = "game";
+            Gdx.input.setInputProcessor(in);
+        } else {
+            state = "OBS menu";
+            Gdx.input.setInputProcessor(new obstacleCreator(this, (PhysicsEngine) engine));
+        }
     }
-    }
 
-
-    /** 
+    /**
      *
      * Switch state from game to menu
      *
      */
-    
-    public void switchState() { 
+
+    public void switchState() {
 
         if (state.equals("menu")) {
             state = "game";
