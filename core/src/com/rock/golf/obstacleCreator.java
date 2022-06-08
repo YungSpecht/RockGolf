@@ -26,6 +26,8 @@ public class obstacleCreator implements InputProcessor {
 
         golf.switchToObstacle();
 
+        // asdlkfj
+
         if (keycode == Input.Keys.R) {
 
             double position[] = new double[2];
