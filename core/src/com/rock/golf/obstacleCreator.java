@@ -11,6 +11,7 @@ public class obstacleCreator implements InputProcessor {
 
     private RockGolf golf;
     private PhysicsEngine physics;
+    private Obstacle obstacle;
 
     public obstacleCreator(RockGolf rockGolf, PhysicsEngine engine) {
         this.golf = rockGolf;
@@ -21,10 +22,10 @@ public class obstacleCreator implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.R) {
-            new Obstacle(position, 150, 50);
+            new Obstacle(obstacle.getPosition(), 150, 50);
 
         } else if (keycode == Input.Keys.T) {
-            new 
+            new tre
         }
         return false;
     }
