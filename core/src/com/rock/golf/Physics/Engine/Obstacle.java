@@ -27,7 +27,7 @@ public class Obstacle {
     public boolean obstacleCollision(double xPos, double yPos, double radius){
         if((xPos+radius)>=position[0] || (xPos-radius)<=position[0] + width ){
             return true;
-        } else if((yPos+radius)>=position[1] || (yPos-radius)<=position[0] + height ){
+        } else if((yPos+radius)>=position[1] || (yPos-radius)<=position[1] + height ){
             return true;
         }else return false;
 
@@ -36,7 +36,7 @@ public class Obstacle {
     public double[] bounce(double radius, double[] vector){
         if((vector[0]+radius)>=position[0] || (vector[0]-radius)<=position[0] + width ){
            return new double []{-vector[2], vector[3]};
-        } else if((vector[1]+radius)>=position[1] || (vector[1]-radius)<=position[0] + height ){
+        } else if((vector[1]+radius)>=position[1] || (vector[1]-radius)<=position[1] + height ){
             return new double []{vector[2], -vector[3]};
         } else return new double[] {vector[2], vector[3]};
         

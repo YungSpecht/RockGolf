@@ -22,7 +22,7 @@ public class RK2Solver extends Solver{
     @Override
     public StateVector computeStep(StateVector current) {
         // k1 = h * f(t, w);
-        // k2 = h * f(t + 2/3*h, w + 2/3*k1)
+        // k2 = h * f(t  + 2/3*h, w + 2/3*k1)
         // w + h = w + 1/4*k1 + 3/4*k2
 
         StateVector k1 = StateVector.multiply(function(current), h);
