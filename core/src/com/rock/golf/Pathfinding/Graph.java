@@ -15,6 +15,7 @@ public class Graph {
     float originY = sizeY / 2;
     float metertoPixelRatio = RockGolf.metertoPixelRatio;
     int counter = 0;
+    List<Tree> obstacles = RockGolf.trees;
 
     public int[][] generateMatrix() {
         int counterI = 0;
@@ -35,7 +36,7 @@ public class Graph {
 
                 if (n < 0) {
                     adiacencyMatrix[counterI][counterJ] = 0;
-                } else if(thereisObastacle(i,j)) {
+                } else if(thereisObastacle(x,y)) {
                     adiacencyMatrix[counterI][counterJ] = 0;
                 } else {
                     adiacencyMatrix[counterI][counterJ] = 1;
@@ -49,14 +50,14 @@ public class Graph {
         return adiacencyMatrix;
     }
 
-    private boolean thereisObastacle(int xPos, int yPos) {
-        // List<Tree> obstacles = RockGolf.trees;
+    private boolean thereisObastacle(float xPos, float yPos) {
+        
+        for (int i = 0; i < obstacles.size(); i++) {
+            if (obstacles.get(i).collidedWithTree(xPos, yPos, 0.05)) {
+                return true;
+            }
+        }
 
-        // for (int i = 0; i < obstacles.size(); i++) {
-        //     if (obstacles.get(i).collidedWithTree(xPos, yPos)) {
-        //         return true;
-        //     }
-        // }
         return false;
     }
 }
