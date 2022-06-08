@@ -1,7 +1,10 @@
 package com.rock.golf;
 
+import java.awt.MouseInfo;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.rock.golf.Physics.Engine.Obstacle;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
@@ -20,11 +23,27 @@ public class obstacleCreator implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+
+        golf.switchToObstacle();
+
         if (keycode == Input.Keys.R) {
+
+            double position[] = new double[2];
+
+            double mouseX = MouseInfo.getPointerInfo().getLocation().getX();
+            double mouseY = MouseInfo.getPointerInfo().getLocation().getY();
+
+            ShapeRenderer Rectangle = new ShapeRenderer();
+            Rectangle.begin(ShapeRenderer.ShapeType.Filled);
+            Rectangle.setColor(Color.BLACK);
+            Rectangle.rect((float) mouseX, (float) mouseY, 150, 50);
+
+            position[0] = mouseX;
+            position[1] = mouseY;
             new Obstacle(position, 150, 50);
 
         } else if (keycode == Input.Keys.T) {
-            new 
+
         }
         return false;
     }

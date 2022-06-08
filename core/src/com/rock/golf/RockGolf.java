@@ -116,7 +116,7 @@ public class RockGolf extends ApplicationAdapter {
             return;
         }
 
-        if (state.equals("obstacle menu")) {
+        if (state.equals("OBS menu")) {
             renderObstacleMenu();
             return;
         }
@@ -235,7 +235,7 @@ public class RockGolf extends ApplicationAdapter {
 
     /**
      *
-     * Render menu
+     * Render Obstacle menu
      *
      */
 
@@ -557,12 +557,12 @@ public class RockGolf extends ApplicationAdapter {
 
     public void switchToObstacle() {
 
-        if (state.equals("obstacle menu")) {
+        if (state.equals("OBS menu")) {
             state = "game";
             Gdx.input.setInputProcessor(in);
         } else {
-            state = "obstacle menu";
-            Gdx.input.setInputProcessor(new obstacleCreator(this, (PhysicsEngine) engine)); // dont know what this does
+            state = "OBS menu";
+            Gdx.input.setInputProcessor(new obstacleCreator(this, (PhysicsEngine) engine));
         }
     }
 
