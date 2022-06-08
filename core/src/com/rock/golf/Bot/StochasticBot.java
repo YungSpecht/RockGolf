@@ -1,21 +1,23 @@
 package com.rock.golf.Bot;
 
-import java.util.Random;
-import com.rock.golf.PhysicsEngine;
-import com.rock.golf.Input.InputModule;
+import com.rock.golf.Physics.Engine.PhysicsEngine;
 
-public class StochasticBot {
-    PhysicsEngine engine;
+public class StochasticBot extends Bot {
+
     int iterations;
+<<<<<<< HEAD
     Random rand = new Random();
     double[] targetPos = new double[] { InputModule.get_input()[2], InputModule.get_input()[3] };
     double targetRadius = InputModule.get_input()[4];
+=======
+>>>>>>> main
 
     public StochasticBot(PhysicsEngine engine, int i) {
         this.engine = engine;
         iterations = i;
     }
 
+<<<<<<< HEAD
     public double[] getVelocities() {
         double velX = (rand.nextDouble() * 10) - 5;
         double velY = (rand.nextDouble() * 10) - 5;
@@ -39,13 +41,21 @@ public class StochasticBot {
     }
 
     public double[] getBestMove() {
+=======
+    /** 
+     * Inherited abstract class from super
+     */
+>>>>>>> main
 
+    @Override
+    public double[] getMove() {
+        long checkpoint = System.currentTimeMillis();
         double[] best = new double[] { 0, 0 };
         double previousFitness = Integer.MAX_VALUE;
-        double[] vel = getVelocities();
+        double[] vel = getRandomVelocities();
         for (int i = 0; i < iterations; i++) {
-            System.out.println("iteration " + (i + 1));
-            double[] ballPos = engine.get_shot(vel[0], vel[1]);
+            double[] ballPos = engine.getSimulatedShot(vel[0], vel[1]);
+            iterationsCounter++;
             double fitness = getFitness(ballPos, targetPos);
             if (fitness < previousFitness) {
                 previousFitness = fitness;
@@ -53,17 +63,10 @@ public class StochasticBot {
                 if (fitness == 0)
                     break;
             }
-            vel = getVelocities();
+            vel = getRandomVelocities();
         }
-        return new double[] { best[0], best[1], previousFitness };
-    }
-
-    private double getFitness(double[] ballPos, double[] targetPos) {
-        if (engine.is_in_water(ballPos) || !engine.ball_in_screen(ballPos))
-            return Integer.MAX_VALUE;
-        if (Math.pow(ballPos[0] - targetPos[0], 2) + Math.pow(ballPos[1] - targetPos[1], 2) <= Math.pow(targetRadius,
-                2))
-            return 0;
-        return Math.sqrt(Math.pow((targetPos[0] - ballPos[0]), 2) + Math.pow((targetPos[1] - ballPos[1]), 2));
+        
+        time = System.currentTimeMillis()-checkpoint;
+        return new double[] { best[0], best[1] };
     }
 }

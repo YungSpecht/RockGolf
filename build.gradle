@@ -7,9 +7,15 @@ buildscript {
         gradlePluginPortal()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         google()
+        jcenter()
     }
     dependencies {
+<<<<<<< HEAD
 
+=======
+        
+        
+>>>>>>> main
     }
 }
 
@@ -29,6 +35,7 @@ allprojects {
 
     repositories {
         mavenLocal()
+        jcenter()
         mavenCentral()
         google()
         gradlePluginPortal()
@@ -36,27 +43,45 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         maven { url "https://jitpack.io" }
     }
+
+    dependencies {
+        
+    }
 }
 
 project(":desktop") {
     apply plugin: "java-library"
-
+    
 
     dependencies {
+        testImplementation('org.junit.jupiter:junit-jupiter:5.8.2')
+        implementation('org.junit.jupiter:junit-jupiter-api:5.8.2')
+        testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.8.2'
         implementation project(":core")
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 
+    }
+
+    test {
+        useJUnitPlatform()
+        
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
     }
 }
 
 project(":core") {
     apply plugin: "java-library"
 
+<<<<<<< HEAD
     test {
        workingDir = new File("")
     }
 
+=======
+>>>>>>> main
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         implementation 'org.mariuszgromada.math:MathParser.org-mXparser:4.4.2'
@@ -68,5 +93,10 @@ project(":core") {
         testImplementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
     }
 
+<<<<<<< HEAD
     
+=======
+
+
+>>>>>>> main
 }
