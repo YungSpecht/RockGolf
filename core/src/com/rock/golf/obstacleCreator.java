@@ -1,7 +1,11 @@
 package com.rock.golf;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.Rectangle;
+import com.rock.golf.Physics.Engine.Obstacle;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
+import com.rock.golf.Physics.Engine.Tree;
 
 public class obstacleCreator implements InputProcessor {
 
@@ -16,6 +20,12 @@ public class obstacleCreator implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.R) {
+            new Obstacle(position, 150, 50);
+
+        } else if (keycode == Input.Keys.T) {
+            new 
+        }
         return false;
     }
 
