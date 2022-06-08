@@ -40,7 +40,7 @@ public class PhysicsEngine implements Runnable {
         this.h = h;
         sandpits = new ArrayList<Sandpit>();
         trees = new ArrayList<Tree>();
-        // trees.add(new Tree(new double[]{2, 2}, 0.4));
+        trees.add(new Tree(new double[]{2, 2}, 0.4));
         // sandpits.add(new Sandpit(new double[] { -4, 4 }, 1, uK, uS));
     }
 
@@ -193,7 +193,7 @@ public class PhysicsEngine implements Runnable {
 
     public boolean collidedWithTree(double xPos, double yPos) {
         for (int i = 0; i < trees.size(); i++) {
-            if (trees.get(i).collidedWithTree(xPos, yPos)) {
+            if (trees.get(i).collidedWithTree(xPos, yPos, ballRadius)) {
                 return true;
             }
         }

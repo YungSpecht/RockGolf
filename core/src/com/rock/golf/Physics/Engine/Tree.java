@@ -10,8 +10,8 @@ public class Tree{
         this.radius = radius;
     }
 
-    public boolean collidedWithTree(double xPos, double yPos){
-        if(Math.pow(xPos - position[0], 2) + Math.pow(yPos - position[1], 2) <= Math.pow(radius, 2)){
+    public boolean collidedWithTree(double xPos, double yPos, double ballRadius){
+        if(Math.sqrt(Math.pow(xPos-position[0], 2)+Math.pow(yPos-position[1], 2)) < radius+ballRadius){
             return true;
         }
         return false;

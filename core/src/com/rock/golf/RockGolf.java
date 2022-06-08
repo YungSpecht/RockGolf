@@ -11,6 +11,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.rock.golf.Input.*;
+import com.rock.golf.Pathfinding.Graph;
 import com.rock.golf.Physics.Engine.Derivation;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Sandpit;
@@ -45,7 +46,7 @@ public class RockGolf extends ApplicationAdapter {
     private float targetxPosition;
     private float targetyPosition;
     private List<Sandpit> sandpits;
-    private List<Tree> trees;
+    public static List<Tree> trees;
     private ShapeRenderer ball;
     private ShapeRenderer sandpit;
     private ShapeRenderer tree;
@@ -56,7 +57,7 @@ public class RockGolf extends ApplicationAdapter {
     private ArrayList<float[]> color = new ArrayList<>();
     private double[] input;
     double[] initialState;
-    private Runnable engine;
+    public Runnable engine;
     ExecutorService executor;
     private SpriteBatch position, shot, endGame;
     private BitmapFont font;
@@ -66,6 +67,9 @@ public class RockGolf extends ApplicationAdapter {
     public InputHandling in = new InputHandling();
     private ShapeRenderer background;
     private SpriteBatch water;
+    static int[][] graph;
+    public boolean debugGraph = false;
+    private static ShapeRenderer graphNodes;
 
     @Override
     public void create() {
@@ -78,6 +82,7 @@ public class RockGolf extends ApplicationAdapter {
         ball = new ShapeRenderer();
         target = new ShapeRenderer();
         sandpit = new ShapeRenderer();
+        graphNodes = new ShapeRenderer();
         background = new ShapeRenderer();
         tree = new ShapeRenderer();
         launchVector = new ShapeRenderer();
@@ -93,13 +98,14 @@ public class RockGolf extends ApplicationAdapter {
         prepareNewShot();
         xPosition = metersToPixel(convert(input[5])) + originX;
         yPosition = metersToPixel(convert(input[6])) + originY;
-        initialState = new double[] { input[5], input[6] };
+        initialState = new double[] { input[5], input[6] };      
         generateField();
         sandpits = ((PhysicsEngine) engine).get_sandpits();
         trees = ((PhysicsEngine) engine).get_trees();
         shotActive = false;
         newShotPossible = true;
-
+        Graph graphClass = new Graph();
+        graph = graphClass.generateMatrix();  
     }
 
     @Override
@@ -116,14 +122,13 @@ public class RockGolf extends ApplicationAdapter {
             return;
         }
 
-        if (state.equals("obstacle menu")) {
+        if (state.equals("OBS menu")) {
             renderObstacleMenu();
             return;
         }
 
         checkStuckStatus();
         generateObstacles();
-
         target.begin(ShapeRenderer.ShapeType.Filled);
         target.setColor(Color.BLACK);
         target.circle(targetxPosition, targetyPosition, metersToPixel(targetRadius));
@@ -235,7 +240,7 @@ public class RockGolf extends ApplicationAdapter {
 
     /**
      *
-     * Render menu
+     * Render Obstacle menu
      *
      */
 
@@ -380,6 +385,7 @@ public class RockGolf extends ApplicationAdapter {
                 } catch (Exception e) {
                     return;
                 }
+                if(debugGraph) createNode(i,j);
             }
         }
     }
@@ -557,12 +563,12 @@ public class RockGolf extends ApplicationAdapter {
 
     public void switchToObstacle() {
 
-        if (state.equals("obstacle menu")) {
+        if (state.equals("OBS menu")) {
             state = "game";
             Gdx.input.setInputProcessor(in);
         } else {
-            state = "obstacle menu";
-            Gdx.input.setInputProcessor(new obstacleCreator(this, (PhysicsEngine) engine)); // dont know what this does
+            state = "OBS menu";
+            Gdx.input.setInputProcessor(new obstacleCreator(this, (PhysicsEngine) engine));
         }
     }
 
@@ -582,5 +588,29 @@ public class RockGolf extends ApplicationAdapter {
             Gdx.input.setInputProcessor(new BotHandler(this, (PhysicsEngine) engine));
         }
         ;
+    }
+
+    public static void createNode(int i, int j) {
+        try {
+            if(graph[i/10][j/10] == 0) return;
+        } catch(ArrayIndexOutOfBoundsException e) {
+            return;
+        }
+        
+        graphNodes.begin(ShapeRenderer.ShapeType.Filled);
+        graphNodes.circle(i, j, 2);
+        graphNodes.end();
+
+        graphNodes.begin(ShapeRenderer.ShapeType.Line);
+
+        if(i/10 + 1 < graph.length && graph[i/10 + 1][j/10] != 0) {
+            graphNodes.line(i, j, i + 10, j);
+        }
+
+        if(j/10 + 1 < graph[0].length && graph[i/10][j/10 + 1] != 0) {
+            graphNodes.line(i, j, i, j + 10);
+        }
+
+        graphNodes.end();
     }
 }
