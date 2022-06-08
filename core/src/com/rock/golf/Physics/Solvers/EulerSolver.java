@@ -11,7 +11,7 @@ public class EulerSolver extends Solver{
     }
 
     @Override
-    public StateVector compute_step(StateVector vector) {
+    public StateVector computeStep(StateVector vector) {
         return StateVector.add(vector, StateVector.multiply(function(vector), h));
     }
     

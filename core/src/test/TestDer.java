@@ -10,4 +10,10 @@ public class TestDer {
                 "h(x, y) = 0.1*x+1");
         return Derivation.derivativeX(1.0, 2.0, example);
     }
+
+    public static boolean isEqual(double a, double b) {
+        double epsilon = 0.001;
+        boolean isEqual = Math.abs(a - b) < epsilon;
+        return isEqual;
+    }
 }

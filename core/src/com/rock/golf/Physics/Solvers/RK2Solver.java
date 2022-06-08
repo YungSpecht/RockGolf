@@ -20,14 +20,14 @@ public class RK2Solver extends Solver{
      *                velocities after one timestep of size h.
      */
     @Override
-    public StateVector compute_step(StateVector current) {
+    public StateVector computeStep(StateVector current) {
         // k1 = h * f(t, w);
-        // k2 = h * f(t + 2/3*h, w + 2/3*k1)
+        // k2 = h * f(t  + 2/3*h, w + 2/3*k1)
         // w + h = w + 1/4*k1 + 3/4*k2
 
         StateVector k1 = StateVector.multiply(function(current), h);
         StateVector k2 = StateVector.multiply(function(StateVector.add(current, StateVector.multiply(k1, 2.0 / 3.0))), h);
-        StateVector result = StateVector.add(StateVector.add(current, StateVector.multiply(k1, 1.0 / 4.0)),  StateVector.multiply(k2, 3 / 4));
+        StateVector result = StateVector.add(StateVector.add(current, StateVector.multiply(k1, 1.0 / 4.0)),  StateVector.multiply(k2, 3.0 / 4.0));
 
         return result;
     }

@@ -11,6 +11,10 @@ public class StochasticBot extends Bot {
         iterations = i;
     }
 
+    /** 
+     * Inherited abstract class from super
+     */
+
     @Override
     public double[] getMove() {
         long checkpoint = System.currentTimeMillis();
@@ -18,8 +22,7 @@ public class StochasticBot extends Bot {
         double previousFitness = Integer.MAX_VALUE;
         double[] vel = getRandomVelocities();
         for (int i = 0; i < iterations; i++) {
-            System.out.println("iteration " + (i + 1));
-            double[] ballPos = engine.get_shot(vel[0], vel[1]);
+            double[] ballPos = engine.getSimulatedShot(vel[0], vel[1]);
             iterationsCounter++;
             double fitness = getFitness(ballPos, targetPos);
             if (fitness < previousFitness) {
@@ -30,6 +33,7 @@ public class StochasticBot extends Bot {
             }
             vel = getRandomVelocities();
         }
+        
         time = System.currentTimeMillis()-checkpoint;
         return new double[] { best[0], best[1] };
     }

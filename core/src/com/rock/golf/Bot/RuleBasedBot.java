@@ -2,15 +2,29 @@ package com.rock.golf.Bot;
 
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 
+
+ /**
+ * Rule-Based Bot
+ */ 
+
 public class RuleBasedBot extends Bot {
+
     double powerCoefficient = 1;
 
-    public RuleBasedBot(PhysicsEngine engine) {
+    public RuleBasedBot(PhysicsEngine engine) { 
+
         this.engine = engine;
     }
 
+
+    /** 
+     * Inherited abstract class from super
+     */
+
+
     @Override
-    public double[] getMove() {
+    public double[] getMove() { 
+
 
         double angleToShot = Math.atan2(targetPos[1] - ballPos[1], targetPos[0] - ballPos[0]);
         double velX = Math.cos(angleToShot);
@@ -24,7 +38,16 @@ public class RuleBasedBot extends Bot {
 
     }
 
-    private boolean somethingsInTheWay(double xDir, double yDir) {
+
+    /** 
+     *
+     * Checks if something is in the way of the shots (without simulation)
+     *
+     * @return boolean
+     */
+
+    private boolean somethingsInTheWay(double xDir, double yDir) { 
+
         double distance = EuclideanDistance(ballPos);
         double[] directionsFullScaled = normalizeVelocity(new double[] { xDir, yDir }, distance);
         double steps = distance / 0.05;
@@ -33,7 +56,7 @@ public class RuleBasedBot extends Bot {
         int counter = 0;
         for (double i = 0; i < distance; i += 0.05) {
             counter++;
-            if (engine.is_in_water(ballPos[0] + counter * downScaledXDir, ballPos[1] + counter * downScaledyDir)
+            if (engine.isInWater(ballPos[0] + counter * downScaledXDir, ballPos[1] + counter * downScaledyDir)
                     || engine.collidedWithTree(ballPos[0] + counter * downScaledXDir,
                             ballPos[1] + counter * downScaledyDir)) {
                 return true;
@@ -42,7 +65,16 @@ public class RuleBasedBot extends Bot {
         return false;
     }
 
-    private double[] getDivergentShot(double[] currentShot, double angle) {
+
+    /** 
+     *
+     * Diverge shot by angle
+     *
+     * @return the divergent shot
+     */
+    
+    private double[] getDivergentShot(double[] currentShot, double angle) { 
+
         double currentDegreeAngle = convert(Math.atan2(currentShot[1], currentShot[0]));
         double newRadianAngle = Math.toRadians(currentDegreeAngle - angle);
         return normalizeVelocity(new double[] { Math.cos(newRadianAngle), Math.sin(newRadianAngle) }, 4);
