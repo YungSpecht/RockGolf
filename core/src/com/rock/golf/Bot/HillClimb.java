@@ -21,14 +21,14 @@ public class HillClimb extends Bot {
     @Override
     public double[] getMove() {
         long checkpoint = System.currentTimeMillis();
-        double angle = convert(Math.atan2(targetPos[1] - ballPos[1], targetPos[0] -ballPos[0]));
+        double angle = convert(Math.atan2(targetPos[1] - ballPos[1], targetPos[0] - ballPos[0]));
 
         double[][][] shots = generate_shot_range(angle, 4, 45, 5, 5, 1);
         currentShot = process_shots(shots, EuclideanDistance(ballPos), 0);
         currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
         currentShotDistance = EuclideanDistance(currentShotCoords);
-        if(currentShotDistance < targetRadius){
-            time = System.currentTimeMillis()-checkpoint;
+        if (currentShotDistance < targetRadius) {
+            time = System.currentTimeMillis() - checkpoint;
             return currentShot;
         }
 
@@ -37,17 +37,17 @@ public class HillClimb extends Bot {
         currentShot = process_shots(shots, currentShotDistance, 0);
         currentShotCoords = engine.get_shot(currentShot[0], currentShot[1]);
         currentShotDistance = EuclideanDistance(currentShotCoords);
-        if(currentShotDistance < targetRadius){
-            time = System.currentTimeMillis()-checkpoint;
+        if (currentShotDistance < targetRadius) {
+            time = System.currentTimeMillis() - checkpoint;
             return currentShot;
         }
-        
+
         int counter = 0;
-        while(currentShotDistance >= targetRadius && counter < 3){
-            if(counter == 0){
+        while (currentShotDistance >= targetRadius && counter < 3) {
+            if (counter == 0) {
                 driver();
             }
-            if(engine.is_in_water(currentShotCoords[0], currentShotCoords[1])){
+            if (engine.is_in_water(currentShotCoords[0], currentShotCoords[1])) {
                 StochasticBot randomRestart = new StochasticBot(engine, 10);
                 currentShot = randomRestart.getMove();
                 iterationsCounter += randomRestart.getIterations();
@@ -57,12 +57,12 @@ public class HillClimb extends Bot {
             }
             counter++;
         }
-       
-        time = System.currentTimeMillis()-checkpoint;
+
+        time = System.currentTimeMillis() - checkpoint;
         return currentShot;
     }
 
-    private void driver(){
+    private void driver() {
         int counter = 0;
         while (currentShotDistance >= targetRadius && counter < 5) {
             mountain_climber(0.2 - (0.025 * counter));
@@ -84,16 +84,16 @@ public class HillClimb extends Bot {
 
     private void mountain_climber(double precision) {
         boolean successorAvailable;
-        do{
+        do {
             double[][] successors = new double[8][2];
-            successors[0] = new double[]{currentShot[0] - precision, currentShot[1]};
-            successors[1] = new double[]{currentShot[0] + precision, currentShot[1]};
-            successors[2] = new double[]{currentShot[0], currentShot[1] - precision};
-            successors[3] = new double[]{currentShot[0], currentShot[1] + precision};
-            successors[4] = new double[]{currentShot[0] - precision, currentShot[1] + precision};
-            successors[5] = new double[]{currentShot[0] + precision, currentShot[1] - precision};
-            successors[6] = new double[]{currentShot[0] - precision, currentShot[1] - precision};
-            successors[7] = new double[]{currentShot[0] + precision, currentShot[1] + precision};
+            successors[0] = new double[] { currentShot[0] - precision, currentShot[1] };
+            successors[1] = new double[] { currentShot[0] + precision, currentShot[1] };
+            successors[2] = new double[] { currentShot[0], currentShot[1] - precision };
+            successors[3] = new double[] { currentShot[0], currentShot[1] + precision };
+            successors[4] = new double[] { currentShot[0] - precision, currentShot[1] + precision };
+            successors[5] = new double[] { currentShot[0] + precision, currentShot[1] - precision };
+            successors[6] = new double[] { currentShot[0] - precision, currentShot[1] - precision };
+            successors[7] = new double[] { currentShot[0] + precision, currentShot[1] + precision };
 
             double[][] successorCoords = new double[successors.length][2];
             for (int i = 0; i < successors.length; i++) {
@@ -117,10 +117,10 @@ public class HillClimb extends Bot {
             if (currentShotDistance < targetRadius) {
                 return;
             }
-            if(currentTemp > 0){
+            if (currentTemp > 0) {
                 currentTemp -= coolingRate;
                 System.out.println("Current Temperature: " + currentTemp);
-                if(currentTemp < 0){
+                if (currentTemp < 0) {
                     currentTemp = 0;
                 }
             }
@@ -132,7 +132,8 @@ public class HillClimb extends Bot {
         double reference = currentShotDistance;
         int result = -1;
         for (int i = 0; i < successorCoords.length; i++) {
-            if (successorCoords[i] != null && !engine.is_in_water(successorCoords[i][0], successorCoords[i][0]) && annealing(successorCoords[i], reference)) {
+            if (successorCoords[i] != null && !engine.is_in_water(successorCoords[i][0], successorCoords[i][0])
+                    && annealing(successorCoords[i], reference)) {
                 result = i;
                 reference = EuclideanDistance(successorCoords[i]);
                 System.out.println("New Shortest Distance: " + (reference - targetRadius));
@@ -144,13 +145,12 @@ public class HillClimb extends Bot {
         return result;
     }
 
-    private boolean annealing(double[] coords, double refDistance){
-        if(EuclideanDistance(coords) < refDistance){
+    private boolean annealing(double[] coords, double refDistance) {
+        if (EuclideanDistance(coords) < refDistance) {
             return true;
         }
-        double control = currentTemp / (MAX_TEMP * (EuclideanDistance(coords)*12 - refDistance));
+        double control = currentTemp / (MAX_TEMP * (EuclideanDistance(coords) * 12 - refDistance));
         double rando = rand.nextDouble();
         return rando < control;
     }
-
 }
