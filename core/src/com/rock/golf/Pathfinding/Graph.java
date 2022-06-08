@@ -50,13 +50,13 @@ public class Graph {
     }
 
     private boolean thereisObastacle(int xPos, int yPos) {
-        List<Tree> obstacles = RockGolf.trees;
+        // List<Tree> obstacles = RockGolf.trees;
 
-        for (int i = 0; i < obstacles.size(); i++) {
-            if (obstacles.get(i).collidedWithTree(xPos, yPos)) {
-                return true;
-            }
-        }
+        // for (int i = 0; i < obstacles.size(); i++) {
+        //     if (obstacles.get(i).collidedWithTree(xPos, yPos)) {
+        //         return true;
+        //     }
+        // }
         return false;
     }
 }
