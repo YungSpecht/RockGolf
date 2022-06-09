@@ -4,10 +4,10 @@ friction-coefficient-static: 0.2
 target-x-position: 2
 target-y-position: 2
 target-radius: 0.15
-ball-x-position: -2.0
-ball-y-position: -2.0
-x-velocity: 0.43302843167326
-y-velocity: 4.089841087875195
+ball-x-position: -1.902704773690481
+ball-y-position: -1.902704773690481
+x-velocity: 0.5310834374936169
+y-velocity: 4.013161631213472
 
 
 ((1/20)*(x^2+y^2))-0.1 t[2,2] b[-3,-3]
