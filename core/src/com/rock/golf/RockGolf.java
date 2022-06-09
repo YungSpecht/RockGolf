@@ -57,7 +57,7 @@ public class RockGolf extends ApplicationAdapter {
     private ArrayList<float[]> color = new ArrayList<>();
     private double[] input;
     double[] initialState;
-    public Runnable engine;
+    public static Runnable engine;
     ExecutorService executor;
     private SpriteBatch position, shot, endGame;
     private BitmapFont font;
@@ -283,7 +283,7 @@ public class RockGolf extends ApplicationAdapter {
      * @return The double value converted to float
      */
 
-    private static float convert(double d) {
+    public static float convert(double d) {
 
         Double tmp = Double.valueOf(d);
         return tmp.floatValue();
@@ -385,7 +385,8 @@ public class RockGolf extends ApplicationAdapter {
                 } catch (Exception e) {
                     return;
                 }
-                if(debugGraph) createNode(i,j);
+                
+                createNode(i,j);
             }
         }
     }
