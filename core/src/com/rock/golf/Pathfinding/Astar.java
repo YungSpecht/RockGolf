@@ -1,4 +1,4 @@
-package com.rock.golf.Bot;
+package com.rock.golf.Pathfinding;
 
 import java.util.ArrayList;
 import java.util.HashMap;
