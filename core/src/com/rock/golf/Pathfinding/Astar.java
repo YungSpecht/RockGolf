@@ -12,40 +12,30 @@ public class Astar {
      * have not been explored yet)
      * CLOSE: consissts of nodes that have been visited and expanded (sucessors have
      * been expolored already and included in the open list if this was the case)
-     */
-
-    // private final Graph<T> graph;
-    // private final Scorer<T> node_next;
-    // private final Scorer<T> node_goal;
-    // public List<T> findRoute(T from, T to) {throw new IllegalStateException("No
-    // route found");}
-    // Map<T, RouteNode>> allNodes = new HashMap<>();
-
-    /**
-     * RouteNode<T> start = new RouteNode<>(from, null, 0d,
-     * targetScorer.computeCost(from, to));
-     * openSet.add(start);
-     * allNodes.put(from, start);
+     * 
+     * g -  movement cost to move from the starting point to a given square on the grid, following the path generated to get there
+     * h -  estimated movememt cost to move from given square on grid to final destination 
      */
 
     Queue<Object> OPEN = new LinkedList<Object>();
     private static LinkedList<Object> CLOSE;
     private final Object node_start;
     private final Object node_goal;
-    HashMap<Object, Object> allNodes = new HashMap<>();
+    Graph graph = new Graph();
+    int[][] nodes;
 
     public Astar(Object node_start, Object node_goal, Object from) {
+        nodes = graph.generateMatrix();
         this.node_start = node_start;
         this.node_goal = node_goal;
         OPEN.add(node_start);
-        allNodes.put(from, node_start);
         CLOSE = new LinkedList<Object>();
     }
 
     // from pseudocode:
     public ArrayList<Object> getPath(Object node_goal, Object previous_node) {
-        while (!OPEN.isEmpty()) { // while the open lsit is not empty,
-            // take from the open list the node node_current with the lowest
+        while (!OPEN.isEmpty()) { // while the open list is not empty,
+            // take from the open list the node node_current with the lowest value
             Object node_current = OPEN.poll();
             if (node_current.equals(node_goal)) {
                 ArrayList<Object> path = new ArrayList<>();

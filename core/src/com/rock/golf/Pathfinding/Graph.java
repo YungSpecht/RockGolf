@@ -1,6 +1,6 @@
 package com.rock.golf.Pathfinding;
-import java.util.List;
 
+import java.util.List;
 import org.mariuszgromada.math.mxparser.Function;
 import com.rock.golf.RockGolf;
 import com.rock.golf.Input.InputModule;
@@ -24,7 +24,7 @@ public class Graph {
         int rows = (int) sizeX / pixels;
         int columns = (int) sizeY / pixels;
         Function profile = InputModule.getProfile();
-        
+
         int[][] adiacencyMatrix = new int[rows + 1][columns + 1];
 
         for (int i = 0; i <= sizeX; i += pixels) {
@@ -36,7 +36,7 @@ public class Graph {
 
                 if (n < 0) {
                     adiacencyMatrix[counterI][counterJ] = 0;
-                } else if(thereisObastacle(x,y)) {
+                } else if (thereisObastacle(x, y)) {
                     adiacencyMatrix[counterI][counterJ] = 0;
                 } else {
                     adiacencyMatrix[counterI][counterJ] = 1;
@@ -51,13 +51,12 @@ public class Graph {
     }
 
     private boolean thereisObastacle(float xPos, float yPos) {
-        
+
         for (int i = 0; i < obstacles.size(); i++) {
             if (obstacles.get(i).collidedWithTree(xPos, yPos, 0.05)) {
                 return true;
             }
         }
-
         return false;
     }
 }
