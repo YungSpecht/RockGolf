@@ -283,7 +283,7 @@ public class RockGolf extends ApplicationAdapter {
      * @return The double value converted to float
      */
 
-    private static float convert(double d) {
+    public static float convert(double d) {
 
         Double tmp = Double.valueOf(d);
         return tmp.floatValue();

@@ -20,7 +20,7 @@ public class obstacleCreator implements InputProcessor{
     private RockGolf golf;
     private PhysicsEngine physics;
     private Obstacle obstacle;
-    private Float[] position = new Float[4];
+    private double[] position = new double[4];
 
     public obstacleCreator(RockGolf rockGolf, PhysicsEngine engine) {
         this.golf = rockGolf;
@@ -43,10 +43,10 @@ public class obstacleCreator implements InputProcessor{
             ShapeRenderer Rectangle = new ShapeRenderer();
             Rectangle.begin(ShapeRenderer.ShapeType.Filled);
             Rectangle.setColor(Color.BLACK);
-            Rectangle.rect(position [0],  position [1], position [2]-position [0], position [3]- position [1]);
+            Rectangle.rect(golf.convert(position[0]), golf.convert(position[1]), golf.convert(position[2]- position[0]), golf.convert(position[3]- position[1]));
 
 
-            new Obstacle(position.doubleValue(), 150, 50);
+            new Obstacle(position, position[2]- position[0], position[3]- position[1]);
 
         } else if (keycode == Input.Keys.T) {
 
