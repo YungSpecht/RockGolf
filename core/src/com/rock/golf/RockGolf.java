@@ -11,7 +11,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.rock.golf.Input.*;
+import com.rock.golf.Pathfinding.BFS;
 import com.rock.golf.Pathfinding.Graph;
+import com.rock.golf.Pathfinding.Node;
 import com.rock.golf.Physics.Engine.Derivation;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Sandpit;
@@ -67,7 +69,8 @@ public class RockGolf extends ApplicationAdapter {
     public InputHandling in = new InputHandling();
     private ShapeRenderer background;
     private SpriteBatch water;
-    static int[][] graph;
+    static Node[][] graph;
+    Graph graphClass;
     public boolean debugGraph = false;
     private static ShapeRenderer graphNodes;
 
@@ -104,7 +107,7 @@ public class RockGolf extends ApplicationAdapter {
         trees = ((PhysicsEngine) engine).get_trees();
         shotActive = false;
         newShotPossible = true;
-        Graph graphClass = new Graph();
+        graphClass = new Graph();
         graph = graphClass.generateMatrix();  
     }
 
@@ -467,6 +470,8 @@ public class RockGolf extends ApplicationAdapter {
                 System.out.println(((PhysicsEngine) engine).tolerance);
             } else if (keycode == Input.Keys.B) {
                 switchToObstacle();
+            } else if (keycode == Input.Keys.P) {
+                BFS.BFSSearch(graphClass,graph[1][1], graph[70][10]);
             }
 
             return false;
@@ -593,22 +598,24 @@ public class RockGolf extends ApplicationAdapter {
 
     public static void createNode(int i, int j) {
         try {
-            if(graph[i/10][j/10] == 0) return;
+            if(graph[i/10][j/10].currentNodeValue == 0) return;
         } catch(ArrayIndexOutOfBoundsException e) {
             return;
         }
-        
+
         graphNodes.begin(ShapeRenderer.ShapeType.Filled);
+        if(graph[i/10][j/10].isPath) graphNodes.setColor(Color.RED);
         graphNodes.circle(i, j, 2);
+        graphNodes.setColor(Color.WHITE);
         graphNodes.end();
 
         graphNodes.begin(ShapeRenderer.ShapeType.Line);
 
-        if(i/10 + 1 < graph.length && graph[i/10 + 1][j/10] != 0) {
+        if(i/10 + 1 < graph.length && graph[i/10 + 1][j/10].currentNodeValue != 0) {
             graphNodes.line(i, j, i + 10, j);
         }
 
-        if(j/10 + 1 < graph[0].length && graph[i/10][j/10 + 1] != 0) {
+        if(j/10 + 1 < graph[0].length && graph[i/10][j/10 + 1].currentNodeValue != 0) {
             graphNodes.line(i, j, i, j + 10);
         }
 

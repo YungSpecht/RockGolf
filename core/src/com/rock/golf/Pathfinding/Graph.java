@@ -1,4 +1,5 @@
 package com.rock.golf.Pathfinding;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mariuszgromada.math.mxparser.Function;
@@ -16,8 +17,9 @@ public class Graph {
     float metertoPixelRatio = RockGolf.metertoPixelRatio;
     int counter = 0;
     List<Tree> obstacles = RockGolf.trees;
+    Node[][] adjacencyMatrix;
 
-    public int[][] generateMatrix() {
+    public Node[][] generateMatrix() {
         int counterI = 0;
         int counterJ = 0;
         int pixels = 10;
@@ -25,7 +27,7 @@ public class Graph {
         int columns = (int) sizeY / pixels;
         Function profile = InputModule.getProfile();
         
-        int[][] adiacencyMatrix = new int[rows + 1][columns + 1];
+        adjacencyMatrix = new Node[rows + 1][columns + 1];
 
         for (int i = 0; i <= sizeX; i += pixels) {
             for (int j = 0; j <= sizeY; j += pixels) {
@@ -35,11 +37,11 @@ public class Graph {
                 float n = (float) Derivation.compute(x, y, profile);
 
                 if (n < 0) {
-                    adiacencyMatrix[counterI][counterJ] = 0;
+                    adjacencyMatrix[counterI][counterJ] = new Node(0, null, counterI, counterJ);
                 } else if(thereisObastacle(x,y)) {
-                    adiacencyMatrix[counterI][counterJ] = 0;
+                    adjacencyMatrix[counterI][counterJ] = new Node(0, null, counterI, counterJ);
                 } else {
-                    adiacencyMatrix[counterI][counterJ] = 1;
+                    adjacencyMatrix[counterI][counterJ] = new Node(1, null, counterI, counterJ);
                 }
                 counterJ++;
             }
@@ -47,7 +49,7 @@ public class Graph {
             counterI++;
         }
 
-        return adiacencyMatrix;
+        return adjacencyMatrix;
     }
 
     private boolean thereisObastacle(float xPos, float yPos) {
@@ -59,5 +61,37 @@ public class Graph {
         }
 
         return false;
+    }
+
+    public ArrayList<Node> neighbors(Node currentNode) {
+        int row = currentNode.row;
+        int column = currentNode.column;
+        ArrayList<Node> neighbors = new ArrayList<>();
+
+        if(column + 1 < adjacencyMatrix[row].length && adjacencyMatrix[row][column + 1].currentNodeValue == 1) {
+            if (adjacencyMatrix[row][column + 1].parent == null)
+                adjacencyMatrix[row][column + 1].parent = currentNode;
+            neighbors.add(adjacencyMatrix[row][column + 1]);
+        }
+
+        if(column != 0 && adjacencyMatrix[row][column - 1].currentNodeValue == 1) {
+            if (adjacencyMatrix[row][column - 1].parent == null)
+                adjacencyMatrix[row][column - 1].parent = currentNode;
+            neighbors.add(adjacencyMatrix[row][column - 1]);
+        }
+
+        if(row + 1 < adjacencyMatrix.length && adjacencyMatrix[row + 1][column].currentNodeValue == 1) {
+            if (adjacencyMatrix[row + 1][column].parent == null)
+                adjacencyMatrix[row + 1][column].parent = currentNode;
+            neighbors.add(adjacencyMatrix[row + 1][column]);
+        }
+
+        if(row != 0 &&  adjacencyMatrix[row - 1][column].currentNodeValue == 1) {
+            if (adjacencyMatrix[row - 1][column].parent == null)
+                adjacencyMatrix[row - 1][column].parent = currentNode;
+            neighbors.add(adjacencyMatrix[row - 1][column]);
+        }
+
+        return neighbors;
     }
 }
