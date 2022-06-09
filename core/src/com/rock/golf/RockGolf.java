@@ -71,7 +71,7 @@ public class RockGolf extends ApplicationAdapter {
     private SpriteBatch water;
     static Node[][] graph;
     Graph graphClass;
-    public boolean debugGraph = false;
+    public boolean showGraph = false;
     private static ShapeRenderer graphNodes;
 
     @Override
@@ -389,7 +389,7 @@ public class RockGolf extends ApplicationAdapter {
                     return;
                 }
                 
-                createNode(i,j);
+                if(showGraph) createNode(i,j);
             }
         }
     }
@@ -471,7 +471,9 @@ public class RockGolf extends ApplicationAdapter {
             } else if (keycode == Input.Keys.B) {
                 switchToObstacle();
             } else if (keycode == Input.Keys.P) {
-                BFS.BFSSearch(graphClass,graph[1][1], graph[70][10]);
+                BFS.BFSSearch(graphClass,graph[1][1], graph[60][40]);
+            } else if (keycode == Input.Keys.G) {
+                showGraph = !showGraph;
             }
 
             return false;
