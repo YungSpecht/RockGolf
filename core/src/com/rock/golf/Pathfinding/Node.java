@@ -14,7 +14,6 @@ public class Node {
         this.parent = parent;
     }
 
-    
     public Node(int value, Node parent, int row, int column) {
         this.currentNodeValue = value;
         this.parent = parent;
@@ -22,4 +21,7 @@ public class Node {
         this.column = column;
     }
 
+    public int getValuue() {
+        return currentNodeValue;
+    }
 }

@@ -1,6 +1,6 @@
 package com.rock.golf.Pathfinding;
 
-public class RouteNode extends Graph {
+public class RouteNode<Node> extends Graph {
     private final Node current_node;
     private Node previous_node;
     private int routeScore;
@@ -11,5 +11,9 @@ public class RouteNode extends Graph {
         previous_node = previous;
         this.routeScore = routeScore;
         this.estimatedScore = estimatedScore;
+    }
+
+    public Node getCurrentNode() {
+        return current_node;
     }
 }
