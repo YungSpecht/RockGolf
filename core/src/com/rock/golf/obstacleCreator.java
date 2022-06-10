@@ -1,33 +1,27 @@
 package com.rock.golf;
 
-import java.lang.*;  
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.MouseInfo;
+import java.util.List;
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.rock.golf.Physics.Engine.Obstacle;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
 
+public class obstacleCreator implements InputProcessor {
 
-
-public class obstacleCreator implements InputProcessor{
-
-    private RockGolf golf;
     private PhysicsEngine physics;
-    private Obstacle obstacle;
-    private double[] position = new double[4];
+    private RockGolf golf;
+    private double position[] = new double[2];
+    private boolean flag = false;
 
-    public obstacleCreator(RockGolf rockGolf, PhysicsEngine engine) {
-        this.golf = rockGolf;
-        physics = engine;
-
+    public obstacleCreator(RockGolf golf, PhysicsEngine physics) {
+        this.golf = golf;
+        this.physics = physics;
     }
-    
+
     @Override
     public boolean keyDown(int keycode) {
 
@@ -35,21 +29,38 @@ public class obstacleCreator implements InputProcessor{
 
         if (keycode == Input.Keys.R) {
 
-            new MouseListenermain();
-            
+            double mouseX = golf.getMouseXPointer();
+            double mouseY = golf.getMouseYPointer();
 
             // pseudo obstacle used to be able to see where you place the obstacle in the
             // end
             ShapeRenderer Rectangle = new ShapeRenderer();
             Rectangle.begin(ShapeRenderer.ShapeType.Filled);
             Rectangle.setColor(Color.BLACK);
-            Rectangle.rect(golf.convert(position[0]), golf.convert(position[1]), golf.convert(position[2]- position[0]), golf.convert(position[3]- position[1]));
+            Rectangle.rect((float) mouseX, (float) mouseY, 150, 50);
 
+            position[0] = mouseX;
+            position[1] = mouseY;
 
-            new Obstacle(position, position[2]- position[0], position[3]- position[1]);
+            new Obstacle(position, 150, 50);
+        }
 
-        } else if (keycode == Input.Keys.T) {
-
+        else if (keycode == Input.Keys.T) {
+            golf.switchToObstacle();
+            while (flag == false) {
+                double mouseX = golf.getMouseXPointer();
+                double mouseY = golf.getMouseYPointer();
+                position[0] = mouseX;
+                position[1] = mouseY;
+                if (keycode == Input.Keys.C) {
+                    flag = true;
+                }
+            }
+            Tree tree = new Tree(position, 2);
+            List<Tree> trees = RockGolf.trees;
+            trees.add(tree);
+            RockGolf.trees = trees;
+            PhysicsEngine.trees = trees;
         }
         return false;
     }
@@ -89,51 +100,7 @@ public class obstacleCreator implements InputProcessor{
         return false;
     }
 
-
-    public class MouseListenermain implements MouseListener{
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-
-            double mouseX = MouseInfo.getPointerInfo().getLocation().getX();
-            double mouseY = MouseInfo.getPointerInfo().getLocation().getY();
-
-            mouseX = position[0].doubleValue();
-            mouseY = position[1].doubleValue();
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-
-            double newMouseX = MouseInfo.getPointerInfo().getLocation().getX();
-            double newMouseY = MouseInfo.getPointerInfo().getLocation().getY();
-
-            newMouseX = position[2].doubleValue();
-            newMouseY = position[3].doubleValue();
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-            // TODO Auto-generated method stub
-            
-        }
-
+    public double[] getPosition() {
+        return position;
     }
-
 }
-
-    
-
-    

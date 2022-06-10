@@ -76,7 +76,6 @@ public class RockGolf extends ApplicationAdapter {
 
     @Override
     public void create() {
-
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
         originX = width / 2;
@@ -101,14 +100,22 @@ public class RockGolf extends ApplicationAdapter {
         prepareNewShot();
         xPosition = metersToPixel(convert(input[5])) + originX;
         yPosition = metersToPixel(convert(input[6])) + originY;
-        initialState = new double[] { input[5], input[6] };      
+        initialState = new double[] { input[5], input[6] };
         generateField();
         sandpits = ((PhysicsEngine) engine).get_sandpits();
         trees = ((PhysicsEngine) engine).get_trees();
         shotActive = false;
         newShotPossible = true;
         graphClass = new Graph();
-        graph = graphClass.generateMatrix();  
+        graph = graphClass.generateMatrix();
+    }
+
+    public double getMouseXPointer() {
+        return Gdx.input.getX();
+    }
+
+    public double getMouseYPointer() {
+        return Gdx.input.getY();
     }
 
     @Override
@@ -388,8 +395,9 @@ public class RockGolf extends ApplicationAdapter {
                 } catch (Exception e) {
                     return;
                 }
-                
-                if(showGraph) createNode(i,j);
+
+                if (showGraph)
+                    createNode(i, j);
             }
         }
     }
@@ -471,7 +479,7 @@ public class RockGolf extends ApplicationAdapter {
             } else if (keycode == Input.Keys.B) {
                 switchToObstacle();
             } else if (keycode == Input.Keys.P) {
-                BFS.BFSSearch(graphClass,graph[1][1], graph[60][40]);
+                BFS.BFSSearch(graphClass, graph[1][1], graph[60][40]);
             } else if (keycode == Input.Keys.G) {
                 showGraph = !showGraph;
             }
@@ -600,24 +608,26 @@ public class RockGolf extends ApplicationAdapter {
 
     public static void createNode(int i, int j) {
         try {
-            if(graph[i/10][j/10].currentNodeValue == 0) return;
-        } catch(ArrayIndexOutOfBoundsException e) {
+            if (graph[i / 10][j / 10].currentNodeValue == 0)
+                return;
+        } catch (ArrayIndexOutOfBoundsException e) {
             return;
         }
 
         graphNodes.begin(ShapeRenderer.ShapeType.Filled);
-        if(graph[i/10][j/10].isPath) graphNodes.setColor(Color.RED);
+        if (graph[i / 10][j / 10].isPath)
+            graphNodes.setColor(Color.RED);
         graphNodes.circle(i, j, 2);
         graphNodes.setColor(Color.WHITE);
         graphNodes.end();
 
         graphNodes.begin(ShapeRenderer.ShapeType.Line);
 
-        if(i/10 + 1 < graph.length && graph[i/10 + 1][j/10].currentNodeValue != 0) {
+        if (i / 10 + 1 < graph.length && graph[i / 10 + 1][j / 10].currentNodeValue != 0) {
             graphNodes.line(i, j, i + 10, j);
         }
 
-        if(j/10 + 1 < graph[0].length && graph[i/10][j/10 + 1].currentNodeValue != 0) {
+        if (j / 10 + 1 < graph[0].length && graph[i / 10][j / 10 + 1].currentNodeValue != 0) {
             graphNodes.line(i, j, i, j + 10);
         }
 

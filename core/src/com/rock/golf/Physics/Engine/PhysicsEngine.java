@@ -25,7 +25,7 @@ public class PhysicsEngine implements Runnable {
     private double[] input;
     private boolean abort;
     private List<Sandpit> sandpits;
-    private List<Tree> trees;
+    public static List<Tree> trees;
     private Solver solver;
     private char rkMode = 'h';
     public double tolerance = 0.1;
@@ -40,7 +40,7 @@ public class PhysicsEngine implements Runnable {
         this.h = h;
         sandpits = new ArrayList<Sandpit>();
         trees = new ArrayList<Tree>();
-        trees.add(new Tree(new double[]{2, 2}, 0.4));
+        trees.add(new Tree(new double[] { 2, 2 }, 0.4));
         // sandpits.add(new Sandpit(new double[] { -4, 4 }, 1, uK, uS));
     }
 
@@ -71,7 +71,7 @@ public class PhysicsEngine implements Runnable {
         long timestep = step.longValue();
         long checkpoint = System.currentTimeMillis();
         if (!ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, 0))
-                tolerance = 0.1;
+            tolerance = 0.1;
         else
             tolerance = 0;
 
