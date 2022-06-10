@@ -17,22 +17,21 @@ public class Astar {
      * h -  estimated movememt cost to move from given square on grid to final destination 
      */
 
-    Queue<Object> OPEN = new LinkedList<Object>();
-    private static LinkedList<Object> CLOSE;
-    private final Object node_start;
-    private final Object node_goal;
+    Queue<Node> OPEN = new LinkedList<Node>();
+    private static LinkedList<Node> CLOSE;
+    private final Node node_start;
+    private final Node node_goal;
     Graph graph = new Graph();
     Node[][] nodes;
 
-    public Astar(Object node_start, Object node_goal, Object from) {
+    public Astar(Node node_start, Node node_goal, Node from) {
         nodes = graph.generateMatrix();
         this.node_start = node_start;
         this.node_goal = node_goal;
         OPEN.add(node_start);
-        CLOSE = new LinkedList<Object>();
+        CLOSE = new LinkedList<Node>();
     }
 
-    // from pseudocode:
     public ArrayList<Object> getPath(Object node_goal, Object previous_node) {
         while (!OPEN.isEmpty()) { // while the open list is not empty,
             // take from the open list the node node_current with the lowest value
