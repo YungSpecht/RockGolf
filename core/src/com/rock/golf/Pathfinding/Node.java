@@ -20,8 +20,4 @@ public class Node {
         this.row = row;
         this.column = column;
     }
-
-    public int getValuue() {
-        return currentNodeValue;
-    }
 }

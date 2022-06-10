@@ -24,19 +24,25 @@ public class Astar {
         Graph graph = new Graph();
         Queue<RouteNode<Node>> OPEN = new PriorityQueue<>();
         Map<Node, RouteNode<Node>> CLOSE = new HashMap<>();
-        RouteNode<Node> node_start = new RouteNode<Node>(from, null, 0, 0);
+        RouteNode<Node> node_start = new RouteNode<Node>(from, null, 0);
         OPEN.add(node_start);
         CLOSE.put(from, node_start);
 
-        while (!OPEN.isEmpty()) { // while the open list is not empty,
+        while (!OPEN.isEmpty()) { 
             // find the node with the least f on the open list, call it the current node
             RouteNode<Node> node_current = OPEN.poll();
             // generate the node's successors and set their parents to current
+            Node current = node_current.getCurrentNode();
 
-            if (node_current.getCurrentNode().equals(to)) {
+            if (current.equals(to)) {
                 ArrayList<Node> path = new ArrayList<>();
-                RouteNode<Node> current = node_current; // might not be necessary
-                
+
+                for (int i = 0; i < graph.neighbors(current).size(); i++) { // check for obstacles is in Graph.java
+                    RouteNode<Node> successor = new RouteNode<Node>(graph.neighbors(current).get(i), current,
+                            node_current.routeScore + graph.neighbors(current).get(i).currentNodeValue);
+
+                }
+
                 do {
                     path.add(0, node_current.getCurrentNode());
                     // right left down up
