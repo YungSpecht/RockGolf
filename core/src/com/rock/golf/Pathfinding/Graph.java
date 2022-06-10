@@ -1,7 +1,7 @@
 package com.rock.golf.Pathfinding;
+
 import java.util.ArrayList;
 import java.util.List;
-
 import org.mariuszgromada.math.mxparser.Function;
 import com.rock.golf.RockGolf;
 import com.rock.golf.Input.InputModule;
@@ -26,7 +26,7 @@ public class Graph {
         int rows = (int) sizeX / pixels;
         int columns = (int) sizeY / pixels;
         Function profile = InputModule.getProfile();
-        
+
         adjacencyMatrix = new Node[rows + 1][columns + 1];
 
         for (int i = 0; i <= sizeX; i += pixels) {
@@ -38,7 +38,7 @@ public class Graph {
 
                 if (n < 0) {
                     adjacencyMatrix[counterI][counterJ] = new Node(0, null, counterI, counterJ);
-                } else if(thereisObastacle(x,y)) {
+                } else if (thereisObastacle(x, y)) {
                     adjacencyMatrix[counterI][counterJ] = new Node(0, null, counterI, counterJ);
                 } else {
                     adjacencyMatrix[counterI][counterJ] = new Node(1, null, counterI, counterJ);
@@ -53,13 +53,12 @@ public class Graph {
     }
 
     private boolean thereisObastacle(float xPos, float yPos) {
-        
+
         for (int i = 0; i < obstacles.size(); i++) {
             if (obstacles.get(i).collidedWithTree(xPos, yPos, 0.05)) {
                 return true;
             }
         }
-
         return false;
     }
 
@@ -68,25 +67,25 @@ public class Graph {
         int column = currentNode.column;
         ArrayList<Node> neighbors = new ArrayList<>();
 
-        if(column + 1 < adjacencyMatrix[row].length && adjacencyMatrix[row][column + 1].currentNodeValue == 1) {
+        if (column + 1 < adjacencyMatrix[row].length && adjacencyMatrix[row][column + 1].currentNodeValue == 1) {
             if (adjacencyMatrix[row][column + 1].parent == null)
                 adjacencyMatrix[row][column + 1].parent = currentNode;
             neighbors.add(adjacencyMatrix[row][column + 1]);
         }
 
-        if(column != 0 && adjacencyMatrix[row][column - 1].currentNodeValue == 1) {
+        if (column != 0 && adjacencyMatrix[row][column - 1].currentNodeValue == 1) {
             if (adjacencyMatrix[row][column - 1].parent == null)
                 adjacencyMatrix[row][column - 1].parent = currentNode;
             neighbors.add(adjacencyMatrix[row][column - 1]);
         }
 
-        if(row + 1 < adjacencyMatrix.length && adjacencyMatrix[row + 1][column].currentNodeValue == 1) {
+        if (row + 1 < adjacencyMatrix.length && adjacencyMatrix[row + 1][column].currentNodeValue == 1) {
             if (adjacencyMatrix[row + 1][column].parent == null)
                 adjacencyMatrix[row + 1][column].parent = currentNode;
             neighbors.add(adjacencyMatrix[row + 1][column]);
         }
 
-        if(row != 0 &&  adjacencyMatrix[row - 1][column].currentNodeValue == 1) {
+        if (row != 0 && adjacencyMatrix[row - 1][column].currentNodeValue == 1) {
             if (adjacencyMatrix[row - 1][column].parent == null)
                 adjacencyMatrix[row - 1][column].parent = currentNode;
             neighbors.add(adjacencyMatrix[row - 1][column]);
