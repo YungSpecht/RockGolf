@@ -20,37 +20,55 @@ public class Astar {
      * destination
      */
 
-    public ArrayList<Node> getPath(Node from, Node to) {
+    public void setPath(Node current, Node to) {
         Graph graph = new Graph();
         Queue<RouteNode<Node>> OPEN = new PriorityQueue<>();
         Map<Node, RouteNode<Node>> CLOSE = new HashMap<>();
-        RouteNode<Node> node_start = new RouteNode<Node>(from, null, 0);
+        RouteNode<Node> node_start = new RouteNode<Node>(current, null, 0);
         OPEN.add(node_start);
-        CLOSE.put(from, node_start);
+        CLOSE.put(current, node_start);
 
-        while (!OPEN.isEmpty()) { 
+        while (!OPEN.isEmpty()) {
             // find the node with the least f on the open list, call it the current node
             RouteNode<Node> node_current = OPEN.poll();
             // generate the node's successors and set their parents to current
-            Node current = node_current.getCurrentNode();
+            current = node_current.current_node;
 
-            if (current.equals(to)) {
-                ArrayList<Node> path = new ArrayList<>();
+            if (current.equals(to))
+                break;
 
-                for (int i = 0; i < graph.neighbors(current).size(); i++) { // check for obstacles is in Graph.java
-                    RouteNode<Node> successor = new RouteNode<Node>(graph.neighbors(current).get(i), current,
-                            node_current.routeScore + graph.neighbors(current).get(i).currentNodeValue);
+            //ArrayList<Node> path = new ArrayList<>();
 
+            for (int i = 0; i < graph.neighbors(current).size(); i++) { // check for obstacles is in Graph.java
+                RouteNode<Node> node_successor = new RouteNode<Node>(graph.neighbors(current).get(i), current,
+                        node_current.routeScore + graph.neighbors(current).get(i).currentNodeValue);
+                if (OPEN.contains(node_successor)) {
+                    if (node_successor.current_node.currentNodeValue <= node_successor.routeScore)
+                        continue;
+                } else if (CLOSE.containsValue(node_successor)) {
+                    if (node_successor.current_node.currentNodeValue <= node_successor.routeScore)
+                        continue;
+                    OPEN.add(node_successor);
+                    CLOSE.remove(current, node_successor);
+                } else {
+                    OPEN.add(node_successor);
+                    node_successor.setRouteScore(heuristicDistance(current, node_successor.current_node));
+
+                    // You don't use the G score to calculate the heuristic, the G score is added to
+                    // the heuristic (H score) to get an estimate from the node to the goal (F
+                    // score).
                 }
-
-                do {
-                    path.add(0, node_current.getCurrentNode());
-                    // right left down up
-                    current = CLOSE.get(current.getCurrentNode());
-                } while (node_current != null);
-                return path;
+                node_successor.current_node.currentNodeValue = node_successor.routeScore; // Not sure if this works
+                node_successor.current_node.parent = current;
             }
+            CLOSE.put(current, node_current);
         }
-        throw new IllegalStateException("No path found");
+        if (current != to)
+            throw new IllegalStateException("No path found");
+    }
+
+    public int heuristicDistance(Node from, Node to) {
+        // TODO
+        return 1;
     }
 }
