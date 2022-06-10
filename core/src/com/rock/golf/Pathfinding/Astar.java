@@ -1,6 +1,5 @@
 package com.rock.golf.Pathfinding;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
