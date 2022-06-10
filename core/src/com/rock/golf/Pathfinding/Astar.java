@@ -22,7 +22,7 @@ public class Astar {
     private final Object node_start;
     private final Object node_goal;
     Graph graph = new Graph();
-    int[][] nodes;
+    Node[][] nodes;
 
     public Astar(Object node_start, Object node_goal, Object from) {
         nodes = graph.generateMatrix();
