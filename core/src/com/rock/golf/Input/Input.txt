@@ -7,7 +7,7 @@ target-radius: 0.15
 ball-x-position: -3.0
 ball-y-position: 0.0
 x-velocity: 3.0
-y-velocity: 3.0
+y-velocity: 2.0
 
 
 ((1/20)*(x^2+y^2))-0.1 t[2,2] b[-3,-3]

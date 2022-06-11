@@ -29,20 +29,42 @@ public class obstacleCreator implements InputProcessor {
 
         if (keycode == Input.Keys.R) {
 
-            double mouseX = golf.getMouseXPointer();
-            double mouseY = golf.getMouseYPointer();
+
+            
+            while(keycode == Input.Keys.E){
+
+                if(keycode == Input.Keys.W){
+                    double mouseX = golf.getMouseXPointer();
+                    double mouseY = golf.getMouseYPointer();
+                    position[0] = mouseX;
+                    position[1] = mouseY;
+
+                    if(keycode == Input.Keys.C){
+                        double new_mouseX = golf.getMouseXPointer();
+                        double new_mouseY = golf.getMouseYPointer();
+                        position[2] = new_mouseX;
+                        position[3] = new_mouseY;
+
+                        ShapeRenderer rectangle = new ShapeRenderer();
+                        rectangle.begin(ShapeRenderer.ShapeType.Filled);
+                        rectangle.setColor(Color.BLACK);
+                        rectangle.rect(RockGolf.convert(mouseX), RockGolf.convert(mouseY), RockGolf.convert(new_mouseX)- RockGolf.convert(mouseX), RockGolf.convert(new_mouseY)- RockGolf.convert(mouseY));
+                        rectangle.end();
+                        new Obstacle(position, position[2]-position[0], position[3]-position[1]);
+
+                        
+                    }
+
+                }
+
+            }
 
             // pseudo obstacle used to be able to see where you place the obstacle in the
             // end
-            ShapeRenderer Rectangle = new ShapeRenderer();
-            Rectangle.begin(ShapeRenderer.ShapeType.Filled);
-            Rectangle.setColor(Color.BLACK);
-            Rectangle.rect((float) mouseX, (float) mouseY, 150, 50);
+            
 
-            position[0] = mouseX;
-            position[1] = mouseY;
-
-            new Obstacle(position, 150, 50);
+            
+            
         }
 
         else if (keycode == Input.Keys.T) {
