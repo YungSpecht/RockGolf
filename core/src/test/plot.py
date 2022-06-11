@@ -1,7 +1,5 @@
-from turtle import ycor
 import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
+
 
 x = [0.5, 0.3, 0.25, 0.125, 0.1, 0.05, 0.01, 0.005, 0.001]
 
