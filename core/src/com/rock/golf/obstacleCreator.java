@@ -87,11 +87,15 @@ public class obstacleCreator implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
+
+        
+
         return false;
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+
         return false;
     }
 

@@ -53,7 +53,7 @@ public class PhysicsEngine implements Runnable {
      * This method starts a new golf shot based on the current parameters that are
      * set in the Input.txt file.
      */
-    private void fireNewShot() {
+    public void fireNewShot() {
         RockGolf.winStatus = false;
         RockGolf.losingStatus = false;
         RockGolf.shotActive = true;
