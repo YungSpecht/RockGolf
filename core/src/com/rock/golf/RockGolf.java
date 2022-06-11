@@ -110,14 +110,6 @@ public class RockGolf extends ApplicationAdapter {
         graph = graphClass.generateMatrix();
     }
 
-    public double getMouseXPointer() {
-        return Gdx.input.getX();
-    }
-
-    public double getMouseYPointer() {
-        return Gdx.input.getY();
-    }
-
     @Override
     public void render() {
 
@@ -139,6 +131,7 @@ public class RockGolf extends ApplicationAdapter {
 
         checkStuckStatus();
         generateObstacles();
+
         target.begin(ShapeRenderer.ShapeType.Filled);
         target.setColor(Color.BLACK);
         target.circle(targetxPosition, targetyPosition, metersToPixel(targetRadius));
@@ -603,7 +596,6 @@ public class RockGolf extends ApplicationAdapter {
             state = "menu";
             Gdx.input.setInputProcessor(new BotHandler(this, (PhysicsEngine) engine));
         }
-        ;
     }
 
     public static void createNode(int i, int j) {
