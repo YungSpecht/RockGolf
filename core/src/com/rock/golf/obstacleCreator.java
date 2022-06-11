@@ -2,6 +2,7 @@ package com.rock.golf;
 
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
@@ -12,6 +13,8 @@ import com.rock.golf.Physics.Engine.Tree;
 
 public class obstacleCreator implements InputProcessor {
 
+    private double mouseX;
+    private double mouseY;
     private PhysicsEngine physics;
     private RockGolf golf;
     private double position[] = new double[2];
@@ -29,8 +32,8 @@ public class obstacleCreator implements InputProcessor {
 
         if (keycode == Input.Keys.R) {
 
-            double mouseX = golf.getMouseXPointer();
-            double mouseY = golf.getMouseYPointer();
+            mouseX = Gdx.input.getX();
+            mouseY = Gdx.input.getY();
 
             // pseudo obstacle used to be able to see where you place the obstacle in the
             // end
@@ -38,6 +41,7 @@ public class obstacleCreator implements InputProcessor {
             Rectangle.begin(ShapeRenderer.ShapeType.Filled);
             Rectangle.setColor(Color.BLACK);
             Rectangle.rect((float) mouseX, (float) mouseY, 150, 50);
+            Rectangle.end();
 
             position[0] = mouseX;
             position[1] = mouseY;
@@ -48,19 +52,19 @@ public class obstacleCreator implements InputProcessor {
         else if (keycode == Input.Keys.T) {
             golf.switchToObstacle();
             while (flag == false) {
-                double mouseX = golf.getMouseXPointer();
-                double mouseY = golf.getMouseYPointer();
-                position[0] = mouseX;
-                position[1] = mouseY;
+                mouseX = Gdx.input.getX();
+                mouseY = Gdx.input.getY();
                 if (keycode == Input.Keys.C) {
                     flag = true;
                 }
             }
+            position[0] = mouseX;
+            position[1] = mouseY;
             Tree tree = new Tree(position, 2);
-            List<Tree> trees = RockGolf.trees;
-            trees.add(tree);
-            RockGolf.trees = trees;
-            PhysicsEngine.trees = trees;
+            List<Tree> Trees = RockGolf.trees;
+            Trees.add(tree);
+            RockGolf.trees = Trees;
+            PhysicsEngine.trees = Trees;
         }
         return false;
     }
@@ -87,8 +91,6 @@ public class obstacleCreator implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-
-        
 
         return false;
     }
