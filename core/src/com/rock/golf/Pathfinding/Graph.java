@@ -2,6 +2,7 @@ package com.rock.golf.Pathfinding;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import org.mariuszgromada.math.mxparser.Function;
 import com.rock.golf.RockGolf;
@@ -10,19 +11,20 @@ import com.rock.golf.Physics.Engine.Derivation;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
 
-public class Graph {
+public class Graph implements Comparator{
     int sizeX = (int) RockGolf.width;
     int sizeY = (int) RockGolf.height;
+    List<Tree> obstacles;
     float originX = sizeX / 2;
     float originY = sizeY / 2;
     float metertoPixelRatio = RockGolf.metertoPixelRatio;
     int counter = 0;
-    List<Tree> obstacles = RockGolf.trees;
     Node[][] adjacencyMatrix;
     public int[] lowerCoordinates = new int[2];
     {Arrays.fill(lowerCoordinates,Integer.MAX_VALUE);}
     public int[] higherCoordinates = new int[2];
     {Arrays.fill(higherCoordinates,0);}
+
     public Node[][] generateMatrix() {
         int counterI = 0;
         int counterJ = 0;
@@ -30,7 +32,7 @@ public class Graph {
         int rows = (int) sizeX / pixels;
         int columns = (int) sizeY / pixels;
         Function profile = InputModule.getProfile();
-
+        obstacles = PhysicsEngine.trees;
         adjacencyMatrix = new Node[rows + 1][columns + 1];
 
         for (float i = 0; i <= sizeX; i += pixels) {
@@ -106,5 +108,14 @@ public class Graph {
         }
 
         return neighbors;
+    }
+
+    @Override
+    public int compare(Object o1, Object o2) {
+        
+        Node node1 = (Node)o1;
+        return node1.compareTo(o2);
+        
+        
     }
 }
