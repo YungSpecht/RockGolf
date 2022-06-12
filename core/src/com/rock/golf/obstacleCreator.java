@@ -7,7 +7,6 @@ import com.rock.golf.Physics.Engine.rectangleObstacle;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
 
-
 public class obstacleCreator implements InputProcessor {
 
     private PhysicsEngine physics;

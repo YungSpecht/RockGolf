@@ -11,7 +11,7 @@ import com.rock.golf.Physics.Engine.Derivation;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
 
-public class Graph implements Comparator{
+public class Graph implements Comparator {
     int sizeX = (int) RockGolf.width;
     int sizeY = (int) RockGolf.height;
     List<Tree> obstacles;
@@ -21,9 +21,13 @@ public class Graph implements Comparator{
     int counter = 0;
     Node[][] adjacencyMatrix;
     public int[] lowerCoordinates = new int[2];
-    {Arrays.fill(lowerCoordinates,Integer.MAX_VALUE);}
+    {
+        Arrays.fill(lowerCoordinates, Integer.MAX_VALUE);
+    }
     public int[] higherCoordinates = new int[2];
-    {Arrays.fill(higherCoordinates,0);}
+    {
+        Arrays.fill(higherCoordinates, 0);
+    }
 
     public Node[][] generateMatrix() {
         int counterI = 0;
@@ -41,12 +45,16 @@ public class Graph implements Comparator{
                 float y = (j - originY) / metertoPixelRatio;
 
                 float n = (float) Derivation.compute(x, y, profile);
-                
-                if (n < 0) {                    
-                    if(counterI + 1< lowerCoordinates[0]) lowerCoordinates[0] = counterI + 1;
-                    if(counterI + 1> higherCoordinates[0]) higherCoordinates[0] = counterI + 1;
-                    if(counterJ + 1< lowerCoordinates[1]) lowerCoordinates[1] = counterJ + 1;
-                    if(counterJ + 1> higherCoordinates[1]) higherCoordinates[1] = counterJ + 1;
+
+                if (n < 0) {
+                    if (counterI + 1 < lowerCoordinates[0])
+                        lowerCoordinates[0] = counterI + 1;
+                    if (counterI + 1 > higherCoordinates[0])
+                        higherCoordinates[0] = counterI + 1;
+                    if (counterJ + 1 < lowerCoordinates[1])
+                        lowerCoordinates[1] = counterJ + 1;
+                    if (counterJ + 1 > higherCoordinates[1])
+                        higherCoordinates[1] = counterJ + 1;
                     adjacencyMatrix[counterI][counterJ] = new Node(1, null, counterI, counterJ);
                 } else if (thereisObastacle(x, y)) {
                     adjacencyMatrix[counterI][counterJ] = new Node(0, null, counterI, counterJ);
@@ -58,9 +66,9 @@ public class Graph implements Comparator{
             counterJ = 0;
             counterI++;
         }
-        
-        for(int i = lowerCoordinates[0]; i < higherCoordinates[0]; i++) {
-            for(int j = lowerCoordinates[1]; j < higherCoordinates[1]; j++) {
+
+        for (int i = lowerCoordinates[0]; i < higherCoordinates[0]; i++) {
+            for (int j = lowerCoordinates[1]; j < higherCoordinates[1]; j++) {
                 adjacencyMatrix[i][j] = new Node(0, null, i, j);
             }
         }
@@ -112,10 +120,9 @@ public class Graph implements Comparator{
 
     @Override
     public int compare(Object o1, Object o2) {
-        
-        Node node1 = (Node)o1;
+
+        Node node1 = (Node) o1;
         return node1.compareTo(o2);
-        
-        
+
     }
 }
