@@ -74,7 +74,11 @@ public class RockGolf extends ApplicationAdapter {
     Graph graphClass;
     public boolean showGraph = false;
     private static ShapeRenderer graphNodes;
-    
+    private obstacleCreator obstacleCreate = new obstacleCreator(this);
+    private double mouseX;
+    private double mouseY;
+    private double mousePosition[] = new double[2];
+
     @Override
     public void create() {
         width = Gdx.graphics.getWidth();
@@ -120,8 +124,26 @@ public class RockGolf extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         createMap();
 
+        if (obstacleCreate.treeflag == true) {
+            System.out.println("im here");
+            mouseX = Gdx.input.getX();
+            mouseY = Gdx.input.getY();
+            mousePosition[0] = mouseX;
+            mousePosition[1] = mouseY;
+            Tree tree = new Tree(mousePosition, 2);
+            List<Tree> Trees = RockGolf.trees;
+            Trees.add(tree);
+            RockGolf.trees = Trees;
+            PhysicsEngine.trees = Trees;
+        }
+
         if (state.equals("menu")) {
             renderMenu();
+            return;
+        }
+
+        if (state.equals("create")) {
+            renderConfirmation();
             return;
         }
 
@@ -239,6 +261,14 @@ public class RockGolf extends ApplicationAdapter {
         font.draw(shot,
                 "Select the bot:\n\n S: Stochastic\n B: Bruteforce\n H: HillClimb\n A: AngleBot\n R: Rule-based",
                 originX - 50, originY + 100);
+        shot.end();
+    }
+
+    private void renderConfirmation() {
+        shot.begin();
+        font.draw(shot,
+                "Press C to confirm placement of the tree.",
+                originX - 150, originY + 300);
         shot.end();
     }
 
@@ -467,7 +497,8 @@ public class RockGolf extends ApplicationAdapter {
                 xPosition = metersToPixel(convert(initialState[0])) + originX;
                 yPosition = metersToPixel(convert(initialState[1])) + originY;
                 InputModule.setNewPosition(initialState[0], initialState[1]);
-                if(showGraph) showGraph = !showGraph;
+                if (showGraph)
+                    showGraph = !showGraph;
                 shotCounter = 0;
                 ((PhysicsEngine) engine).stuck = false;
                 ((PhysicsEngine) engine).resume();
@@ -484,10 +515,11 @@ public class RockGolf extends ApplicationAdapter {
                 prepareNewShot();
                 executor.execute(engine);
                 graph = graphClass.generateMatrix();
-                if(showGraph) showGraph = !showGraph;
+                if (showGraph)
+                    showGraph = !showGraph;
             } else if (keycode == Input.Keys.G) {
                 showGraph = !showGraph;
-                if(showGraph) {
+                if (showGraph) {
                     bfs.BFSSearch(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
                 }
             }
@@ -592,11 +624,11 @@ public class RockGolf extends ApplicationAdapter {
             Gdx.input.setInputProcessor(in);
         } else {
             state = "OBS menu";
-            Gdx.input.setInputProcessor(new obstacleCreator(this, (PhysicsEngine) engine));
+            Gdx.input.setInputProcessor(new obstacleCreator(this));
         }
     }
 
-    /**
+    /*
      *
      * Switch state from game to menu
      *
@@ -616,7 +648,7 @@ public class RockGolf extends ApplicationAdapter {
     public static void createNode(int i, int j) {
         try {
             if (graph[i / 10][j / 10].currentNodeValue == 0) {
-               return;
+                return;
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             return;
