@@ -25,7 +25,8 @@ public class PhysicsEngine implements Runnable {
     private double[] input;
     private boolean abort;
     private List<Sandpit> sandpits;
-    private List<Tree> trees;
+    public static List<rectangleObstacle> rectangles;
+    public static List<Tree> trees;
     private Solver solver;
     private char rkMode = 'h';
     public double tolerance = 0.1;
@@ -40,7 +41,8 @@ public class PhysicsEngine implements Runnable {
         this.h = h;
         sandpits = new ArrayList<Sandpit>();
         trees = new ArrayList<Tree>();
-        trees.add(new Tree(new double[]{2, 2}, 0.4));
+        trees.add(new Tree(new double[] { 2, 2 }, 0.4));
+        rectangles = new ArrayList<rectangleObstacle>();
         // sandpits.add(new Sandpit(new double[] { -4, 4 }, 1, uK, uS));
     }
 
@@ -53,7 +55,7 @@ public class PhysicsEngine implements Runnable {
      * This method starts a new golf shot based on the current parameters that are
      * set in the Input.txt file.
      */
-    private void fireNewShot() {
+    public void fireNewShot() {
         RockGolf.winStatus = false;
         RockGolf.losingStatus = false;
         RockGolf.shotActive = true;
@@ -71,7 +73,7 @@ public class PhysicsEngine implements Runnable {
         long timestep = step.longValue();
         long checkpoint = System.currentTimeMillis();
         if (!ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, 0))
-                tolerance = 0.1;
+            tolerance = 0.1;
         else
             tolerance = 0;
 

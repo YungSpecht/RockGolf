@@ -1,56 +1,36 @@
 package com.rock.golf;
 
-import java.lang.*;  
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.MouseInfo;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
-import com.rock.golf.Physics.Engine.Obstacle;
+import com.badlogic.gdx.Screen;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
+import com.rock.golf.Physics.Engine.rectangleObstacle;
 
+public class obstacleCreator implements InputProcessor {
 
-
-public class obstacleCreator implements InputProcessor{
-
-    private RockGolf golf;
     private PhysicsEngine physics;
-    private Obstacle obstacle;
-    private double[] position = new double[4];
+    private RockGolf golf;
+    private double position[] = new double[2];
+    private float[] defaultTree;
+    private float[] defaultRectangle;
+    private int treeRadius = 40;
+    private boolean clickTreeFlag = false;
+    private boolean clickRectangleFlag = false;
 
-    public obstacleCreator(RockGolf rockGolf, PhysicsEngine engine) {
-        this.golf = rockGolf;
-        physics = engine;
-
+    public obstacleCreator(RockGolf golf) {
+        this.golf = golf;
+        this.physics = physics;
+        this.defaultTree = golf.treePosition;
     }
-    
+
     @Override
     public boolean keyDown(int keycode) {
 
-        golf.switchToObstacle();
-
-        if (keycode == Input.Keys.R) {
-
-            new MouseListenermain();
-            
-
-            // pseudo obstacle used to be able to see where you place the obstacle in the
-            // end
-            ShapeRenderer Rectangle = new ShapeRenderer();
-            Rectangle.begin(ShapeRenderer.ShapeType.Filled);
-            Rectangle.setColor(Color.BLACK);
-            Rectangle.rect(golf.convert(position[0]), golf.convert(position[1]), golf.convert(position[2]- position[0]), golf.convert(position[3]- position[1]));
-
-
-            new Obstacle(position, position[2]- position[0], position[3]- position[1]);
-
-        } else if (keycode == Input.Keys.T) {
-
+        if (keycode == Input.Keys.B) {
+            golf.switchToObstacle();
         }
+
         return false;
     }
 
@@ -66,7 +46,48 @@ public class obstacleCreator implements InputProcessor{
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        clickTreeFlag = false;
+        clickRectangleFlag = false;
+
+        if (clickInsideTree(screenX, (int) RockGolf.height - screenY)) {
+            clickTreeFlag = true; // to add that the tree has to not be selected already
+            golf.renderText = false;
+        }
+
+        if (!clickTreeFlag) {
+            PhysicsEngine.trees
+                    .add(new Tree(
+                            new double[] { (screenX - RockGolf.originX) / RockGolf.metertoPixelRatio,
+                                    ((RockGolf.height - screenY) - RockGolf.originY) / RockGolf.metertoPixelRatio },
+                            0.4));
+            golf.renderText = true;
+            golf.treePosition = defaultTree;
+        }
+
+        if (clickInsideRectangle(screenX, screenY))
+
+            if (!clickRectangleFlag) {
+                PhysicsEngine.rectangles.add(new rectangleObstacle(
+                        (new double[] { (screenX - RockGolf.originX) / RockGolf.metertoPixelRatio,
+                                ((RockGolf.height - screenY) - RockGolf.originY) / RockGolf.metertoPixelRatio }),
+                        150, 50));
+                golf.renderText = true;
+                golf.rectanglePosition = defaultRectangle;
+
+            }
+
         return false;
+    }
+
+    private boolean clickInsideTree(int screenX, int screenY) {
+        return Math.sqrt(Math.pow(Math.abs(screenX - defaultTree[0]), 2)
+                + Math.pow(Math.abs(screenY - defaultTree[1]), 2)) <= treeRadius;
+    }
+
+    private boolean clickInsideRectangle(int screenX, int screenY) {
+        return (screenX > defaultRectangle[0] && screenX < defaultRectangle[2] && screenY > defaultRectangle[1]
+                && screenY < defaultRectangle[3]);
+        // default rectangle[0] and [2] is x1 and x2 and [1] and [3] is y1 and y2
     }
 
     @Override
@@ -81,6 +102,9 @@ public class obstacleCreator implements InputProcessor{
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
+        if (clickTreeFlag) {
+            golf.treePosition = new float[] { screenX, Math.abs(screenY - RockGolf.height) };
+        }
         return false;
     }
 
@@ -89,51 +113,7 @@ public class obstacleCreator implements InputProcessor{
         return false;
     }
 
-
-    public class MouseListenermain implements MouseListener{
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-
-            double mouseX = MouseInfo.getPointerInfo().getLocation().getX();
-            double mouseY = MouseInfo.getPointerInfo().getLocation().getY();
-
-            mouseX = position[0].doubleValue();
-            mouseY = position[1].doubleValue();
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-
-            double newMouseX = MouseInfo.getPointerInfo().getLocation().getX();
-            double newMouseY = MouseInfo.getPointerInfo().getLocation().getY();
-
-            newMouseX = position[2].doubleValue();
-            newMouseY = position[3].doubleValue();
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            // TODO Auto-generated method stub
-            
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-            // TODO Auto-generated method stub
-            
-        }
-
+    public double[] getPosition() {
+        return position;
     }
-
 }
-
-    
-
-    
