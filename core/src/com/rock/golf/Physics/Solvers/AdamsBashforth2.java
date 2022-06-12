@@ -16,6 +16,8 @@ public class AdamsBashforth2 extends Solver{
         StateVector initialValue = solve.computeStep(current);
         StateVector AdamsPredictor = StateVector.substract(StateVector.add(current, StateVector.multiply(function(initialValue), (3.0 / 2.0)*h)),  StateVector.multiply(function(current), (1.0 / 2.0)*h));
         StateVector AdamsCorrector = StateVector.substract(StateVector.add(StateVector.add(current, StateVector.multiply(function(AdamsPredictor), (5.0 / 12.0)*h)), StateVector.multiply(function(initialValue), (8.0/12.0)*h)),  StateVector.multiply(function(current), (1.0 / 2.0)*h));
+        current = initialValue;
+        initialValue = AdamsPredictor;
         return AdamsCorrector;
     }
 }
