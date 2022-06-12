@@ -1,13 +1,7 @@
 package com.rock.golf;
 
-import java.util.List;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.rock.golf.Physics.Engine.Obstacle;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
 
@@ -20,7 +14,7 @@ public class obstacleCreator implements InputProcessor {
     private int treeRadius = 40;
     private boolean clickTreeFlag = false;
 
-    public obstacleCreator(RockGolf golf, PhysicsEngine physics) {
+    public obstacleCreator(RockGolf golf) {
         this.golf = golf;
         this.physics = physics;
         this.defaultTree = golf.treePosition;
@@ -58,7 +52,6 @@ public class obstacleCreator implements InputProcessor {
         
 
         if(!clickTreeFlag) {
-            System.out.println("good");
             PhysicsEngine.trees.add(new Tree(new double[] { (screenX - RockGolf.originX) / RockGolf.metertoPixelRatio, ((RockGolf.height - screenY) - RockGolf.originY) / RockGolf.metertoPixelRatio }, 0.4));
             golf.renderText = true;
             golf.treePosition = defaultTree;
