@@ -1,5 +1,6 @@
 package com.rock.golf.Pathfinding;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -30,13 +31,14 @@ public class Astar {
         this.to = to;
     }
 
-    public void setPath() {
+    public ArrayList<Node> getPath() {
         Graph graph = new Graph();
         Queue<RouteNode<Node>> OPEN = new PriorityQueue<>();
         Map<Node, RouteNode<Node>> CLOSE = new HashMap<>();
         RouteNode<Node> node_start = new RouteNode<Node>(from, null, 0);
         OPEN.add(node_start);
         CLOSE.put(from, node_start);
+        ArrayList<Node> path = new ArrayList<>();
 
         while (!OPEN.isEmpty()) {
             // find the node with the least f on the open list, call it the current node
@@ -45,8 +47,13 @@ public class Astar {
             from = node_current.current_node;
 
             if (from.equals(to)) {
-                from.isPath = true;
-                break;
+                RouteNode<Node> current = node_current;
+                do {
+                    current.current_node.isPath = true;
+                    path.add(current.current_node);
+                    current = CLOSE.get(current);
+                } while (current != null);
+                return path;
             }
 
             for (int i = 0; i < graph.neighbors(from).size(); i++) { // check for obstacles is in Graph.java
@@ -62,7 +69,8 @@ public class Astar {
                     CLOSE.remove(from, node_successor);
                 } else {
                     OPEN.add(node_successor);
-                    node_successor.setRouteScore(heuristicDistance(from, node_successor.current_node));
+                    node_successor.setRouteScore(heuristicDistance(from.column, node_successor.current_node.column,
+                            from.row, node_successor.current_node.row));
                 }
                 node_successor.current_node.currentNodeValue = node_successor.getRouteSxore(); // Not sure if this works
                 node_successor.current_node.parent = from;
@@ -73,10 +81,10 @@ public class Astar {
             from.isPath = false;
             throw new IllegalStateException("No path found");
         }
+        return path;
     }
 
-    public int heuristicDistance(Node from, Node to) {
-        // TODO: calculate the euclidian distance
-        return 1;
+    public double heuristicDistance(double x1, double x2, double y1, double y2) {
+        return Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
     }
 }

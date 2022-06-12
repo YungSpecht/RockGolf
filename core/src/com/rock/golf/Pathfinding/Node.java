@@ -4,7 +4,7 @@ public class Node {
     public boolean isPath;
     // position in array
     // parent
-    public int currentNodeValue;
+    public double currentNodeValue;
     public Node parent;
     public int row;
     public int column;
