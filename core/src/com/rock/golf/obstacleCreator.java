@@ -13,80 +13,26 @@ import com.rock.golf.Physics.Engine.Tree;
 
 public class obstacleCreator implements InputProcessor {
 
-    private double mouseX;
-    private double mouseY;
     private PhysicsEngine physics;
     private RockGolf golf;
     private double position[] = new double[2];
-    private boolean flag = false;
+    private float[] defaultTree;
+    private int treeRadius = 40;
+    private boolean clickTreeFlag = false;
 
     public obstacleCreator(RockGolf golf, PhysicsEngine physics) {
         this.golf = golf;
         this.physics = physics;
+        this.defaultTree = golf.treePosition;
     }
 
     @Override
     public boolean keyDown(int keycode) {
 
-        golf.switchToObstacle();
-
-        if (keycode == Input.Keys.R) {
-
-
-            
-            while(keycode == Input.Keys.E){
-
-                if(keycode == Input.Keys.W){
-                    double mouseX = Gdx.input.getX();
-                    double mouseY = Gdx.input.getY();
-                    position[0] = mouseX;
-                    position[1] = mouseY;
-
-                    if(keycode == Input.Keys.C){
-                        double new_mouseX = Gdx.input.getX();
-                        double new_mouseY = Gdx.input.getY();
-                        position[2] = new_mouseX;
-                        position[3] = new_mouseY;
-
-                        ShapeRenderer rectangle = new ShapeRenderer();
-                        rectangle.begin(ShapeRenderer.ShapeType.Filled);
-                        rectangle.setColor(Color.BLACK);
-                        rectangle.rect(RockGolf.convert(mouseX), RockGolf.convert(mouseY), RockGolf.convert(new_mouseX)- RockGolf.convert(mouseX), RockGolf.convert(new_mouseY)- RockGolf.convert(mouseY));
-                        rectangle.end();
-                        new Obstacle(position, position[2]-position[0], position[3]-position[1]);
-
-                        
-                    }
-
-                }
-
-            }
-
-            // pseudo obstacle used to be able to see where you place the obstacle in the
-            // end
-            
-
-            
-            
-        }
-
-        else if (keycode == Input.Keys.T) {
+        if(keycode == Input.Keys.B) {
             golf.switchToObstacle();
-            while (flag == false) {
-                mouseX = Gdx.input.getX();
-                mouseY = Gdx.input.getY();
-                if (keycode == Input.Keys.C) {
-                    flag = true;
-                }
-            }
-            position[0] = mouseX;
-            position[1] = mouseY;
-            Tree tree = new Tree(position, 2);
-            List<Tree> Trees = RockGolf.trees;
-            Trees.add(tree);
-            RockGolf.trees = Trees;
-            PhysicsEngine.trees = Trees;
         }
+
         return false;
     }
 
@@ -102,7 +48,28 @@ public class obstacleCreator implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        clickTreeFlag = false;
+
+        if(clickInsideTree(screenX, (int)RockGolf.height - screenY)) {
+            clickTreeFlag = true; // to add that the tree has to not be selected already
+            golf.renderText = false;
+        }
+
+        
+
+        if(!clickTreeFlag) {
+            System.out.println("good");
+            PhysicsEngine.trees.add(new Tree(new double[] { (screenX - RockGolf.originX) / RockGolf.metertoPixelRatio, ((RockGolf.height - screenY) - RockGolf.originY) / RockGolf.metertoPixelRatio }, 0.4));
+            golf.renderText = true;
+            golf.treePosition = defaultTree;
+        }
+
         return false;
+    }
+
+
+    private boolean clickInsideTree(int screenX, int screenY) {
+        return Math.sqrt(Math.pow(Math.abs(screenX - defaultTree[0]), 2) + Math.pow(Math.abs(screenY - defaultTree[1]), 2)) <= treeRadius;
     }
 
     @Override
@@ -112,13 +79,14 @@ public class obstacleCreator implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-
         return false;
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-
+        if(clickTreeFlag) {
+            golf.treePosition = new float[]{screenX, Math.abs(screenY-RockGolf.height)};
+        }
         return false;
     }
 

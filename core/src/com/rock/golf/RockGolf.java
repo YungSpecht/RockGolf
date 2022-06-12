@@ -42,8 +42,8 @@ public class RockGolf extends ApplicationAdapter {
     public static float height;
     private float ballRadius;
     private float targetRadius;
-    private static float originX;
-    private static float originY;
+    static float originX;
+    static float originY;
     static float xPosition;
     static float yPosition;
     private float targetxPosition;
@@ -68,7 +68,9 @@ public class RockGolf extends ApplicationAdapter {
     public static boolean shotActive;
     public static boolean newShotPossible;
     public InputHandling in = new InputHandling();
+    public boolean renderText = true;
     private ShapeRenderer background;
+    public float[] treePosition;
     private SpriteBatch water;
     static Node[][] graph;
     Graph graphClass;
@@ -81,6 +83,7 @@ public class RockGolf extends ApplicationAdapter {
         height = Gdx.graphics.getHeight();
         originX = width / 2;
         originY = height / 2;
+        treePosition = new float[]{270, originY*2 - 50};
         endGame = new SpriteBatch();
         ball = new ShapeRenderer();
         target = new ShapeRenderer();
@@ -122,16 +125,18 @@ public class RockGolf extends ApplicationAdapter {
 
         if (state.equals("menu")) {
             renderMenu();
+            generateObstacles();
             return;
         }
 
         if (state.equals("OBS menu")) {
-            renderObstacleMenu();
+            renderObstacleMenu(renderText, treePosition, null);
+            generateObstacles();
             return;
         }
 
-        checkStuckStatus();
         generateObstacles();
+        checkStuckStatus();
 
         target.begin(ShapeRenderer.ShapeType.Filled);
         target.setColor(Color.BLACK);
@@ -193,7 +198,7 @@ public class RockGolf extends ApplicationAdapter {
         for (int i = 0; i < trees.size(); i++) {
             double[] pos = trees.get(i).getPosition();
             tree.begin(ShapeRenderer.ShapeType.Filled);
-            tree.setColor(Color.BROWN);
+            tree.setColor(new Color(0.3f,0,0, 1f));
             tree.circle(metersToPixel(convert(pos[0])) + originX, metersToPixel(convert(pos[1])) + originY,
                     metersToPixel(convert(trees.get(i).getRadius())));
             tree.end();
@@ -248,17 +253,24 @@ public class RockGolf extends ApplicationAdapter {
      *
      */
 
-    private void renderObstacleMenu() {
-
-        background.begin(ShapeRenderer.ShapeType.Filled);
-        background.setColor(new Color(0, 0, 0, 0.8f));
-        background.rect(0, 0, width, height);
-        background.end();
+    private void renderObstacleMenu(boolean renderText, float[] positionTree, float[] positionObstacle) {
 
         shot.begin();
         font.draw(shot,
-                "Select an obstacle to place:\n\n T: Tree\n R: Rectangle\n",
-                originX - 50, originY + 100);
+                "Click your obstacle:\n",
+                 10 , originY*2 - 20);
+        shot.end();
+
+        tree.begin(ShapeRenderer.ShapeType.Filled);
+        tree.setColor(new Color(0.3f,0,0, 0.7f));
+        tree.circle(positionTree[0], positionTree[1],40);
+        
+        tree.end();
+        
+        if(!renderText) return;
+
+        shot.begin();
+        font.draw(shot, "Tree", 255, originY*2-45);
         shot.end();
     }
 
