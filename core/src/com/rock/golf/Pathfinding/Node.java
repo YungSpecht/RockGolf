@@ -15,7 +15,6 @@ public class Node implements Comparable{
         this.parent = parent;
     }
 
-    
     public Node(int value, Node parent, int row, int column) {
         this.currentNodeValue = value;
         this.parent = parent;
