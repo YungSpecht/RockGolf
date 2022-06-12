@@ -112,12 +112,10 @@ public class Graph implements Comparator {
 
     @Override
     public int compare(Object o1, Object o2) {
-        if(!o1.getClass().toString().equals("com.rock.golf.Pathfinding.Node")){
-            throw new IllegalArgumentException("It is not a Node");
-        } else{
-            Node node1 = (Node)o1;
-            return node1.compareTo(o2);
-        }
+        
+        Node node1 = (Node)o1;
+        return node1.compareTo(o2);
+        
         
     }
 }

@@ -10,6 +10,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.rock.golf.Bot.AStar1;
 import com.rock.golf.Input.*;
 import com.rock.golf.Pathfinding.BFS;
 import com.rock.golf.Pathfinding.Graph;
@@ -472,6 +473,8 @@ public class RockGolf extends ApplicationAdapter {
                 switchToObstacle();
             } else if (keycode == Input.Keys.P) {
                 BFS.BFSSearch(graphClass,graph[1][1], graph[60][40]);
+            } else if (keycode == Input.Keys.A) {
+                AStar1.findPath(graph[1][1], graph[60][40],graphClass);
             } else if (keycode == Input.Keys.G) {
                 showGraph = !showGraph;
             }

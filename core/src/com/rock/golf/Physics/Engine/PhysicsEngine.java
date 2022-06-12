@@ -25,7 +25,7 @@ public class PhysicsEngine implements Runnable {
     private double[] input;
     private boolean abort;
     private List<Sandpit> sandpits;
-    private List<Tree> trees;
+    public static List<Tree> trees;
     private Solver solver;
     private char rkMode = 'h';
     public double tolerance = 0.1;
