@@ -1,5 +1,6 @@
 package com.rock.golf.Pathfinding;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.mariuszgromada.math.mxparser.Function;
@@ -9,7 +10,7 @@ import com.rock.golf.Physics.Engine.Derivation;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
 
-public class Graph {
+public class Graph implements Comparator {
     float sizeX = RockGolf.width;
     float sizeY = RockGolf.height;
     float originX = sizeX / 2;
@@ -93,5 +94,16 @@ public class Graph {
         }
 
         return neighbors;
+    }
+
+    @Override
+    public int compare(Object o1, Object o2) {
+        if(!o1.getClass().equals("com.rock.golf.Pathfinding.Node")){
+            throw new IllegalArgumentException("It is not a Node");
+        } else{
+            Node node1 = (Node)o1;
+            return node1.compareTo(o2);
+        }
+        
     }
 }
