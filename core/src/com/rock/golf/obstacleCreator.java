@@ -1,29 +1,33 @@
 package com.rock.golf;
 
-import java.util.List;
-
-import com.badlogic.gdx.Gdx;
+import java.lang.*;  
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.MouseInfo;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.rock.golf.Physics.Engine.Obstacle;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
 
-public class obstacleCreator implements InputProcessor {
 
-    private double mouseX;
-    private double mouseY;
-    private boolean checkForMenu = false;
+
+public class obstacleCreator implements InputProcessor{
+
     private RockGolf golf;
-    private double position[] = new double[2];
-    boolean treeflag = false;
+    private PhysicsEngine physics;
+    private Obstacle obstacle;
+    private double[] position = new double[4];
 
-    public obstacleCreator(RockGolf golf) {
-        this.golf = golf;
+    public obstacleCreator(RockGolf rockGolf, PhysicsEngine engine) {
+        this.golf = rockGolf;
+        physics = engine;
+
     }
-
+    
     @Override
     public boolean keyDown(int keycode) {
 
@@ -31,56 +35,27 @@ public class obstacleCreator implements InputProcessor {
 
         if (keycode == Input.Keys.R) {
 
-            while (keycode == Input.Keys.E) {
-
-                if (keycode == Input.Keys.W) {
-                    double mouseX = Gdx.input.getX();
-                    double mouseY = Gdx.input.getY();
-                    position[0] = mouseX;
-                    position[1] = mouseY;
-
-                    if (keycode == Input.Keys.C) {
-                        double new_mouseX = Gdx.input.getX();
-                        double new_mouseY = Gdx.input.getY();
-                        position[2] = new_mouseX;
-                        position[3] = new_mouseY;
-
-                        ShapeRenderer rectangle = new ShapeRenderer();
-                        rectangle.begin(ShapeRenderer.ShapeType.Filled);
-                        rectangle.setColor(Color.BLACK);
-                        rectangle.rect(RockGolf.convert(mouseX), RockGolf.convert(mouseY),
-                                RockGolf.convert(new_mouseX) - RockGolf.convert(mouseX),
-                                RockGolf.convert(new_mouseY) - RockGolf.convert(mouseY));
-                        rectangle.end();
-                        new Obstacle(position, position[2] - position[0], position[3] - position[1]);
-
-                    }
-
-                }
-
-            }
+            new MouseListenermain();
+            
 
             // pseudo obstacle used to be able to see where you place the obstacle in the
             // end
+            ShapeRenderer Rectangle = new ShapeRenderer();
+            Rectangle.begin(ShapeRenderer.ShapeType.Filled);
+            Rectangle.setColor(Color.BLACK);
+            Rectangle.rect(golf.convert(position[0]), golf.convert(position[1]), golf.convert(position[2]- position[0]), golf.convert(position[3]- position[1]));
 
-            new Obstacle(position, 150, 50);
+
+            new Obstacle(position, position[2]- position[0], position[3]- position[1]);
+
         } else if (keycode == Input.Keys.T) {
-            checkForMenu = true;
-            golf.state = "create";
-        } else if (checkForMenu == true && keycode == Input.Keys.C) {
-            System.out.println("im at here");
-            treeflag = false;
-        }
 
+        }
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        if (keycode == Input.Keys.C) {
-            System.out.println("im here");
-            treeflag = true;
-        }
         return false;
     }
 
@@ -91,7 +66,6 @@ public class obstacleCreator implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
         return false;
     }
 
@@ -102,13 +76,11 @@ public class obstacleCreator implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-
         return false;
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-
         return false;
     }
 
@@ -117,7 +89,51 @@ public class obstacleCreator implements InputProcessor {
         return false;
     }
 
-    public double[] getPosition() {
-        return position;
+
+    public class MouseListenermain implements MouseListener{
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+
+            double mouseX = MouseInfo.getPointerInfo().getLocation().getX();
+            double mouseY = MouseInfo.getPointerInfo().getLocation().getY();
+
+            mouseX = position[0].doubleValue();
+            mouseY = position[1].doubleValue();
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+
+            double newMouseX = MouseInfo.getPointerInfo().getLocation().getX();
+            double newMouseY = MouseInfo.getPointerInfo().getLocation().getY();
+
+            newMouseX = position[2].doubleValue();
+            newMouseY = position[3].doubleValue();
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            // TODO Auto-generated method stub
+            
+        }
+
     }
+
 }
+
+    
+
+    

@@ -10,7 +10,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import java.util.Arrays;
 import com.rock.golf.Input.*;
 import com.rock.golf.Pathfinding.BFS;
 import com.rock.golf.Pathfinding.Graph;
@@ -74,13 +73,10 @@ public class RockGolf extends ApplicationAdapter {
     Graph graphClass;
     public boolean showGraph = false;
     private static ShapeRenderer graphNodes;
-    private obstacleCreator obstacleCreate = new obstacleCreator(this);
-    private double mouseX;
-    private double mouseY;
-    private double mousePosition[] = new double[2];
 
     @Override
     public void create() {
+
         width = Gdx.graphics.getWidth();
         height = Gdx.graphics.getHeight();
         originX = width / 2;
@@ -105,14 +101,14 @@ public class RockGolf extends ApplicationAdapter {
         prepareNewShot();
         xPosition = metersToPixel(convert(input[5])) + originX;
         yPosition = metersToPixel(convert(input[6])) + originY;
-        initialState = new double[] { input[5], input[6] };
+        initialState = new double[] { input[5], input[6] };      
         generateField();
         sandpits = ((PhysicsEngine) engine).get_sandpits();
         trees = ((PhysicsEngine) engine).get_trees();
         shotActive = false;
         newShotPossible = true;
         graphClass = new Graph();
-        graph = graphClass.generateMatrix();
+        graph = graphClass.generateMatrix();  
     }
 
     @Override
@@ -124,26 +120,8 @@ public class RockGolf extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         createMap();
 
-        if (obstacleCreate.treeflag == true) {
-            System.out.println("im here");
-            mouseX = Gdx.input.getX();
-            mouseY = Gdx.input.getY();
-            mousePosition[0] = mouseX;
-            mousePosition[1] = mouseY;
-            Tree tree = new Tree(mousePosition, 2);
-            List<Tree> Trees = RockGolf.trees;
-            Trees.add(tree);
-            RockGolf.trees = Trees;
-            PhysicsEngine.trees = Trees;
-        }
-
         if (state.equals("menu")) {
             renderMenu();
-            return;
-        }
-
-        if (state.equals("create")) {
-            renderConfirmation();
             return;
         }
 
@@ -154,7 +132,6 @@ public class RockGolf extends ApplicationAdapter {
 
         checkStuckStatus();
         generateObstacles();
-
         target.begin(ShapeRenderer.ShapeType.Filled);
         target.setColor(Color.BLACK);
         target.circle(targetxPosition, targetyPosition, metersToPixel(targetRadius));
@@ -238,7 +215,7 @@ public class RockGolf extends ApplicationAdapter {
         } else if (winStatus == true && shotCounter > 1) {
             endGame.begin();
             font.draw(endGame, "You took " + shotCounter + " swings to get it in the hole!",
-                    (Gdx.graphics.getWidth() / 2) - 80,
+                    (Gdx.graphics.getWidth() / 2) - 50,
                     Gdx.graphics.getHeight() - 20);
             endGame.end();
         }
@@ -261,14 +238,6 @@ public class RockGolf extends ApplicationAdapter {
         font.draw(shot,
                 "Select the bot:\n\n S: Stochastic\n B: Bruteforce\n H: HillClimb\n A: AngleBot\n R: Rule-based",
                 originX - 50, originY + 100);
-        shot.end();
-    }
-
-    private void renderConfirmation() {
-        shot.begin();
-        font.draw(shot,
-                "Press C to confirm placement of the tree.",
-                originX - 150, originY + 300);
         shot.end();
     }
 
@@ -366,8 +335,8 @@ public class RockGolf extends ApplicationAdapter {
 
         Function profile = InputModule.getProfile();
 
-        int sizeX = (int) width;
-        int sizeY = (int) height;
+        int sizeX = Gdx.graphics.getWidth();
+        int sizeY = Gdx.graphics.getHeight();
 
         for (float i = 0; i <= sizeX; i += 10) {
             for (float j = 0; j <= sizeY; j += 10) {
@@ -419,9 +388,8 @@ public class RockGolf extends ApplicationAdapter {
                 } catch (Exception e) {
                     return;
                 }
-
-                if (showGraph)
-                    createNode(i, j);
+                
+                if(showGraph) createNode(i,j);
             }
         }
     }
@@ -481,11 +449,6 @@ public class RockGolf extends ApplicationAdapter {
 
         @Override
         public boolean keyDown(int keycode) {
-            BFS bfs = new BFS();
-            int ballX = (int) xPosition / 10;
-            int ballY = (int) yPosition / 10;
-            int targetX = (int) targetxPosition / 10;
-            int targetY = (int) targetyPosition / 10;
 
             if (keycode == Input.Keys.ENTER && !shotActive && newShotPossible) {
                 String x = JOptionPane.showInputDialog("Insert x speed:");
@@ -497,8 +460,6 @@ public class RockGolf extends ApplicationAdapter {
                 xPosition = metersToPixel(convert(initialState[0])) + originX;
                 yPosition = metersToPixel(convert(initialState[1])) + originY;
                 InputModule.setNewPosition(initialState[0], initialState[1]);
-                if (showGraph)
-                    showGraph = !showGraph;
                 shotCounter = 0;
                 ((PhysicsEngine) engine).stuck = false;
                 ((PhysicsEngine) engine).resume();
@@ -510,18 +471,9 @@ public class RockGolf extends ApplicationAdapter {
             } else if (keycode == Input.Keys.B) {
                 switchToObstacle();
             } else if (keycode == Input.Keys.P) {
-                double[] shot = bfs.BFSBot(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
-                InputModule.setNewVelocity(shot[0], shot[1]);
-                prepareNewShot();
-                executor.execute(engine);
-                graph = graphClass.generateMatrix();
-                if (showGraph)
-                    showGraph = !showGraph;
+                BFS.BFSSearch(graphClass,graph[1][1], graph[60][40]);
             } else if (keycode == Input.Keys.G) {
                 showGraph = !showGraph;
-                if (showGraph) {
-                    bfs.BFSSearch(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
-                }
             }
 
             return false;
@@ -624,11 +576,11 @@ public class RockGolf extends ApplicationAdapter {
             Gdx.input.setInputProcessor(in);
         } else {
             state = "OBS menu";
-            Gdx.input.setInputProcessor(new obstacleCreator(this));
+            Gdx.input.setInputProcessor(new obstacleCreator(this, (PhysicsEngine) engine));
         }
     }
 
-    /*
+    /**
      *
      * Switch state from game to menu
      *
@@ -643,31 +595,29 @@ public class RockGolf extends ApplicationAdapter {
             state = "menu";
             Gdx.input.setInputProcessor(new BotHandler(this, (PhysicsEngine) engine));
         }
+        ;
     }
 
     public static void createNode(int i, int j) {
         try {
-            if (graph[i / 10][j / 10].currentNodeValue == 0) {
-                return;
-            }
-        } catch (ArrayIndexOutOfBoundsException e) {
+            if(graph[i/10][j/10].currentNodeValue == 0) return;
+        } catch(ArrayIndexOutOfBoundsException e) {
             return;
         }
 
         graphNodes.begin(ShapeRenderer.ShapeType.Filled);
-        if (graph[i / 10][j / 10].isPath)
-            graphNodes.setColor(Color.RED);
+        if(graph[i/10][j/10].isPath) graphNodes.setColor(Color.RED);
         graphNodes.circle(i, j, 2);
         graphNodes.setColor(Color.WHITE);
         graphNodes.end();
 
         graphNodes.begin(ShapeRenderer.ShapeType.Line);
 
-        if (i / 10 + 1 < graph.length && graph[i / 10 + 1][j / 10].currentNodeValue != 0) {
+        if(i/10 + 1 < graph.length && graph[i/10 + 1][j/10].currentNodeValue != 0) {
             graphNodes.line(i, j, i + 10, j);
         }
 
-        if (j / 10 + 1 < graph[0].length && graph[i / 10][j / 10 + 1].currentNodeValue != 0) {
+        if(j/10 + 1 < graph[0].length && graph[i/10][j/10 + 1].currentNodeValue != 0) {
             graphNodes.line(i, j, i, j + 10);
         }
 

@@ -1,5 +1,4 @@
 package com.rock.golf;
-
 import com.rock.golf.Bot.AngleBot;
 import com.rock.golf.Bot.Bot;
 
@@ -16,6 +15,8 @@ import com.rock.golf.Physics.Engine.PhysicsEngine;
 
 public class BotHandler implements InputProcessor {
 
+
+
     private Bot bot;
     private RockGolf golf;
     private PhysicsEngine botEngine;
@@ -27,11 +28,10 @@ public class BotHandler implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-
         double[] shot;
         golf.switchState();
         botEngine.tolerance = 0.1;
-
+        
         if (keycode == Input.Keys.S) {
             bot = new StochasticBot(botEngine, 1000);
 
@@ -43,12 +43,12 @@ public class BotHandler implements InputProcessor {
 
         } else if (keycode == Input.Keys.A) {
             bot = new AngleBot(botEngine);
-
+   
         } else if (keycode == Input.Keys.R) {
             bot = new RuleBasedBot(botEngine);
         }
 
-        if (bot != null) {
+        if(bot != null) {
             shot = bot.getMove();
             System.out.println("Best shot found: [x-velocity, y-velocity] = " + Arrays.toString(shot));
             System.out.println("Shot found in " + bot.getTime() + "ms");
@@ -57,40 +57,33 @@ public class BotHandler implements InputProcessor {
             golf.prepareNewShot();
             golf.executor.execute(botEngine);
         }
-
+        
         return false;
     }
-
     @Override
     public boolean keyUp(int keycode) {
         return false;
     }
-
     @Override
     public boolean keyTyped(char character) {
         return false;
     }
-
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         return false;
     }
-
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         return false;
     }
-
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         return false;
     }
-
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         return false;
     }
-
     @Override
     public boolean scrolled(float amountX, float amountY) {
         return false;
