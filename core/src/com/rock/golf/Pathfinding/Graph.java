@@ -1,6 +1,7 @@
 package com.rock.golf.Pathfinding;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.mariuszgromada.math.mxparser.Function;
 import com.rock.golf.RockGolf;
@@ -10,15 +11,18 @@ import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
 
 public class Graph {
-    float sizeX = RockGolf.width;
-    float sizeY = RockGolf.height;
+    int sizeX = (int) RockGolf.width;
+    int sizeY = (int) RockGolf.height;
     float originX = sizeX / 2;
     float originY = sizeY / 2;
     float metertoPixelRatio = RockGolf.metertoPixelRatio;
     int counter = 0;
     List<Tree> obstacles = RockGolf.trees;
     Node[][] adjacencyMatrix;
-
+    public int[] lowerCoordinates = new int[2];
+    {Arrays.fill(lowerCoordinates,Integer.MAX_VALUE);}
+    public int[] higherCoordinates = new int[2];
+    {Arrays.fill(higherCoordinates,0);}
     public Node[][] generateMatrix() {
         int counterI = 0;
         int counterJ = 0;
@@ -29,15 +33,19 @@ public class Graph {
 
         adjacencyMatrix = new Node[rows + 1][columns + 1];
 
-        for (int i = 0; i <= sizeX; i += pixels) {
-            for (int j = 0; j <= sizeY; j += pixels) {
+        for (float i = 0; i <= sizeX; i += pixels) {
+            for (float j = 0; j <= sizeY; j += pixels) {
                 float x = (i - originX) / metertoPixelRatio;
                 float y = (j - originY) / metertoPixelRatio;
 
                 float n = (float) Derivation.compute(x, y, profile);
-
-                if (n < 0) {
-                    adjacencyMatrix[counterI][counterJ] = new Node(0, null, counterI, counterJ);
+                
+                if (n < 0) {                    
+                    if(counterI + 1< lowerCoordinates[0]) lowerCoordinates[0] = counterI + 1;
+                    if(counterI + 1> higherCoordinates[0]) higherCoordinates[0] = counterI + 1;
+                    if(counterJ + 1< lowerCoordinates[1]) lowerCoordinates[1] = counterJ + 1;
+                    if(counterJ + 1> higherCoordinates[1]) higherCoordinates[1] = counterJ + 1;
+                    adjacencyMatrix[counterI][counterJ] = new Node(1, null, counterI, counterJ);
                 } else if (thereisObastacle(x, y)) {
                     adjacencyMatrix[counterI][counterJ] = new Node(0, null, counterI, counterJ);
                 } else {
@@ -47,6 +55,12 @@ public class Graph {
             }
             counterJ = 0;
             counterI++;
+        }
+        
+        for(int i = lowerCoordinates[0]; i < higherCoordinates[0]; i++) {
+            for(int j = lowerCoordinates[1]; j < higherCoordinates[1]; j++) {
+                adjacencyMatrix[i][j] = new Node(0, null, i, j);
+            }
         }
 
         return adjacencyMatrix;

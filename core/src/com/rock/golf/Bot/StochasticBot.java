@@ -37,4 +37,25 @@ public class StochasticBot extends Bot {
         time = System.currentTimeMillis()-checkpoint;
         return new double[] { best[0], best[1] };
     }
+
+    public double[] getMoveTarget(double[] target) {
+
+        double[] best = new double[] { 0, 0 };
+        double previousFitness = Integer.MAX_VALUE;
+        double[] vel = getRandomVelocities();
+        for (int i = 0; i < iterations; i++) {
+            double[] ballPos = engine.getSimulatedShot(vel[0], vel[1]);
+            iterationsCounter++;
+            double fitness = getFitness(ballPos, target);
+            if (fitness < previousFitness) {
+                previousFitness = fitness;
+                best = vel;
+                if (fitness == 0)
+                    break;
+            }
+            vel = getRandomVelocities();
+        }
+        
+        return new double[] { best[0], best[1], previousFitness };
+    }
 }

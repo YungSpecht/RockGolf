@@ -10,6 +10,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import java.util.Arrays;
 import com.rock.golf.Input.*;
 import com.rock.golf.Pathfinding.BFS;
 import com.rock.golf.Pathfinding.Graph;
@@ -73,7 +74,7 @@ public class RockGolf extends ApplicationAdapter {
     Graph graphClass;
     public boolean showGraph = false;
     private static ShapeRenderer graphNodes;
-
+    
     @Override
     public void create() {
         width = Gdx.graphics.getWidth();
@@ -215,7 +216,7 @@ public class RockGolf extends ApplicationAdapter {
         } else if (winStatus == true && shotCounter > 1) {
             endGame.begin();
             font.draw(endGame, "You took " + shotCounter + " swings to get it in the hole!",
-                    (Gdx.graphics.getWidth() / 2) - 50,
+                    (Gdx.graphics.getWidth() / 2) - 80,
                     Gdx.graphics.getHeight() - 20);
             endGame.end();
         }
@@ -335,8 +336,8 @@ public class RockGolf extends ApplicationAdapter {
 
         Function profile = InputModule.getProfile();
 
-        int sizeX = Gdx.graphics.getWidth();
-        int sizeY = Gdx.graphics.getHeight();
+        int sizeX = (int) width;
+        int sizeY = (int) height;
 
         for (float i = 0; i <= sizeX; i += 10) {
             for (float j = 0; j <= sizeY; j += 10) {
@@ -450,6 +451,11 @@ public class RockGolf extends ApplicationAdapter {
 
         @Override
         public boolean keyDown(int keycode) {
+            BFS bfs = new BFS();
+            int ballX = (int) xPosition / 10;
+            int ballY = (int) yPosition / 10;
+            int targetX = (int) targetxPosition / 10;
+            int targetY = (int) targetyPosition / 10;
 
             if (keycode == Input.Keys.ENTER && !shotActive && newShotPossible) {
                 String x = JOptionPane.showInputDialog("Insert x speed:");
@@ -461,6 +467,7 @@ public class RockGolf extends ApplicationAdapter {
                 xPosition = metersToPixel(convert(initialState[0])) + originX;
                 yPosition = metersToPixel(convert(initialState[1])) + originY;
                 InputModule.setNewPosition(initialState[0], initialState[1]);
+                if(showGraph) showGraph = !showGraph;
                 shotCounter = 0;
                 ((PhysicsEngine) engine).stuck = false;
                 ((PhysicsEngine) engine).resume();
@@ -472,9 +479,17 @@ public class RockGolf extends ApplicationAdapter {
             } else if (keycode == Input.Keys.B) {
                 switchToObstacle();
             } else if (keycode == Input.Keys.P) {
-                BFS.BFSSearch(graphClass, graph[1][1], graph[60][40]);
+                double[] shot = bfs.BFSBot(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
+                InputModule.setNewVelocity(shot[0], shot[1]);
+                prepareNewShot();
+                executor.execute(engine);
+                graph = graphClass.generateMatrix();
+                if(showGraph) showGraph = !showGraph;
             } else if (keycode == Input.Keys.G) {
                 showGraph = !showGraph;
+                if(showGraph) {
+                    bfs.BFSSearch(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
+                }
             }
 
             return false;
@@ -600,8 +615,9 @@ public class RockGolf extends ApplicationAdapter {
 
     public static void createNode(int i, int j) {
         try {
-            if (graph[i / 10][j / 10].currentNodeValue == 0)
-                return;
+            if (graph[i / 10][j / 10].currentNodeValue == 0) {
+               return;
+            }
         } catch (ArrayIndexOutOfBoundsException e) {
             return;
         }
