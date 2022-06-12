@@ -2,6 +2,7 @@ package com.rock.golf.Pathfinding;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import org.mariuszgromada.math.mxparser.Function;
 import com.rock.golf.RockGolf;
@@ -10,7 +11,7 @@ import com.rock.golf.Physics.Engine.Derivation;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
 
-public class Graph {
+public class Graph implements Comparator{
     int sizeX = (int) RockGolf.width;
     int sizeY = (int) RockGolf.height;
     List<Tree> obstacles;
