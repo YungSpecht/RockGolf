@@ -513,12 +513,12 @@ public class RockGolf extends ApplicationAdapter {
                 InputModule.setNewVelocity(shot[0], shot[1]);
                 prepareNewShot();
                 executor.execute(engine);
-                graph = graphClass.generateMatrix();
                 if (showGraph)
                     showGraph = !showGraph;
             } else if (keycode == Input.Keys.G) {
                 showGraph = !showGraph;
                 if (showGraph) {
+                    graph = graphClass.generateMatrix();
                     bfs.BFSSearch(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
                 }
             }

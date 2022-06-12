@@ -13,16 +13,17 @@ import com.rock.golf.Physics.Engine.Tree;
 public class Graph {
     int sizeX = (int) RockGolf.width;
     int sizeY = (int) RockGolf.height;
+    List<Tree> obstacles;
     float originX = sizeX / 2;
     float originY = sizeY / 2;
     float metertoPixelRatio = RockGolf.metertoPixelRatio;
     int counter = 0;
-    List<Tree> obstacles = RockGolf.trees;
     Node[][] adjacencyMatrix;
     public int[] lowerCoordinates = new int[2];
     {Arrays.fill(lowerCoordinates,Integer.MAX_VALUE);}
     public int[] higherCoordinates = new int[2];
     {Arrays.fill(higherCoordinates,0);}
+
     public Node[][] generateMatrix() {
         int counterI = 0;
         int counterJ = 0;
@@ -30,7 +31,7 @@ public class Graph {
         int rows = (int) sizeX / pixels;
         int columns = (int) sizeY / pixels;
         Function profile = InputModule.getProfile();
-
+        obstacles = PhysicsEngine.trees;
         adjacencyMatrix = new Node[rows + 1][columns + 1];
 
         for (float i = 0; i <= sizeX; i += pixels) {
