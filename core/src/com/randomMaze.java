@@ -1,9 +1,6 @@
 package com;
 
-import java.util.ArrayList;
-import java.util.Random;
 import java.util.*;
-
 import com.rock.golf.RockGolf;
 import com.rock.golf.Pathfinding.Graph;
 import com.rock.golf.Pathfinding.Node;
@@ -24,12 +21,15 @@ public class randomMaze {
     public void random_maze() {
         Graph graph = new Graph();
         Node[][] grid = graph.generateMatrix();
-        ArrayList<ArrayList<Tree<Node>>> sets = new ArrayList<>();
+        HashMap bucket = new LinkedHashMap()<>();
 
         // Represent each edge as one of its end-points, and a direction
-        ArrayList<Edge> edges = new ArrayList<>();
+        LinkedList<Edge> edges = new LinkedList<>();
         for (int i = 0; i < sizeX; i++) {
             for (int j = 0; j < sizeY; j++) {
+                for (int j2 = 0; j2 < grid.length * 2; j2++) {
+                    bucket.put(j2, grid[i][j]);
+                }
                 if (i > 0) {
                     Edge h = new Edge(grid[i - 1][j], grid[i][j], "horizontal");
                     edges.add(h);
@@ -40,11 +40,14 @@ public class randomMaze {
                 }
             }
         }
+
         Collections.shuffle(edges);
         // Throw all of the edges in the graph into a big set
-        while(!edges.isEmpty()) {
-
-            // remove the next edge from the list
+        while (!edges.isEmpty()) {
+            Edge removed = edges.getLast();
+            edges.removeLast(); // remove the next edge from the list
+            // If cells are not already in the same bucket: Connect them and Merge Buckets
+            
             // compute the other endpoint
             // test their two sets
         }
