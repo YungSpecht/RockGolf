@@ -2,7 +2,7 @@ package com.rock.golf.Physics.Engine;
 
 public class rectangleObstacle {
 
-    private double[] position;
+    private float[] position;
     private double width;
     private double height;
 
@@ -13,7 +13,7 @@ public class rectangleObstacle {
      *                 square obstacle
      * @param length   specifies length of sides
      */
-    public rectangleObstacle(double[] position, double width, double height) {
+    public rectangleObstacle(float[] position, double width, double height) {
         this.width = width;
         this.height = height;
         this.position = position;
@@ -30,20 +30,20 @@ public class rectangleObstacle {
     public boolean obstacleCollision(double xPos, double yPos, double radius) {
         if ((xPos + radius) >= position[0] || (xPos - radius) <= position[0] + width) {
             return true;
-        } else if ((yPos + radius) >= position[1] || (yPos - radius) <= position[1] + height) {
+        } else if ((yPos + radius) <= position[1] || (yPos - radius) >= position[1] + height) {
             return true;
         } else
             return false;
 
     }
 
-    public double[] bounce(double radius, double[] vector) {
-        if ((vector[0] + radius) >= position[0] || (vector[0] - radius) <= position[0] + width) {
-            return new double[] { -vector[2], vector[3] };
-        } else if ((vector[1] + radius) >= position[1] || (vector[1] - radius) <= position[1] + height) {
-            return new double[] { vector[2], -vector[3] };
+    public StateVector bounce(double radius, StateVector vector) {
+        if ((vector.getXPos() + radius) >= position[0] || (vector.getXPos() - radius) <= position[0] + width) {
+            return new StateVector(vector.getXPos(), vector.getYPos(), -vector.getXSpeed(), vector.getYSpeed());
+        } else if ((vector.getYPos() + radius) >= position[1] || (vector.getYPos() - radius) <= position[1] + height) {
+            return new StateVector(vector.getXPos(), vector.getYPos(), vector.getXSpeed(), -vector.getYSpeed());
         } else
-            return new double[] { vector[2], vector[3] };
+            return vector;
 
     }
 
@@ -55,7 +55,7 @@ public class rectangleObstacle {
         return width;
     }
 
-    public double[] getPosition() {
+    public float[] getPosition() {
         return position;
     }
 }

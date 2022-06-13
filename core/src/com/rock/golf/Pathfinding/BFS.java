@@ -21,8 +21,7 @@ public class BFS {
         queue.add(startnode);
         while (!queue.isEmpty()) {
             Node currentNode = queue.poll();
-
-            if (!visited.contains(currentNode)) {
+            if(!visited.contains(currentNode)){
                 visited.add(currentNode);
                 for (Node node : graph.neighbors(currentNode)) {
                     queue.add(node);

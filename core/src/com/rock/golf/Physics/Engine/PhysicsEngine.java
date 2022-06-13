@@ -80,7 +80,8 @@ public class PhysicsEngine implements Runnable {
         while ((ballIsMoving() && !ballInTarget() || hillIsSteep() && !ballInTarget())
                 && !collidedWithTree(vector.getXPos(), vector.getYPos())
                 && !isInWater(vector.getXPos(), vector.getYPos())
-                && ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, tolerance)) {
+                && ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, tolerance)
+                && !collidedWithObstacles(vector.getXPos(), vector.getYPos())) {
 
             if (!ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, 0))
                 tolerance = 0.1;
@@ -147,7 +148,8 @@ public class PhysicsEngine implements Runnable {
         while ((ballIsMoving() && !ballInTarget() || hillIsSteep() && !ballInTarget())
                 && !collidedWithTree(vector.getXPos(), vector.getYPos())
                 && !isInWater(vector.getXPos(), vector.getYPos())
-                && ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, tolerance)) {
+                && ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, tolerance)
+                && !collidedWithObstacles(vector.getXPos(), vector.getYPos())) {
 
             if (!ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, 0))
                 tolerance = 0.1;
@@ -196,7 +198,16 @@ public class PhysicsEngine implements Runnable {
     public boolean collidedWithTree(double xPos, double yPos) {
         for (int i = 0; i < trees.size(); i++) {
             if (trees.get(i).collidedWithTree(xPos, yPos, ballRadius)) {
-                return true;
+               return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean collidedWithObstacles(double xPos, double yPos) {
+        for (int i = 0; i < rectangles.size(); i++) {
+            if (rectangles.get(i).obstacleCollision(xPos, yPos, ballRadius)) {
+               return true;
             }
         }
         return false;
@@ -322,5 +333,9 @@ public class PhysicsEngine implements Runnable {
 
     public List<Tree> get_trees() {
         return trees;
+    }
+
+    public List<rectangleObstacle> get_rectangles() {
+        return rectangles;
     }
 }

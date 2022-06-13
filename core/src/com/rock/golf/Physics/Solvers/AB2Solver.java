@@ -7,6 +7,7 @@ public class AB2Solver extends Solver {
 
     public AB2Solver(double uK, double uS, double h, Function golfCourse) {
         super(uK, uS, h, golfCourse);
+
     }
 
     @Override

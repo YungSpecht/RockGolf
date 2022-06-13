@@ -22,14 +22,16 @@ public class Node implements Comparable {
         this.column = column;
     }
 
-    public double calculateEuclidean(Node goal){
+    public double calculateEuclidean(Node goal) {
         euclidean = Math.sqrt(Math.pow(goal.row - this.row, 2) + Math.pow(goal.column - this.column, 2));
         return euclidean;
     }
 
     @Override
     public int compareTo(Object o) {
-        Node node = (Node)o;
-        return 0;
+        Node node = (Node) o;
+        if(this.euclidean>node.euclidean) return 1;
+        else if (this.euclidean==node.euclidean) return 0;
+        else return -1;
     }
 }
