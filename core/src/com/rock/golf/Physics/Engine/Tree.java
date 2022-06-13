@@ -41,7 +41,7 @@ public class Tree{
         double[] velParallel = {xOriginal-xIntercept, yOriginal-yIntercept};
         double[] velPerpend = {vector.getXPos()-xIntercept,vector.getYPos()-yIntercept};
 
-        return new Statevector(vector.getXPos(), vector.getYPos(),velParallel[0]-velPerpend[0],velParallel[1]-velPerpend[1]);
+        return new StateVector(vector.getXPos(), vector.getYPos(),velParallel[0]-velPerpend[0],velParallel[1]-velPerpend[1]);
     }
 
     public double[] getPosition() {
