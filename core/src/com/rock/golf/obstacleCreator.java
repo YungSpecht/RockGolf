@@ -79,8 +79,8 @@ public class obstacleCreator implements InputProcessor {
         if (!clickRectangleFlag && !golf.renderTextRect) {
                 float[] rectanglePosition = new float[]{ (screenX - RockGolf.originX) / RockGolf.metertoPixelRatio,
                                     ((RockGolf.height - screenY) - RockGolf.originY) / RockGolf.metertoPixelRatio };
-                if(horizontal) PhysicsEngine.rectangles.add(new rectangleObstacle(rectanglePosition, 130, 20));
-                else PhysicsEngine.rectangles.add(new rectangleObstacle(rectanglePosition, 20, 130));
+                if(horizontal) PhysicsEngine.rectangles.add(new rectangleObstacle(rectanglePosition, 130/RockGolf.metertoPixelRatio, 20/RockGolf.metertoPixelRatio));
+                else PhysicsEngine.rectangles.add(new rectangleObstacle(rectanglePosition, 20/RockGolf.metertoPixelRatio, 130/RockGolf.metertoPixelRatio));
                 golf.renderTextRect = true;
                 golf.rectanglePosition = defaultRectangle;
                 horizontal = true;
