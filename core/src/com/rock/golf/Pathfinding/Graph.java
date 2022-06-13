@@ -43,7 +43,6 @@ public class Graph implements Comparator {
             for (float j = 0; j <= sizeY; j += pixels) {
                 float x = (i - originX) / metertoPixelRatio;
                 float y = (j - originY) / metertoPixelRatio;
-
                 float n = (float) Derivation.compute(x, y, profile);
 
                 if (n < 0) {
@@ -72,7 +71,6 @@ public class Graph implements Comparator {
                 adjacencyMatrix[i][j] = new Node(0, null, i, j);
             }
         }
-
         return adjacencyMatrix;
     }
 
@@ -114,15 +112,12 @@ public class Graph implements Comparator {
                 adjacencyMatrix[row - 1][column].parent = currentNode;
             neighbors.add(adjacencyMatrix[row - 1][column]);
         }
-
         return neighbors;
     }
 
     @Override
     public int compare(Object o1, Object o2) {
-
         Node node1 = (Node) o1;
         return node1.compareTo(o2);
-
     }
 }

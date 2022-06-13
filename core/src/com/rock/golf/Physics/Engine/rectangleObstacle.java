@@ -1,7 +1,6 @@
 package com.rock.golf.Physics.Engine;
 
 public class rectangleObstacle {
-
     private float[] position;
     private double width;
     private double height;
@@ -13,6 +12,7 @@ public class rectangleObstacle {
      *                 square obstacle
      * @param length   specifies length of sides
      */
+
     public rectangleObstacle(float[] position, double width, double height) {
         this.width = width;
         this.height = height;
@@ -27,6 +27,7 @@ public class rectangleObstacle {
      * @param radius radius of the ball
      * @return
      */
+
     public boolean obstacleCollision(double xPos, double yPos, double radius) {
         if ((xPos + radius) >= position[0] || (xPos - radius) <= position[0] + width) {
             return true;
@@ -34,7 +35,6 @@ public class rectangleObstacle {
             return true;
         } else
             return false;
-
     }
 
     public StateVector bounce(double radius, StateVector vector) {
@@ -44,7 +44,6 @@ public class rectangleObstacle {
             return new StateVector(vector.getXPos(), vector.getYPos(), vector.getXSpeed(), -vector.getYSpeed());
         } else
             return vector;
-
     }
 
     public double getHeight() {
