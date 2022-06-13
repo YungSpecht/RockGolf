@@ -1,11 +1,11 @@
 package com.rock.golf;
 
+import java.util.Collections;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
+import com.rock.golf.Physics.Engine.rectangleObstacle;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
-import com.rock.golf.Physics.Engine.rectangleObstacle;
 
 public class obstacleCreator implements InputProcessor {
 
@@ -17,11 +17,12 @@ public class obstacleCreator implements InputProcessor {
     private int treeRadius = 40;
     private boolean clickTreeFlag = false;
     private boolean clickRectangleFlag = false;
+    static boolean horizontal = true;
 
     public obstacleCreator(RockGolf golf) {
         this.golf = golf;
-        this.physics = physics;
         this.defaultTree = golf.treePosition;
+        this.defaultRectangle = golf.rectanglePosition;
     }
 
     @Override
@@ -29,6 +30,11 @@ public class obstacleCreator implements InputProcessor {
 
         if (keycode == Input.Keys.B) {
             golf.switchToObstacle();
+        }
+
+        if(keycode == Input.Keys.R && clickRectangleFlag) {
+            horizontal = !horizontal;
+            
         }
 
         return false;
@@ -46,35 +52,37 @@ public class obstacleCreator implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        clickTreeFlag = false;
-        clickRectangleFlag = false;
 
         if (clickInsideTree(screenX, (int) RockGolf.height - screenY)) {
             clickTreeFlag = true; // to add that the tree has to not be selected already
-            golf.renderText = false;
+            golf.renderTextTree = false;
+        } else {
+            clickTreeFlag = false;
         }
 
-        if (!clickTreeFlag) {
+        if (!clickTreeFlag && !golf.renderTextTree) {
             PhysicsEngine.trees
                     .add(new Tree(
                             new double[] { (screenX - RockGolf.originX) / RockGolf.metertoPixelRatio,
                                     ((RockGolf.height - screenY) - RockGolf.originY) / RockGolf.metertoPixelRatio },
                             0.4));
-            golf.renderText = true;
+            golf.renderTextTree = true;
             golf.treePosition = defaultTree;
         }
+        if (clickInsideRectangle(screenX, screenY)) {
+            clickRectangleFlag = true;
+            golf.renderTextRect = false;
+        }  else {
+            clickRectangleFlag = false;
+        }
 
-        if (clickInsideRectangle(screenX, screenY))
-
-            if (!clickRectangleFlag) {
-                PhysicsEngine.rectangles.add(new rectangleObstacle(
-                        (new double[] { (screenX - RockGolf.originX) / RockGolf.metertoPixelRatio,
-                                ((RockGolf.height - screenY) - RockGolf.originY) / RockGolf.metertoPixelRatio }),
-                        150, 50));
-                golf.renderText = true;
+        if (!clickRectangleFlag && !golf.renderTextRect) {
+                if(horizontal) PhysicsEngine.rectangles.add(new rectangleObstacle((golf.rectanglePosition), 130, 20));
+                else PhysicsEngine.rectangles.add(new rectangleObstacle((golf.rectanglePosition), 20, 130));
+                golf.renderTextRect = true;
                 golf.rectanglePosition = defaultRectangle;
-
-            }
+                horizontal = true;
+        }
 
         return false;
     }
@@ -85,9 +93,7 @@ public class obstacleCreator implements InputProcessor {
     }
 
     private boolean clickInsideRectangle(int screenX, int screenY) {
-        return (screenX > defaultRectangle[0] && screenX < defaultRectangle[2] && screenY > defaultRectangle[1]
-                && screenY < defaultRectangle[3]);
-        // default rectangle[0] and [2] is x1 and x2 and [1] and [3] is y1 and y2
+        return (screenX > defaultRectangle[0] && screenX < defaultRectangle[0] + 130 && RockGolf.height - screenY > defaultRectangle[1] && RockGolf.height - screenY < defaultRectangle[1] + 20);
     }
 
     @Override
@@ -104,6 +110,11 @@ public class obstacleCreator implements InputProcessor {
     public boolean mouseMoved(int screenX, int screenY) {
         if (clickTreeFlag) {
             golf.treePosition = new float[] { screenX, Math.abs(screenY - RockGolf.height) };
+        }
+
+        if (clickRectangleFlag) {
+            if(horizontal) golf.rectanglePosition = new float[] { screenX - 60, Math.abs(screenY - RockGolf.height) };
+            else golf.rectanglePosition = new float[] { screenX - 10, Math.abs(screenY - RockGolf.height) };
         }
         return false;
     }

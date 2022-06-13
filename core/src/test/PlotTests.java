@@ -3,6 +3,7 @@ package test;
 import org.mariuszgromada.math.mxparser.Function;
 import com.rock.golf.Physics.Engine.StateVector;
 import com.rock.golf.Physics.Solvers.AB2Solver;
+import com.rock.golf.Physics.Solvers.AdamsBashforth2;
 import com.rock.golf.Physics.Solvers.EulerSolver;
 import com.rock.golf.Physics.Solvers.RK2Solver;
 import com.rock.golf.Physics.Solvers.RK4Solver;
@@ -11,14 +12,10 @@ public class PlotTests {
     double tMax = 1.5;
     double bestH = 0.00001;
     double correctX = getAccurateValue().getXPos();
-    double[] test = new double[]{0.5, 0.4, 0.3, 0.275, 0.25, 0.125, 0.1, 0.05, 0.01, 0.005, 0.001};
+    double[] test = new double[]{0.5, 0.3, 0.25, 0.125, 0.1, 0.05, 0.01, 0.005, 0.001};
     public static void main(String[] args) {
         PlotTests test = new PlotTests();
-        test.Test_RK4();
-        System.out.println();
-        test.Test_RK2();
-        System.out.println();
-        test.Test_Euler();
+        test.Test_AB();
     }
     
     public void Test_RK4(){

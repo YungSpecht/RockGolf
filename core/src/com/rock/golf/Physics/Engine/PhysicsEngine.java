@@ -323,4 +323,8 @@ public class PhysicsEngine implements Runnable {
     public List<Tree> get_trees() {
         return trees;
     }
+
+    public List<rectangleObstacle> get_rectangles() {
+        return rectangles;
+    }
 }

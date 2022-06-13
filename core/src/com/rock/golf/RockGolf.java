@@ -20,6 +20,7 @@ import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Sandpit;
 import com.rock.golf.Physics.Engine.StateVector;
 import com.rock.golf.Physics.Engine.Tree;
+import com.rock.golf.Physics.Engine.rectangleObstacle;
 
 import org.mariuszgromada.math.mxparser.Function;
 import com.badlogic.gdx.graphics.Color;
@@ -69,7 +70,8 @@ public class RockGolf extends ApplicationAdapter {
     public static boolean shotActive;
     public static boolean newShotPossible;
     public InputHandling in = new InputHandling();
-    public boolean renderText = true;
+    public boolean renderTextTree = true;
+    public boolean renderTextRect = true;
     private ShapeRenderer background;
     public float[] treePosition;
     public float[] rectanglePosition;
@@ -82,6 +84,7 @@ public class RockGolf extends ApplicationAdapter {
     private double mouseX;
     private double mouseY;
     private double mousePosition[] = new double[2];
+    private List<rectangleObstacle> rectangles;
 
     @Override
     public void create() {
@@ -115,6 +118,7 @@ public class RockGolf extends ApplicationAdapter {
         initialState = new double[] { input[5], input[6] };
         generateField();
         sandpits = ((PhysicsEngine) engine).get_sandpits();
+        rectangles = ((PhysicsEngine) engine).get_rectangles();
         trees = ((PhysicsEngine) engine).get_trees();
         shotActive = false;
         newShotPossible = true;
@@ -137,13 +141,8 @@ public class RockGolf extends ApplicationAdapter {
             return;
         }
 
-        if (state.equals("create")) {
-            renderConfirmation();
-            return;
-        }
-
         if (state.equals("OBS menu")) {
-            renderObstacleMenu(renderText, treePosition, rectanglePosition, null);
+            renderObstacleMenu(renderTextTree, renderTextRect, treePosition, rectanglePosition, null);
             generateObstacles();
             return;
         }
@@ -216,6 +215,16 @@ public class RockGolf extends ApplicationAdapter {
                     metersToPixel(convert(trees.get(i).getRadius())));
             tree.end();
         }
+
+        for (int i = 0; i < rectangles.size(); i++) {
+            float[] pos = rectangles.get(i).getPosition();
+            double height = rectangles.get(i).getHeight();
+            double width = rectangles.get(i).getWidth();
+            rectangle.begin(ShapeRenderer.ShapeType.Filled);
+            rectangle.setColor(new Color(0.3f, 0, 0, 1f));
+            rectangle.rect(pos[0], pos[1], (float) width, (float) height);
+            rectangle.end();
+        }
     }
 
     /**
@@ -260,21 +269,13 @@ public class RockGolf extends ApplicationAdapter {
         shot.end();
     }
 
-    private void renderConfirmation() {
-        shot.begin();
-        font.draw(shot,
-                "Press C to confirm placement of the tree.",
-                originX - 150, originY + 300);
-        shot.end();
-    }
-
     /**
      *
      * Render Obstacle menu
      *
      */
 
-    private void renderObstacleMenu(boolean renderText, float[] positionTree, float[] positionRectangle,
+    private void renderObstacleMenu(boolean renderTextTree, boolean renderTextRec, float[] positionTree, float[] positionRectangle,
             float[] positionObstacle) {
 
         shot.begin();
@@ -289,18 +290,16 @@ public class RockGolf extends ApplicationAdapter {
         tree.end();
 
         rectangle.begin(ShapeRenderer.ShapeType.Filled);
-        rectangle.setColor(Color.RED);
-        rectangle.rect(positionRectangle[0], positionRectangle[1], (float) 150, (float) 50); // positionRectangle[2] and
-                                                                                             // [3] is for the originX
-                                                                                             // and originY
+        rectangle.setColor(new Color(0.3f, 0, 0, 0.5f));
+        if(obstacleCreator.horizontal) rectangle.rect(positionRectangle[0], positionRectangle[1], (float) 130, (float) 20);
+        else rectangle.rect(positionRectangle[0], positionRectangle[1], (float) 20, (float) 130);
         rectangle.end();
 
-        if (!renderText)
-            return;
+        
 
         shot.begin();
-        font.draw(shot, "Tree", 255, (originY * 2 - 45));
-        font.draw(shot, "Rectangle", 400, (originY * 2 - 45));
+        if (renderTextTree) font.draw(shot, "Tree", 255, (originY * 2 - 45));
+        if (renderTextRect) font.draw(shot, "Rectangle", 395, (originY * 2 - 59));
         shot.end();
     }
 

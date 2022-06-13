@@ -2,7 +2,7 @@ package com.rock.golf.Physics.Engine;
 
 public class rectangleObstacle {
 
-    private double[] position;
+    private float[] position;
     private double width;
     private double height;
 
@@ -13,7 +13,7 @@ public class rectangleObstacle {
      *                 square obstacle
      * @param length   specifies length of sides
      */
-    public rectangleObstacle(double[] position, double width, double height) {
+    public rectangleObstacle(float[] position, double width, double height) {
         this.width = width;
         this.height = height;
         this.position = position;
@@ -55,7 +55,7 @@ public class rectangleObstacle {
         return width;
     }
 
-    public double[] getPosition() {
+    public float[] getPosition() {
         return position;
     }
 }
