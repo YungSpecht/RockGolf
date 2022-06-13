@@ -24,10 +24,7 @@ public class randomMaze {
     public void random_maze() {
         Graph graph = new Graph();
         Node[][] grid = graph.generateMatrix();
-        ArrayList<ArrayList<Node>> sets = new ArrayList<>();
-        for (int i = 0; i < grid.length; i++) {
-            
-        }
+        ArrayList<ArrayList<Tree<Node>>> sets = new ArrayList<>();
 
         // Represent each edge as one of its end-points, and a direction
         ArrayList<Edge> edges = new ArrayList<>();
@@ -46,6 +43,7 @@ public class randomMaze {
         Collections.shuffle(edges);
         // Throw all of the edges in the graph into a big set
         while(!edges.isEmpty()) {
+
             // remove the next edge from the list
             // compute the other endpoint
             // test their two sets
