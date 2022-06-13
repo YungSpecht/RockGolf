@@ -34,6 +34,7 @@ public class BFS {
                 break;
             }
         }
+        
         Node parentNode = stopnode;
         ArrayList<Node> path = new ArrayList<>();
         while (!(parentNode.parent == startnode)) {

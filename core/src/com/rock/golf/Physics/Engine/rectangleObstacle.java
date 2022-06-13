@@ -30,7 +30,7 @@ public class rectangleObstacle {
     public boolean obstacleCollision(double xPos, double yPos, double radius) {
         if ((xPos + radius) >= position[0] || (xPos - radius) <= position[0] + width) {
             return true;
-        } else if ((yPos + radius) <= position[1] || (yPos - radius) >= position[1] + height) {
+        } else if ((yPos + radius) >= position[1] || (yPos - radius) <= position[1] + height) {
             return true;
         } else
             return false;

@@ -10,11 +10,13 @@ import com.rock.golf.Input.InputModule;
 import com.rock.golf.Physics.Engine.Derivation;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
+import com.rock.golf.Physics.Engine.rectangleObstacle;
 
 public class Graph implements Comparator {
     int sizeX = (int) RockGolf.width;
     int sizeY = (int) RockGolf.height;
-    List<Tree> obstacles;
+    List<rectangleObstacle> rectangles;
+    List<Tree> trees;
     float originX = sizeX / 2;
     float originY = sizeY / 2;
     float metertoPixelRatio = RockGolf.metertoPixelRatio;
@@ -36,7 +38,8 @@ public class Graph implements Comparator {
         int rows = (int) sizeX / pixels;
         int columns = (int) sizeY / pixels;
         Function profile = InputModule.getProfile();
-        obstacles = PhysicsEngine.trees;
+        trees = PhysicsEngine.trees;
+        rectangles = PhysicsEngine.rectangles;
         adjacencyMatrix = new Node[rows + 1][columns + 1];
 
         for (float i = 0; i <= sizeX; i += pixels) {
@@ -78,8 +81,14 @@ public class Graph implements Comparator {
 
     private boolean thereisObastacle(float xPos, float yPos) {
 
-        for (int i = 0; i < obstacles.size(); i++) {
-            if (obstacles.get(i).collidedWithTree(xPos, yPos, 0.05)) {
+        for (int i = 0; i < trees.size(); i++) {
+            if (trees.get(i).collidedWithTree(xPos, yPos, 0.05)) {
+                return true;
+            }
+        }
+
+        for (int i = 0; i < rectangles.size(); i++) {
+            if (rectangles.get(i).obstacleCollision(xPos, yPos, 0.05)) {
                 return true;
             }
         }

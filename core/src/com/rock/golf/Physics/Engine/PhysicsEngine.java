@@ -77,11 +77,11 @@ public class PhysicsEngine implements Runnable {
         else
             tolerance = 0;
 
+
+        System.out.println(collidedWithObstacles(vector.getXPos(), vector.getYPos()));
         while ((ballIsMoving() && !ballInTarget() || hillIsSteep() && !ballInTarget())
-                && !collidedWithTree(vector.getXPos(), vector.getYPos())
                 && !isInWater(vector.getXPos(), vector.getYPos())
-                && ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, tolerance)
-                && !collidedWithObstacles(vector.getXPos(), vector.getYPos())) {
+                && ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, tolerance)) {
 
             if (!ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, 0))
                 tolerance = 0.1;

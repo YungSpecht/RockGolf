@@ -222,8 +222,9 @@ public class RockGolf extends ApplicationAdapter {
             double width = rectangles.get(i).getWidth();
             rectangle.begin(ShapeRenderer.ShapeType.Filled);
             rectangle.setColor(new Color(0.3f, 0, 0, 1f));
-            rectangle.rect(pos[0], pos[1], (float) width, (float) height);
+            rectangle.rect(metersToPixel(pos[0]) + originX, metersToPixel(pos[1]) + originY, (float) width, (float) height);
             rectangle.end();
+
         }
     }
 
