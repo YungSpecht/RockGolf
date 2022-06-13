@@ -6,8 +6,8 @@ import org.mariuszgromada.math.mxparser.*;
 public class AdamsBashforth2 extends Solver{
 
     RK4Solver solve = new RK4Solver(uK, uS, h, golfCourse);
-    
-
+    int counter = 0;
+    StateVector previousState;
     public AdamsBashforth2(double uK, double uS, double h, Function golfCourse) {
         super(uK, uS, h, golfCourse);
     }
@@ -15,18 +15,21 @@ public class AdamsBashforth2 extends Solver{
     
     @Override
     public StateVector computeStep(StateVector current) {
-        StateVector initialValue = solve.computeStep(current); 
-        if (initialValue==null){         
-            StateVector AdamsPredictor = StateVector.substract(StateVector.add(initialValue, StateVector.multiply(function(initialValue), (3.0 / 2.0)*h)),  StateVector.multiply(function(current), (1.0 / 2.0)*h));
-            StateVector AdamsCorrector = StateVector.substract(StateVector.add(StateVector.add(initialValue, StateVector.multiply(function(AdamsPredictor), (5.0 / 12.0)*h)), StateVector.multiply(function(initialValue), (8.0/12.0)*h)),  StateVector.multiply(function(current), (1.0 / 2.0)*h));
-            initialValue = null;
-            return AdamsCorrector;
-        }else{
-            StateVector AdamsPredictor = StateVector.substract(StateVector.add(current, StateVector.multiply(function(current), (3.0 / 2.0)*h)),  StateVector.multiply(function(initialValue), (1.0 / 2.0)*h));
-            StateVector AdamsCorrector = StateVector.substract(StateVector.add(StateVector.add(current, StateVector.multiply(function(AdamsPredictor), (5.0 / 12.0)*h)), StateVector.multiply(function(current), (8.0/12.0)*h)),  StateVector.multiply(function(initialValue), (1.0 / 2.0)*h));
-            return AdamsCorrector;
-        }
+        // wi+1 = wi + (h/2)(3f(ti,wi) −f(ti−1,wi−1)).
+        // wi+1 = wi + (h/12)(5f(ti+1,wi+1) + 8f(ti,wi) −f(ti−1,wi−1))).
+         
         
+        if(counter == 0) {
+            StateVector initialV = solve.computeStep(current);
+            previousState = initialV;
+            counter++;
+            return initialV;
+        } else {
+            StateVector predictor = StateVector.substract(StateVector.add(current, StateVector.multiply(function(current), (3.0 * h / 2.0))),  StateVector.multiply(function(previousState), (1.0 *h / 2.0)));
+            StateVector corrector = StateVector.substract(StateVector.add(StateVector.add(current, StateVector.multiply(function(predictor), (5.0 *h / 12.0))), StateVector.multiply(function(current), (8.0 *h/12.0))),  StateVector.multiply(function(previousState), (1.0 * h / 12.0)));
+            previousState = corrector;
+            return corrector;
+        }
     }
 
 }
