@@ -28,10 +28,10 @@ public class rectangleObstacle {
      * @return
      */
     public boolean obstacleCollision(double xPos, double yPos, double radius) {
-        if (((xPos + radius) >= position[0] && (xPos + radius) <= position[0] + width && yPos>position[1] && yPos<(position[1]+height)) || ((xPos - radius) <= position[0] + width && (xPos - radius) >= position[0] && yPos>position[1] && yPos<position[1]+height)) {
+        if (((xPos + radius) >= position[0] && (xPos + radius) <= position[0] + width && yPos+radius>position[1] && yPos-radius<(position[1]+height)) || ((xPos - radius) <= position[0] + width && (xPos - radius) >= position[0] && yPos+radius>position[1] && yPos-radius<position[1]+height)) {
             
             return true;
-        } else if (((yPos + radius) >= position[1] && (yPos + radius) <= position[1] + height  && xPos>position[0] && xPos<position[0]+width) || ((yPos - radius) <= position[1] + height && (yPos - radius) >= position[1] && xPos>position[0] && xPos<position[0]+width)) {
+        } else if (((yPos + radius) >= position[1] && (yPos + radius) <= position[1] + height  && xPos+radius>position[0] && xPos-radius<position[0]+width) || ((yPos - radius) <= position[1] + height && (yPos - radius) >= position[1] && xPos+radius>position[0] && xPos-radius<position[0]+width)) {
             return true;
         } else
             return false;
