@@ -2,7 +2,6 @@ package test;
 
 import org.mariuszgromada.math.mxparser.Function;
 import com.rock.golf.Physics.Engine.StateVector;
-import com.rock.golf.Physics.Solvers.AB2Solver;
 import com.rock.golf.Physics.Solvers.AdamsBashforth2;
 import com.rock.golf.Physics.Solvers.EulerSolver;
 import com.rock.golf.Physics.Solvers.RK2Solver;
