@@ -30,6 +30,8 @@ public class Node implements Comparable {
     @Override
     public int compareTo(Object o) {
         Node node = (Node) o;
-        return 0;
+        if(this.euclidean>node.euclidean) return 1;
+        else if (this.euclidean==node.euclidean) return 0;
+        else return -1;
     }
 }
