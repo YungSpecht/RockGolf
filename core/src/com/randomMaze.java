@@ -60,3 +60,11 @@ public class randomMaze {
         bucket.put(from.ID, from);
         bucket.put(from.ID, to);
         // TODO: cylce detection
+    }
+
+    public void mazeBot(Node startNode, Node stopNode) {
+        Graph graph = new Graph();
+        Node[][] maze = random_maze(graph);
+        // double[] search = BFSBot(maze, startNode, stopNode);
+    }
+}
