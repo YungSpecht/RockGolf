@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.rock.golf.RockGolf;
+import com.rock.golf.Input.Crafter;
 import com.rock.golf.Input.InputModule;
 import com.rock.golf.Physics.Solvers.RK2Solver;
 import com.rock.golf.Physics.Solvers.RK4Solver;

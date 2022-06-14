@@ -1,4 +1,4 @@
-package com.rock.golf.Bot;
+package com.rock.golf.Pathfinding;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.PriorityQueue;
 
 import com.rock.golf.RockGolf;
-import com.rock.golf.Pathfinding.Graph;
-import com.rock.golf.Pathfinding.Node;
 
 public class AStar1 {
     

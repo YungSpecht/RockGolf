@@ -1,13 +1,12 @@
-package com.rock.golf.Physics.Engine;
+package com.rock.golf.Input;
 
 import org.mdkt.compiler.InMemoryJavaCompiler;
-
-import com.rock.golf.Input.InputModule;
+import com.rock.golf.Physics.Engine.Der;
 
 public class Crafter {
     public static Der initializeClass(){
         StringBuilder source = new StringBuilder()
-        .append("package com.rock.golf.Physics.Engine;\n")
+        .append("package com.rock.golf.Input;\n")
         .append("import java.lang.Math;\n")
         .append("public class Derivative implements Der{\n")
         .append("   private double h;")
@@ -30,7 +29,7 @@ public class Crafter {
         Class<?> derivationClass = null;
         Object a  = null;
         try {
-            derivationClass = comp.compile("com.rock.golf.Physics.Engine.Derivative", source.toString());
+            derivationClass = comp.compile("com.rock.golf.Input.Derivative", source.toString());
             a = derivationClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             e.printStackTrace();
