@@ -17,18 +17,18 @@ public class randomMaze {
     float metertoPixelRatio = RockGolf.metertoPixelRatio;
     int sizeX = (int) RockGolf.width;
     int sizeY = (int) RockGolf.height;
+    HashMap<Integer, Node> bucket;
 
-    public void random_maze() {
+    public Node[][] random_maze() {
         Graph graph = new Graph();
         Node[][] grid = graph.generateMatrix();
-        HashMap bucket = new LinkedHashMap()<>();
+        bucket = new HashMap<Integer, Node>();
+        LinkedList<Edge> edges = new LinkedList<>(); // Throw all of the edges in the graph into a big set
 
-        // Represent each edge as one of its end-points, and a direction
-        LinkedList<Edge> edges = new LinkedList<>();
         for (int i = 0; i < sizeX; i++) {
             for (int j = 0; j < sizeY; j++) {
-                for (int j2 = 0; j2 < grid.length * 2; j2++) {
-                    bucket.put(j2, grid[i][j]);
+                for (int j2 = 0; j2 < grid.length * grid[0].length; j2++) {
+                    grid[i][j].ID = j2;
                 }
                 if (i > 0) {
                     Edge h = new Edge(grid[i - 1][j], grid[i][j], "horizontal");
@@ -42,20 +42,22 @@ public class randomMaze {
         }
 
         Collections.shuffle(edges);
-        // Throw all of the edges in the graph into a big set
+
         while (!edges.isEmpty()) {
             Edge removed = edges.getLast();
             edges.removeLast(); // remove the next edge from the list
-            // If cells are not already in the same bucket: Connect them and Merge Buckets
-            
-            // compute the other endpoint
-            // test their two sets
-        }
+            // If cells don't already have the same ID: give them the same ID
+            if (removed.from.ID != removed.to.ID) {
+                removed.to.ID = removed.from.ID;
+                connect(removed.from, removed.to);
+            }
+        } // Repeat until there are no more edges left.
+        return grid;
+    }
 
-        // Remove an edge from the bag at random. If the edge connects two disjoint
-        // trees, join the trees. Otherwise, throw that edge away.
-        Random rand = new Random();
-        rand.nextInt(10);
-        // Repeat until there are no more edges left.
+    public void connect(Node from, Node to) {
+        // HashMap subset = new HashMap<>();
+        bucket.put(from.ID, from);
+        bucket.put(from.ID, to);
     }
 }
