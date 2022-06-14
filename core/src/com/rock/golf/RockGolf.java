@@ -15,14 +15,12 @@ import com.rock.golf.Input.*;
 import com.rock.golf.Pathfinding.BFS;
 import com.rock.golf.Pathfinding.Graph;
 import com.rock.golf.Pathfinding.Node;
-import com.rock.golf.Physics.Engine.Derivation;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Sandpit;
 import com.rock.golf.Physics.Engine.StateVector;
 import com.rock.golf.Physics.Engine.Tree;
 import com.rock.golf.Physics.Engine.rectangleObstacle;
 
-import org.mariuszgromada.math.mxparser.Function;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -376,7 +374,6 @@ public class RockGolf extends ApplicationAdapter {
 
     private void generateField() {
 
-        Function profile = InputModule.getProfile();
 
         int sizeX = (int) width;
         int sizeY = (int) height;
@@ -386,7 +383,7 @@ public class RockGolf extends ApplicationAdapter {
                 float x = (i - originX) / metertoPixelRatio;
                 float y = (j - originY) / metertoPixelRatio;
 
-                float n = (float) Derivation.compute(x, y, profile);
+                float n = (float) PhysicsEngine.derivative.compute(x, y);
 
                 if (n < 0) {
                     if (Math.abs(n) < 0.3f) {

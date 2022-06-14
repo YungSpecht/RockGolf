@@ -31,9 +31,11 @@ public class PhysicsEngine implements Runnable {
     private char rkMode = 'h';
     public double tolerance = 0.1;
     public boolean stuck;
+    public static Der derivative;
 
     // Bot constructor
     public PhysicsEngine(double h, char rkMode) {
+        derivative = Crafter.initializeClass();
         this.rkMode = rkMode;
         input = InputModule.getInput();
         setVariables();
@@ -41,7 +43,7 @@ public class PhysicsEngine implements Runnable {
         this.h = h;
         sandpits = new ArrayList<Sandpit>();
         trees = new ArrayList<Tree>();
-        trees.add(new Tree(new double[] { 2, 2 }, 0.4));
+        //trees.add(new Tree(new double[] { 2, 2 }, 0.4));
         rectangles = new ArrayList<rectangleObstacle>();
         // sandpits.add(new Sandpit(new double[] { -4, 4 }, 1, uK, uS));
     }
@@ -275,7 +277,7 @@ public class PhysicsEngine implements Runnable {
      */
 
     public boolean isInWater(double xPos, double yPos) {
-        if (Derivation.compute(xPos, yPos, golfCourse) < 0) {
+        if (derivative.compute(xPos, yPos) < 0) {
             RockGolf.newShotPossible = false;
             return true;
         }
@@ -293,8 +295,8 @@ public class PhysicsEngine implements Runnable {
      */
 
     private boolean hillIsSteep() {
-        double xSlope = Derivation.derivativeX(vector.getXPos(), vector.getYPos(), golfCourse);
-        double ySlope = Derivation.derivativeY(vector.getXPos(), vector.getYPos(), golfCourse);
+        double xSlope = derivative.derivativeX(vector.getXPos(), vector.getYPos());
+        double ySlope = derivative.derivativeY(vector.getXPos(), vector.getYPos());
         return uS <= Math.sqrt(Math.pow(xSlope, 2) + Math.pow(ySlope, 2));
     }
 

@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.rock.golf.Physics.Engine.rectangleObstacle;
 import com.rock.golf.Input.InputModule;
-import com.rock.golf.Physics.Engine.Derivation;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
 import org.mariuszgromada.math.mxparser.Function;
@@ -66,9 +65,8 @@ public class obstacleCreator implements InputProcessor {
         }
 
         if (!clickTreeFlag && !golf.renderTextTree) {
-            if (!(Derivation.compute((screenX - RockGolf.originX) / RockGolf.metertoPixelRatio,
-                    ((RockGolf.height - screenY) - RockGolf.originY) / RockGolf.metertoPixelRatio,
-                    golfCourse) < 0)) {
+            if (!(PhysicsEngine.derivative.compute((screenX - RockGolf.originX) / RockGolf.metertoPixelRatio,
+                    ((RockGolf.height - screenY) - RockGolf.originY) / RockGolf.metertoPixelRatio) < 0)) {
                 PhysicsEngine.trees
                         .add(new Tree(
                                 new double[] { (screenX - RockGolf.originX) / RockGolf.metertoPixelRatio,

@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import org.mariuszgromada.math.mxparser.Function;
 import com.rock.golf.RockGolf;
-import com.rock.golf.Input.InputModule;
-import com.rock.golf.Physics.Engine.Derivation;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
 import com.rock.golf.Physics.Engine.rectangleObstacle;
@@ -37,7 +34,6 @@ public class Graph implements Comparator {
         int pixels = 10;
         int rows = (int) sizeX / pixels;
         int columns = (int) sizeY / pixels;
-        Function profile = InputModule.getProfile();
         trees = PhysicsEngine.trees;
         rectangles = PhysicsEngine.rectangles;
         adjacencyMatrix = new Node[rows + 1][columns + 1];
@@ -47,7 +43,7 @@ public class Graph implements Comparator {
                 float x = (i - originX) / metertoPixelRatio;
                 float y = (j - originY) / metertoPixelRatio;
 
-                float n = (float) Derivation.compute(x, y, profile);
+                float n = (float) PhysicsEngine.derivative.compute(x, y);
 
                 if (n < 0) {
                     if (counterI + 1 < lowerCoordinates[0])

@@ -86,4 +86,19 @@ public class InputModule {
 
         return new Function(" ");
     }
+
+    public static String getProfileString() {
+        FileReader reader;
+        try {
+            reader = new FileReader("core/src/com/rock/golf/Input/Input.txt");
+            Scanner in = new Scanner(reader);
+            String inputLine = in.nextLine();
+            in.close();
+            return inputLine.substring(inputLine.indexOf('=')+1);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
 }
