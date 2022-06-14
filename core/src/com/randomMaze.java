@@ -14,13 +14,13 @@ public class randomMaze {
      * https://weblog.jamisbuck.org/2011/1/3/maze-generation-kruskal-s-algorithm
      */
 
-    float metertoPixelRatio = RockGolf.metertoPixelRatio;
     int sizeX = (int) RockGolf.width;
     int sizeY = (int) RockGolf.height;
+    Node startNode;
+    Node goalNode;
     HashMap<Integer, Node> bucket;
 
-    public Node[][] random_maze() {
-        Graph graph = new Graph();
+    public Node[][] random_maze(Graph graph) {
         Node[][] grid = graph.generateMatrix();
         bucket = new HashMap<Integer, Node>();
         LinkedList<Edge> edges = new LinkedList<>(); // Throw all of the edges in the graph into a big set
@@ -59,5 +59,4 @@ public class randomMaze {
         // HashMap subset = new HashMap<>();
         bucket.put(from.ID, from);
         bucket.put(from.ID, to);
-    }
-}
+        // TODO: cylce detection

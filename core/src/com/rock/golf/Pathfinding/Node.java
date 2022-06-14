@@ -1,5 +1,7 @@
 package com.rock.golf.Pathfinding;
 
+import java.util.ArrayList;
+
 public class Node implements Comparable {
     public boolean isPath;
     // position in array
@@ -10,10 +12,12 @@ public class Node implements Comparable {
     public int column;
     public double euclidean;
     public int ID;
+    public ArrayList<Node> children;
 
     public Node(int value, Node parent) {
         this.currentNodeValue = value;
         this.parent = parent;
+        children = new ArrayList<>();
     }
 
     public Node(int value, Node parent, int row, int column) {
@@ -21,6 +25,7 @@ public class Node implements Comparable {
         this.parent = parent;
         this.row = row;
         this.column = column;
+        children = new ArrayList<>();
     }
 
     public double calculateEuclidean(Node goal) {
@@ -34,5 +39,9 @@ public class Node implements Comparable {
         if(this.euclidean>node.euclidean) return 1;
         else if (this.euclidean==node.euclidean) return 0;
         else return -1;
+    }
+
+    public void birth(Node child) {
+        children.add(child);
     }
 }
