@@ -22,13 +22,15 @@ public class randomMaze {
     int sizeY = (int) RockGolf.height;
     Node startNode;
     Node goalNode;
-    HashMap<Integer, Node> bucket;
+    LinkedList<Node> merged;
+    LinkedList<Edge> edges;
+    Node[][] grid;
 
     public Node[][] random_maze() {
         Graph graph = new Graph();
-        Node[][] grid = graph.generateMatrix();
-        bucket = new HashMap<Integer, Node>();
-        LinkedList<Edge> edges = new LinkedList<>(); // Throw all of the edges in the graph into a big set
+        grid = graph.generateMatrix();
+        merged = new LinkedList<>();
+        edges = new LinkedList<>(); // Throw all of the edges in the graph into a big set
 
         for (int i = 0; i < sizeX; i++) {
             for (int j = 0; j < sizeY; j++) {
@@ -47,23 +49,36 @@ public class randomMaze {
         }
 
         Collections.shuffle(edges);
-
-        while (!edges.isEmpty()) {
+        boolean noMaze = true;
+        
+        while(noMaze) {
             Edge removed = edges.getLast();
             edges.removeLast(); // remove the next edge from the list
-            // If cells don't already have the same ID: give them the same ID
+            if(connected(removed.from, removed.to)) {
+                noMaze = false;
+                break;
+            } 
             if (removed.from.ID != removed.to.ID) {
-                removed.to.ID = removed.from.ID;
-                connect(removed.from, removed.to);
+                removed.to.ID = removed.from.ID; // set their ID's as the same
+                connect(removed.from, removed.to); // connect the sets
             }
-        } // Repeat until there are no more edges left.
+        }
         return grid;
     }
 
     public void connect(Node from, Node to) {
-        // HashMap subset = new HashMap<>();
-        bucket.put(from.ID, from);
-        bucket.put(from.ID, to);
-        // TODO: cylce detection
+        for (int index = 0; index < from.children.size(); index++) {
+            to.children.add(from.children.get(index));
+        }
+        for (int i = 0; i < to.children.size(); i++) {
+            if(!from.children.contains(to.children.get(i)))
+                from.children.add(to.children.get(i));
+        }
+    }
+
+    public boolean connected(Node from, Node to) {
+        if(from.children.contains(to) && to.children.contains(from))
+            return true;
+        return false;
     }
 }

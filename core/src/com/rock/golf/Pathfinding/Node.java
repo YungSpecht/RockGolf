@@ -41,7 +41,5 @@ public class Node implements Comparable {
         else return -1;
     }
 
-    public void birth(Node child) {
-        children.add(child);
-    }
+    
 }
