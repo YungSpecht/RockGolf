@@ -1,8 +1,11 @@
 package com.rock.golf.Bot;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import com.rock.golf.Input.InputModule;
+import com.rock.golf.Pathfinding.Node;
+import com.rock.golf.Pathfinding.NodeFinder;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 
 /**
@@ -135,6 +138,54 @@ public abstract class Bot {
                     System.out.println("New Shortest Distance: " + (refDist - targetRadius));
                 }
                 if (refDist < targetRadius || refDist < (instantReturn + targetRadius)) {
+                    return result;
+                }
+            }
+        }
+        return result;
+    }
+
+        /** 
+     *
+     * Given a shot range, processes all the shots
+     * @return best shot
+     */
+    public double[] processShotsNode(double[][][] shots, ArrayList<Node> path, NodeFinder finder) {
+        int furthestReachIndex = -1;
+        double[] result = new double[2];
+        for (int i = 0; i < shots[0].length; i++) {
+            double[] shotCoords = engine.getSimulatedShot(shots[0][i][0], shots[0][i][1]);
+            iterationsCounter++;
+            Node reach = finder.findNextTargetNode(shotCoords[0], shotCoords[1]);
+            if(path.indexOf(reach) > furthestReachIndex){
+                result = shots[0][i];
+                furthestReachIndex = path.indexOf(reach);
+            }
+            if (EuclideanDistance(shotCoords) < targetRadius || path.indexOf(reach) == path.size()-1) {
+                return result;
+            }
+        }
+        for (int i = 1; i < shots.length; i = i + 2) {
+            for (int j = 0; j < shots[0].length; j++) {
+                double[] shotCoords = engine.getSimulatedShot(shots[i][j][0], shots[i][j][1]);
+                iterationsCounter++;
+                Node reach = finder.findNextTargetNode(shotCoords[0], shotCoords[1]);
+                if(path.indexOf(reach) > furthestReachIndex){
+                    result = shots[i][j];
+                    furthestReachIndex = path.indexOf(reach);
+                }
+                if (EuclideanDistance(shotCoords) < targetRadius || path.indexOf(reach) == path.size()-1) {
+                    return result;
+                }
+
+                shotCoords = engine.getSimulatedShot(shots[i + 1][j][0], shots[i + 1][j][1]);
+                iterationsCounter++;
+                reach = finder.findNextTargetNode(shotCoords[0], shotCoords[1]);
+                if(path.indexOf(reach) > furthestReachIndex){
+                    result = shots[i+1][j];
+                    furthestReachIndex = path.indexOf(reach);
+                }
+                if (EuclideanDistance(shotCoords) < targetRadius || path.indexOf(reach) == path.size()-1) {
                     return result;
                 }
             }
