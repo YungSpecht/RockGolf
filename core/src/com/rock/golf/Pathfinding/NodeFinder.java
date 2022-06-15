@@ -25,7 +25,7 @@ public class NodeFinder {
         return result;
     }
 
-    private boolean unobstructed(double ballX, double ballY, Node end){
+    public boolean unobstructed(double ballX, double ballY, Node end){
         double startX = ballX;
         double startY = ballY;
         double endX = end.column*10;

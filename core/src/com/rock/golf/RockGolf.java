@@ -85,6 +85,7 @@ public class RockGolf extends ApplicationAdapter {
     private double mouseY;
     private double mousePosition[] = new double[2];
     private List<rectangleObstacle> rectangles;
+    public static ArrayList<Node> currentAstarPath;
 
     @Override
     public void create() {
@@ -254,7 +255,7 @@ public class RockGolf extends ApplicationAdapter {
         background.end();
         shot.begin();
         font.draw(shot,
-                "Select the bot:\n\n S: Stochastic\n B: Bruteforce\n H: HillClimb\n A: AngleBot\n R: Rule-based",
+                "Select the bot:\n\n S: Stochastic\n B: Bruteforce\n H: HillClimb\n A: AngleBot\n R: Rule-based\n P: Pathfinder",
                 originX - 50, originY + 100);
         shot.end();
     }
@@ -502,7 +503,7 @@ public class RockGolf extends ApplicationAdapter {
             } else if (keycode == Input.Keys.P) {
                 // BFS.BFSSearch(graphClass,graph[1][1], graph[60][40]);
             } else if (keycode == Input.Keys.A) {
-                AStar1.findPath(graph[1][1], graph[60][40], graphClass);
+                currentAstarPath = AStar1.findPath(graph[1][1], graph[60][40], graphClass);
             } else if (keycode == Input.Keys.G) {
                 showGraph = !showGraph;
                 if (showGraph) {

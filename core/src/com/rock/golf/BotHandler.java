@@ -8,6 +8,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.rock.golf.Bot.Bruteforce;
 import com.rock.golf.Bot.RuleBasedBot;
 import com.rock.golf.Bot.HillClimb;
+import com.rock.golf.Bot.PathBot;
 import com.rock.golf.Bot.StochasticBot;
 import com.rock.golf.Input.InputModule;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
@@ -44,7 +45,11 @@ public class BotHandler implements InputProcessor {
 
         } else if (keycode == Input.Keys.R) {
             bot = new RuleBasedBot(botEngine);
+
+        } else if(keycode == Input.Keys.P){
+            bot = new PathBot(botEngine, RockGolf.currentAstarPath);
         }
+
 
         if (bot != null) {
             shot = bot.getMove();
