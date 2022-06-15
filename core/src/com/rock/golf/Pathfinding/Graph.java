@@ -55,7 +55,7 @@ public class Graph implements Comparator {
                         lowerCoordinates[1] = counterJ + 1;
                     if (counterJ + 1 > higherCoordinates[1])
                         higherCoordinates[1] = counterJ + 1;
-                    adjacencyMatrix[counterI][counterJ] = new Node(1, null, counterI, counterJ);
+                    adjacencyMatrix[counterI][counterJ] = new Node(0, null, counterI, counterJ);
                 } else if (thereisObastacle(x, y)) {
                     adjacencyMatrix[counterI][counterJ] = new Node(0, null, counterI, counterJ);
                 } else {
