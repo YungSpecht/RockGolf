@@ -126,9 +126,7 @@ public class RockGolf extends ApplicationAdapter {
 
     @Override
     public void render() {
-
         Gdx.gl.glEnable(GL20.GL_BLEND);
-
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         createMap();
@@ -195,7 +193,6 @@ public class RockGolf extends ApplicationAdapter {
      */
 
     private void generateObstacles() {
-
         for (int i = 0; i < sandpits.size(); i++) {
             double[] pos = sandpits.get(i).getPosition();
             sandpit.begin(ShapeRenderer.ShapeType.Filled);
@@ -223,7 +220,6 @@ public class RockGolf extends ApplicationAdapter {
             rectangle.rect(metersToPixel(pos[0]) + originX, metersToPixel(pos[1]) + originY,
                     metersToPixel((float) width), metersToPixel((float) height));
             rectangle.end();
-
         }
     }
 
@@ -234,7 +230,6 @@ public class RockGolf extends ApplicationAdapter {
      */
 
     private void checkLosingStatus() {
-
         if (winStatus == true && shotCounter == 1) {
             endGame.begin();
             font.draw(endGame, "You got a hole in one!", (Gdx.graphics.getWidth() / 2) - 50,
@@ -256,12 +251,10 @@ public class RockGolf extends ApplicationAdapter {
      */
 
     private void renderMenu() {
-
         background.begin(ShapeRenderer.ShapeType.Filled);
         background.setColor(new Color(0, 0, 0, 0.8f));
         background.rect(0, 0, width, height);
         background.end();
-
         shot.begin();
         font.draw(shot,
                 "Select the bot:\n\n S: Stochastic\n B: Bruteforce\n H: HillClimb\n A: AngleBot\n R: Rule-based",
@@ -315,7 +308,6 @@ public class RockGolf extends ApplicationAdapter {
      */
 
     public static void updatePosition(StateVector vector) {
-
         xPosition = originX + metersToPixel(convert(vector.getXPos()));
         yPosition = originY + metersToPixel(convert(vector.getYPos()));
     }
@@ -332,7 +324,6 @@ public class RockGolf extends ApplicationAdapter {
      */
 
     public static float convert(double d) {
-
         Double tmp = Double.valueOf(d);
         return tmp.floatValue();
     }
@@ -355,7 +346,6 @@ public class RockGolf extends ApplicationAdapter {
      */
 
     public void prepareNewShot() {
-
         input = ((PhysicsEngine) engine).getInputArray();
         targetxPosition = metersToPixel(convert(input[2])) + originX;
         targetyPosition = metersToPixel(convert(input[3])) + originY;
@@ -365,7 +355,6 @@ public class RockGolf extends ApplicationAdapter {
 
     @Override
     public void dispose() {
-
         ((PhysicsEngine) engine).abort();
         executor.shutdown();
         executor.shutdownNow();
@@ -377,7 +366,6 @@ public class RockGolf extends ApplicationAdapter {
      */
 
     private void generateField() {
-
         int sizeX = (int) width;
         int sizeY = (int) height;
 
@@ -385,9 +373,7 @@ public class RockGolf extends ApplicationAdapter {
             for (float j = 0; j <= sizeY; j += 10) {
                 float x = (i - originX) / metertoPixelRatio;
                 float y = (j - originY) / metertoPixelRatio;
-
                 float n = (float) PhysicsEngine.derivative.compute(x, y);
-
                 if (n < 0) {
                     if (Math.abs(n) < 0.3f) {
                         color.add(new float[] { 0, 0, 0.3f, 1 });
@@ -414,7 +400,6 @@ public class RockGolf extends ApplicationAdapter {
      */
 
     private void createMap() {
-
         int sizeX = Gdx.graphics.getWidth();
         int sizeY = Gdx.graphics.getHeight();
         int counter = 0;
@@ -431,7 +416,6 @@ public class RockGolf extends ApplicationAdapter {
                 } catch (Exception e) {
                     return;
                 }
-
                 if (showGraph)
                     createNode(i, j);
             }
@@ -447,10 +431,8 @@ public class RockGolf extends ApplicationAdapter {
 
     private void getIntensity(ShapeRenderer launchVector) { // get the intensity of the launch vector
         if (in.finalVectorX != 0) {
-
             launchVector.line(xPosition, yPosition, in.finalVectorX, (originY * 2) - in.finalVectorY);
         }
-
         if (euclideanDistance(in.finalVectorX, in.downX, in.finalVectorY, in.downY) > 300 && in.finalVectorX != 0) {
             launchVector.setColor(1, 0, 0, 1);
         } else if (euclideanDistance(in.finalVectorX, in.downX, in.finalVectorY, in.downY) > 150
@@ -483,7 +465,6 @@ public class RockGolf extends ApplicationAdapter {
      */
 
     public class InputHandling implements InputProcessor {
-
         private int downX;
         private int downY;
         private double distanceX;
@@ -532,25 +513,21 @@ public class RockGolf extends ApplicationAdapter {
                     bfs.BFSSearch(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
                 }
             }
-
             return false;
         }
 
         @Override
         public boolean keyUp(int keycode) {
-
             return false;
         }
 
         @Override
         public boolean keyTyped(char character) {
-
             return false;
         }
 
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
             this.downX = screenX;
             this.downY = screenY;
             return false;
@@ -558,7 +535,6 @@ public class RockGolf extends ApplicationAdapter {
 
         @Override
         public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-
             this.distanceX = (downX - screenX) / 100;
             this.distanceY = (screenY - downY) / 100;
             double finalVelocity = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
@@ -581,24 +557,20 @@ public class RockGolf extends ApplicationAdapter {
 
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
-
             if (!shotActive) {
                 finalVectorX = screenX;
                 finalVectorY = screenY;
             }
-
             return false;
         }
 
         @Override
         public boolean mouseMoved(int screenX, int screenY) {
-
             return false;
         }
 
         @Override
         public boolean scrolled(float amountX, float amountY) {
-
             return false;
         }
 
@@ -612,11 +584,9 @@ public class RockGolf extends ApplicationAdapter {
          */
 
         private double[] normalizeVelocity(double[] velocities, double velocity) {
-
             double currentVel = Math.sqrt(Math.pow(velocities[0], 2) + Math.pow(velocities[1], 2));
             double scalar = velocity / currentVel;
             return new double[] { velocities[0] * scalar, velocities[1] * scalar };
-
         }
     }
 
@@ -627,7 +597,6 @@ public class RockGolf extends ApplicationAdapter {
      */
 
     public void switchToObstacle() {
-
         if (state.equals("OBS menu")) {
             state = "game";
             Gdx.input.setInputProcessor(in);
@@ -644,7 +613,6 @@ public class RockGolf extends ApplicationAdapter {
      */
 
     public void switchState() {
-
         if (state.equals("menu")) {
             state = "game";
             Gdx.input.setInputProcessor(in);
@@ -669,7 +637,6 @@ public class RockGolf extends ApplicationAdapter {
         graphNodes.circle(i, j, 2);
         graphNodes.setColor(Color.WHITE);
         graphNodes.end();
-
         graphNodes.begin(ShapeRenderer.ShapeType.Line);
 
         if (i / 10 + 1 < graph.length && graph[i / 10 + 1][j / 10].currentNodeValue != 0) {
@@ -679,7 +646,6 @@ public class RockGolf extends ApplicationAdapter {
         if (j / 10 + 1 < graph[0].length && graph[i / 10][j / 10 + 1].currentNodeValue != 0) {
             graphNodes.line(i, j, i, j + 10);
         }
-
         graphNodes.end();
     }
 }
