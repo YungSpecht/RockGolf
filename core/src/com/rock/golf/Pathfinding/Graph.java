@@ -10,6 +10,7 @@ import com.rock.golf.Physics.Engine.Tree;
 import com.rock.golf.Physics.Engine.rectangleObstacle;
 
 public class Graph implements Comparator {
+    public static final int pixels = 10;
     int sizeX = (int) RockGolf.width;
     int sizeY = (int) RockGolf.height;
     List<rectangleObstacle> rectangles;
@@ -31,7 +32,6 @@ public class Graph implements Comparator {
     public Node[][] generateMatrix() {
         int counterI = 0;
         int counterJ = 0;
-        int pixels = 10;
         int rows = (int) sizeX / pixels;
         int columns = (int) sizeY / pixels;
         trees = PhysicsEngine.trees;

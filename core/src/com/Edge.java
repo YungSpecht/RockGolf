@@ -15,11 +15,9 @@ public class Edge {
         this.from = from;
         this.to = to;
         this.direction = direction;
-        float row = from.row;
-        float col = from.column;
-        float[] position = {row, col};
+        float[] position = new float[]{ (float) (from.column/10.0), (float) (from.row/10.0)};
     
-        if(direction.equals("horizontal")) {
+        if(direction.equalsIgnoreCase("horizontal")) {
              height = 1;
              width = 0.5;
         } else {
