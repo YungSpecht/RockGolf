@@ -29,19 +29,18 @@ public class rectangleObstacle {
      */
 
     public boolean obstacleCollision(double xPos, double yPos, double radius) {
-        if (((xPos + radius) >= position[0] && (xPos + radius) <= position[0] + width && yPos + radius > position[1]
-                && yPos - radius < (position[1] + height))
-                || ((xPos - radius) <= position[0] + width && (xPos - radius) >= position[0]
-                        && yPos + radius > position[1] && yPos - radius < position[1] + height)) {
+        double dx = Math.abs(xPos - position[0]-width/2);
+        double dy = Math.abs(yPos - position[1]-height/2);
 
-            return true;
-        } else if (((yPos + radius) >= position[1] && (yPos + radius) <= position[1] + height
-                && xPos + radius > position[0] && xPos - radius < position[0] + width)
-                || ((yPos - radius) <= position[1] + height && (yPos - radius) >= position[1]
-                        && xPos + radius > position[0] && xPos - radius < position[0] + width)) {
-            return true;
-        } else
-            return false;
+        if (dx > (width/2 + radius)) {return false;}
+        if (dy > (height/2 + radius)) {return false;}
+
+        if (dx <= (width/2)) {return true;} 
+        if (dy <= (height/2)) {return true;}
+
+        dx= dx-width/2;
+        dy= dy-height/2;
+        return (dx*dx+dy*dy<=(radius*radius));
     }
 
     public StateVector bounce(double radius, StateVector vector) {

@@ -1,12 +1,12 @@
 package com.rock.golf;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.swing.JOptionPane;
 
-import com.randomMaze;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -42,8 +42,8 @@ public class RockGolf extends ApplicationAdapter {
     public static float height;
     private float ballRadius;
     private float targetRadius;
-    static float originX;
-    static float originY;
+    public static float originX;
+    public static float originY;
     static float xPosition;
     static float yPosition;
     private float targetxPosition;
@@ -76,14 +76,11 @@ public class RockGolf extends ApplicationAdapter {
     public float[] rectanglePosition;
     private SpriteBatch water;
     static Node[][] graph;
+    static Cell[][] maze;
     Graph graphClass;
-    randomMaze maze;
+    public randomMaze mazeClass;
     public boolean showGraph = false;
     private static ShapeRenderer graphNodes;
-    private obstacleCreator obstacleCreate = new obstacleCreator(this);
-    private double mouseX;
-    private double mouseY;
-    private double mousePosition[] = new double[2];
     private List<rectangleObstacle> rectangles;
 
     @Override
@@ -123,9 +120,9 @@ public class RockGolf extends ApplicationAdapter {
         shotActive = false;
         newShotPossible = true;
         graphClass = new Graph();
-        // graph = graphClass.generateMatrix();
-        maze = new randomMaze(graphClass);
-        graph = maze.random_maze();
+        graph = graphClass.generateMatrix();
+        mazeClass = new randomMaze(graphClass);
+        maze = mazeClass.generateMaze();
     }
 
     @Override
@@ -134,7 +131,7 @@ public class RockGolf extends ApplicationAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         createMap();
-
+        renderMaze(maze);
         if (state.equals("menu")) {
             renderMenu();
             generateObstacles();
@@ -167,6 +164,7 @@ public class RockGolf extends ApplicationAdapter {
         launchVector.begin(ShapeRenderer.ShapeType.Line);
         getIntensity(launchVector);
         launchVector.end();
+        
     }
 
     /**
@@ -506,11 +504,11 @@ public class RockGolf extends ApplicationAdapter {
             } else if (keycode == Input.Keys.G) {
                 showGraph = !showGraph;
                 if (showGraph) {
-                    graph = maze.random_maze();
-                    // graph = graphClass.generateMatrix();
+                    graph = graphClass.generateMatrix();
                     bfs.BFSSearch(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
                 }
             }
+
             return false;
         }
 
@@ -643,6 +641,24 @@ public class RockGolf extends ApplicationAdapter {
 
         if (j / 10 + 1 < graph[0].length && graph[i / 10][j / 10 + 1].currentNodeValue != 0) {
             graphNodes.line(i, j, i, j + 10);
+        }
+        graphNodes.end();
+    }
+
+
+    public void renderMaze(Cell[][] grid) {
+        graphNodes.begin(ShapeRenderer.ShapeType.Filled);
+        for(int i = 0; i < grid.length; i++) {
+            for(int j = 0; j < grid[0].length; j++) {
+                if(grid[i][j].isMaze) {
+                    rectangleObstacle wall = grid[i][j].wall;
+                    float[] recPos = new float[]{(wall.getPosition()[0] - originX) / metertoPixelRatio, (wall.getPosition()[1] - originY) / metertoPixelRatio};
+                    PhysicsEngine.rectangles.add(new rectangleObstacle(recPos, wall.getWidth() / RockGolf.metertoPixelRatio,
+                        wall.getHeight() / RockGolf.metertoPixelRatio));
+                    graphNodes.setColor(Color.BROWN);
+                    graphNodes.rect(wall.getPosition()[0], wall.getPosition()[1], convert(wall.getWidth()), convert(wall.getHeight()));
+                }
+            }
         }
         graphNodes.end();
     }
