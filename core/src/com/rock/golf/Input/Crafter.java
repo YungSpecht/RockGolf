@@ -7,7 +7,7 @@ public class Crafter {
     public static Der initializeClass(){
         StringBuilder source = new StringBuilder()
         .append("package com.rock.golf.Input;\n")
-        .append("import java.lang.Math;\n")
+        .append("import com.rock.golf.Physics.Engine.Der;\n")
         .append("public class Derivative implements Der{\n")
         .append("   private double h;")
         .append("   public Derivative(){\n")

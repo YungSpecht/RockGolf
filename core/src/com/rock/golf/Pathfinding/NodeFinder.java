@@ -3,30 +3,31 @@ package com.rock.golf.Pathfinding;
 import java.util.ArrayList;
 
 import com.rock.golf.Physics.Engine.PhysicsEngine;
+import com.rock.golf.Physics.Engine.StateVector;
 
-public class Pfadfinder {
+public class NodeFinder {
     private ArrayList<Node> path;
     private PhysicsEngine engine;
 
-    public Pfadfinder(ArrayList<Node> path, PhysicsEngine engine){
+    public NodeFinder(ArrayList<Node> path, PhysicsEngine engine){
         this.path = path;
         this.engine = engine;
     }
 
-    private Node findNextTargetNode(Node currentNode){
-        int nextNodeIndex = path.indexOf(currentNode)+1;
-        Node nextNode = path.get(nextNodeIndex);
-        while(unobstructed(currentNode, nextNode)){
-            nextNodeIndex++;
-            nextNode = path.get(nextNodeIndex);
+    public Node findNextTargetNode(double ballX, double ballY){
+        Node result = null;
+        for(int i = 0; i < path.size(); i++){
+            Node thisNode = path.get(i);
+            if(unobstructed(ballX , ballY, thisNode)){
+                result = thisNode;
+            }
         }
-        currentNode = path.get(path.indexOf(nextNode)-1);
-        return path.get(path.indexOf(nextNode)-1);
+        return result;
     }
 
-    private boolean unobstructed(Node start, Node end){
-        double startX = start.column;
-        double startY = start.row;
+    private boolean unobstructed(double ballX, double ballY, Node end){
+        double startX = ballX;
+        double startY = ballY;
         double endX = end.column;
         double endY = end.row;
 
