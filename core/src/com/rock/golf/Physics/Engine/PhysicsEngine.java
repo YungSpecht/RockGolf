@@ -12,7 +12,6 @@ import com.rock.golf.Physics.Solvers.RK4Solver;
 import com.rock.golf.Physics.Solvers.Solver;
 
 public class PhysicsEngine implements Runnable {
-
     // constants
     public static final double g = 9.81;
     public double h = 0.03;
@@ -44,7 +43,7 @@ public class PhysicsEngine implements Runnable {
         this.h = h;
         sandpits = new ArrayList<Sandpit>();
         trees = new ArrayList<Tree>();
-        //trees.add(new Tree(new double[] { 2, 2 }, 0.4));
+        // trees.add(new Tree(new double[] { 2, 2 }, 0.4));
         rectangles = new ArrayList<rectangleObstacle>();
         // sandpits.add(new Sandpit(new double[] { -4, 4 }, 1, uK, uS));
     }
@@ -58,6 +57,7 @@ public class PhysicsEngine implements Runnable {
      * This method starts a new golf shot based on the current parameters that are
      * set in the Input.txt file.
      */
+
     public void fireNewShot() {
         RockGolf.winStatus = false;
         RockGolf.losingStatus = false;
@@ -80,18 +80,16 @@ public class PhysicsEngine implements Runnable {
         else
             tolerance = 0;
 
-
-        
         while ((ballIsMoving() && !ballInTarget() || hillIsSteep() && !ballInTarget())
                 && !collidedWithTree(vector.getXPos(), vector.getXPos())
                 && !isInWater(vector.getXPos(), vector.getYPos())
                 && ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, tolerance)) {
             int rectID = collidedWithObstacles(vector.getXPos(), vector.getYPos());
-            if(rectID!=-1){
+            if (rectID != -1) {
                 rectangleObstacle obstacle = rectangles.get(rectID);
                 vector = obstacle.bounce(ballRadius, vector);
             }
-            
+
             if (!ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, 0))
                 tolerance = 0.1;
             else
@@ -124,7 +122,7 @@ public class PhysicsEngine implements Runnable {
         } else if (collidedWithTree(vector.getXPos(), vector.getYPos())) {
             RockGolf.collisionTreeStatus = true;
         }
-        stuck = isInWater(vector.getXPos(), vector.getYPos())|| collidedWithTree(vector.getXPos(), vector.getXSpeed());
+        stuck = isInWater(vector.getXPos(), vector.getYPos()) || collidedWithTree(vector.getXPos(), vector.getXSpeed());
         InputModule.setNewPosition(vector.getXPos(), vector.getYPos());
         RockGolf.shotActive = false;
     }
@@ -155,11 +153,11 @@ public class PhysicsEngine implements Runnable {
         else
             tolerance = 0;
         while ((ballIsMoving() && !ballInTarget() || hillIsSteep() && !ballInTarget())
-                //&& !collidedWithTree(vector.getXPos(), vector.getYPos())
+                // && !collidedWithTree(vector.getXPos(), vector.getYPos())
                 && !isInWater(vector.getXPos(), vector.getYPos())
                 && ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, tolerance))
-                //&& !collidedWithObstacles(vector.getXPos(), vector.getYPos())) 
-                {
+        // && !collidedWithObstacles(vector.getXPos(), vector.getYPos()))
+        {
 
             if (!ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, 0))
                 tolerance = 0.1;
@@ -208,7 +206,7 @@ public class PhysicsEngine implements Runnable {
     public boolean collidedWithTree(double xPos, double yPos) {
         for (int i = 0; i < trees.size(); i++) {
             if (trees.get(i).collidedWithTree(xPos, yPos, ballRadius)) {
-               return true;
+                return true;
             }
         }
         return false;
@@ -217,7 +215,7 @@ public class PhysicsEngine implements Runnable {
     public int collidedWithObstacles(double xPos, double yPos) {
         for (int i = 0; i < rectangles.size(); i++) {
             if (rectangles.get(i).obstacleCollision(xPos, yPos, ballRadius)) {
-               return i;
+                return i;
             }
         }
         return -1;
@@ -309,6 +307,7 @@ public class PhysicsEngine implements Runnable {
      * @return Boolean value: true if ball is about to start rolling again, false if
      *         not.
      */
+
     public boolean ballInScreen(double[] ballPos, double tolerance) {
         boolean xIn = ballPos[0] - tolerance < ((RockGolf.width / 2) / RockGolf.metertoPixelRatio)
                 && ballPos[0] + tolerance > -((RockGolf.width / 2) / RockGolf.metertoPixelRatio);

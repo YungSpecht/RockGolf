@@ -220,7 +220,8 @@ public class RockGolf extends ApplicationAdapter {
             double width = rectangles.get(i).getWidth();
             rectangle.begin(ShapeRenderer.ShapeType.Filled);
             rectangle.setColor(new Color(0.3f, 0, 0, 1f));
-            rectangle.rect(metersToPixel(pos[0]) + originX, metersToPixel(pos[1]) + originY, metersToPixel((float) width), metersToPixel((float) height));
+            rectangle.rect(metersToPixel(pos[0]) + originX, metersToPixel(pos[1]) + originY,
+                    metersToPixel((float) width), metersToPixel((float) height));
             rectangle.end();
 
         }
@@ -274,7 +275,8 @@ public class RockGolf extends ApplicationAdapter {
      *
      */
 
-    private void renderObstacleMenu(boolean renderTextTree, boolean renderTextRec, float[] positionTree, float[] positionRectangle,
+    private void renderObstacleMenu(boolean renderTextTree, boolean renderTextRec, float[] positionTree,
+            float[] positionRectangle,
             float[] positionObstacle) {
 
         shot.begin();
@@ -290,15 +292,17 @@ public class RockGolf extends ApplicationAdapter {
 
         rectangle.begin(ShapeRenderer.ShapeType.Filled);
         rectangle.setColor(new Color(0.3f, 0, 0, 0.5f));
-        if(obstacleCreator.horizontal) rectangle.rect(positionRectangle[0], positionRectangle[1], (float) 130, (float) 20);
-        else rectangle.rect(positionRectangle[0], positionRectangle[1], (float) 20, (float) 130);
+        if (obstacleCreator.horizontal)
+            rectangle.rect(positionRectangle[0], positionRectangle[1], (float) 130, (float) 20);
+        else
+            rectangle.rect(positionRectangle[0], positionRectangle[1], (float) 20, (float) 130);
         rectangle.end();
 
-        
-
         shot.begin();
-        if (renderTextTree) font.draw(shot, "Tree", 255, (originY * 2 - 45));
-        if (renderTextRect) font.draw(shot, "Rectangle", 395, (originY * 2 - 59));
+        if (renderTextTree)
+            font.draw(shot, "Tree", 255, (originY * 2 - 45));
+        if (renderTextRect)
+            font.draw(shot, "Rectangle", 395, (originY * 2 - 59));
         shot.end();
     }
 
@@ -373,7 +377,6 @@ public class RockGolf extends ApplicationAdapter {
      */
 
     private void generateField() {
-
 
         int sizeX = (int) width;
         int sizeY = (int) height;
@@ -519,9 +522,9 @@ public class RockGolf extends ApplicationAdapter {
             } else if (keycode == Input.Keys.B) {
                 switchToObstacle();
             } else if (keycode == Input.Keys.P) {
-                //BFS.BFSSearch(graphClass,graph[1][1], graph[60][40]);
+                // BFS.BFSSearch(graphClass,graph[1][1], graph[60][40]);
             } else if (keycode == Input.Keys.A) {
-                AStar1.findPath(graph[1][1], graph[60][40],graphClass);
+                AStar1.findPath(graph[1][1], graph[60][40], graphClass);
             } else if (keycode == Input.Keys.G) {
                 showGraph = !showGraph;
                 if (showGraph) {

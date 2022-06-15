@@ -2,9 +2,7 @@ package com.rock.golf;
 
 import com.rock.golf.Bot.AngleBot;
 import com.rock.golf.Bot.Bot;
-
 import java.util.Arrays;
-
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.rock.golf.Bot.Bruteforce;
@@ -57,7 +55,6 @@ public class BotHandler implements InputProcessor {
             golf.prepareNewShot();
             golf.executor.execute(botEngine);
         }
-
         return false;
     }
 
@@ -95,5 +92,4 @@ public class BotHandler implements InputProcessor {
     public boolean scrolled(float amountX, float amountY) {
         return false;
     }
-
 }

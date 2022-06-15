@@ -2,30 +2,23 @@ package com.rock.golf.Bot;
 
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 
-
- /**
+/**
  * Rule-Based Bot
- */ 
+ */
 
 public class RuleBasedBot extends Bot {
-
     double powerCoefficient = 1;
 
-    public RuleBasedBot(PhysicsEngine engine) { 
-
+    public RuleBasedBot(PhysicsEngine engine) {
         this.engine = engine;
     }
 
-
-    /** 
+    /**
      * Inherited abstract class from super
      */
 
-
     @Override
-    public double[] getMove() { 
-
-
+    public double[] getMove() {
         double angleToShot = Math.atan2(targetPos[1] - ballPos[1], targetPos[0] - ballPos[0]);
         double velX = Math.cos(angleToShot);
         double velY = Math.sin(angleToShot);
@@ -35,19 +28,16 @@ public class RuleBasedBot extends Bot {
             velY = divShot[1];
         }
         return normalizeVelocity(new double[] { velX, velY }, 5);
-
     }
 
-
-    /** 
+    /**
      *
      * Checks if something is in the way of the shots (without simulation)
      *
      * @return boolean
      */
 
-    private boolean somethingsInTheWay(double xDir, double yDir) { 
-
+    private boolean somethingsInTheWay(double xDir, double yDir) {
         double distance = EuclideanDistance(ballPos);
         double[] directionsFullScaled = normalizeVelocity(new double[] { xDir, yDir }, distance);
         double steps = distance / 0.05;
@@ -65,16 +55,14 @@ public class RuleBasedBot extends Bot {
         return false;
     }
 
-
-    /** 
+    /**
      *
      * Diverge shot by angle
      *
      * @return the divergent shot
      */
-    
-    private double[] getDivergentShot(double[] currentShot, double angle) { 
 
+    private double[] getDivergentShot(double[] currentShot, double angle) {
         double currentDegreeAngle = convert(Math.atan2(currentShot[1], currentShot[0]));
         double newRadianAngle = Math.toRadians(currentDegreeAngle - angle);
         return normalizeVelocity(new double[] { Math.cos(newRadianAngle), Math.sin(newRadianAngle) }, 4);

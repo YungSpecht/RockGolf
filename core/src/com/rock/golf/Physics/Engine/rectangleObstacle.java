@@ -29,20 +29,33 @@ public class rectangleObstacle {
      */
 
     public boolean obstacleCollision(double xPos, double yPos, double radius) {
-        if (((xPos + radius) >= position[0] && (xPos + radius) <= position[0] + width && yPos+radius>position[1] && yPos-radius<(position[1]+height)) || ((xPos - radius) <= position[0] + width && (xPos - radius) >= position[0] && yPos+radius>position[1] && yPos-radius<position[1]+height)) {
-            
+        if (((xPos + radius) >= position[0] && (xPos + radius) <= position[0] + width && yPos + radius > position[1]
+                && yPos - radius < (position[1] + height))
+                || ((xPos - radius) <= position[0] + width && (xPos - radius) >= position[0]
+                        && yPos + radius > position[1] && yPos - radius < position[1] + height)) {
+
             return true;
-        } else if (((yPos + radius) >= position[1] && (yPos + radius) <= position[1] + height  && xPos+radius>position[0] && xPos-radius<position[0]+width) || ((yPos - radius) <= position[1] + height && (yPos - radius) >= position[1] && xPos+radius>position[0] && xPos-radius<position[0]+width)) {
+        } else if (((yPos + radius) >= position[1] && (yPos + radius) <= position[1] + height
+                && xPos + radius > position[0] && xPos - radius < position[0] + width)
+                || ((yPos - radius) <= position[1] + height && (yPos - radius) >= position[1]
+                        && xPos + radius > position[0] && xPos - radius < position[0] + width)) {
             return true;
         } else
             return false;
     }
 
     public StateVector bounce(double radius, StateVector vector) {
-        if (((vector.getXPos() + radius) >= position[0] && (vector.getXPos() + radius) <= position[0] +width && vector.getYPos()>position[1] && vector.getYPos()<position[1]+height) || ((vector.getXPos() - radius) <= position[0] + width && (vector.getXPos() - radius) >= position[0]  && (vector.getXPos() + radius) >= position[0] &&  vector.getYPos()>position[1] && vector.getYPos()<position[1]+height)) {
-           
+        if (((vector.getXPos() + radius) >= position[0] && (vector.getXPos() + radius) <= position[0] + width
+                && vector.getYPos() > position[1] && vector.getYPos() < position[1] + height)
+                || ((vector.getXPos() - radius) <= position[0] + width && (vector.getXPos() - radius) >= position[0]
+                        && (vector.getXPos() + radius) >= position[0] && vector.getYPos() > position[1]
+                        && vector.getYPos() < position[1] + height)) {
+
             return new StateVector(vector.getXPos(), vector.getYPos(), -vector.getXSpeed(), vector.getYSpeed());
-        } else if (((vector.getYPos() + radius) >= position[1] && (vector.getYPos() + radius) <= position[1] + height && (vector.getXPos()>position[0] && vector.getXPos()<position[0]+width)) || ((vector.getYPos() - radius) <= position[1] + height && (vector.getYPos() - radius) >= position[1] && (vector.getXPos()>position[0] && vector.getXPos()<position[0]+width))) {
+        } else if (((vector.getYPos() + radius) >= position[1] && (vector.getYPos() + radius) <= position[1] + height
+                && (vector.getXPos() > position[0] && vector.getXPos() < position[0] + width))
+                || ((vector.getYPos() - radius) <= position[1] + height && (vector.getYPos() - radius) >= position[1]
+                        && (vector.getXPos() > position[0] && vector.getXPos() < position[0] + width))) {
             return new StateVector(vector.getXPos(), vector.getYPos(), vector.getXSpeed(), -vector.getYSpeed());
         } else
             return vector;

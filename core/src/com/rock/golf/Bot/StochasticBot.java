@@ -3,7 +3,6 @@ package com.rock.golf.Bot;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 
 public class StochasticBot extends Bot {
-
     int iterations;
 
     public StochasticBot(PhysicsEngine engine, int i) {
@@ -11,7 +10,7 @@ public class StochasticBot extends Bot {
         iterations = i;
     }
 
-    /** 
+    /**
      * Inherited abstract class from super
      */
 
@@ -33,13 +32,11 @@ public class StochasticBot extends Bot {
             }
             vel = getRandomVelocities();
         }
-        
-        time = System.currentTimeMillis()-checkpoint;
+        time = System.currentTimeMillis() - checkpoint;
         return new double[] { best[0], best[1] };
     }
 
     public double[] getMoveTarget(double[] target) {
-
         double[] best = new double[] { 0, 0 };
         double previousFitness = Integer.MAX_VALUE;
         double[] vel = getRandomVelocities();
@@ -55,7 +52,6 @@ public class StochasticBot extends Bot {
             }
             vel = getRandomVelocities();
         }
-        
         return new double[] { best[0], best[1], previousFitness };
     }
 }

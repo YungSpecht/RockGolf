@@ -15,7 +15,6 @@ public class HillClimb extends Bot {
     private double coolingRate;
 
     public HillClimb(PhysicsEngine engine, double MAX_TEMP, double coolingRate) {
-
         super();
         this.engine = engine;
         this.MAX_TEMP = MAX_TEMP;
@@ -24,13 +23,11 @@ public class HillClimb extends Bot {
     }
 
     @Override
-
     /**
      * Inherited abstract class from super
      */
 
     public double[] getMove() {
-
         long checkpoint = System.currentTimeMillis();
         double angle = convert(Math.atan2(targetPos[1] - ballPos[1], targetPos[0] - ballPos[0]));
 
@@ -86,7 +83,6 @@ public class HillClimb extends Bot {
      */
 
     private void mountainClimber(double precision) {
-
         boolean successorAvailable;
         do {
             double[][] successors = new double[8][2];
@@ -143,7 +139,6 @@ public class HillClimb extends Bot {
      */
 
     private int compareSuccessors(double[][] successorCoords) {
-
         double reference = currentShotDistance;
         int result = -1;
         for (int i = 0; i < successorCoords.length; i++) {
@@ -172,7 +167,6 @@ public class HillClimb extends Bot {
      */
 
     private boolean annealing(double[] coords, double refDistance) {
-
         if (EuclideanDistance(coords) < refDistance) {
             return true;
         }
