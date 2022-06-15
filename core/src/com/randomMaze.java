@@ -14,13 +14,18 @@ public class randomMaze {
      * https://weblog.jamisbuck.org/2011/1/3/maze-generation-kruskal-s-algorithm
      */
 
+    public randomMaze() {
+
+    }
+
     int sizeX = (int) RockGolf.width;
     int sizeY = (int) RockGolf.height;
     Node startNode;
     Node goalNode;
     HashMap<Integer, Node> bucket;
 
-    public Node[][] random_maze(Graph graph) {
+    public Node[][] random_maze() {
+        Graph graph = new Graph();
         Node[][] grid = graph.generateMatrix();
         bucket = new HashMap<Integer, Node>();
         LinkedList<Edge> edges = new LinkedList<>(); // Throw all of the edges in the graph into a big set
@@ -60,11 +65,5 @@ public class randomMaze {
         bucket.put(from.ID, from);
         bucket.put(from.ID, to);
         // TODO: cylce detection
-    }
-
-    public void mazeBot(Node startNode, Node stopNode) {
-        Graph graph = new Graph();
-        Node[][] maze = random_maze(graph);
-        // double[] search = BFSBot(maze, startNode, stopNode);
     }
 }
