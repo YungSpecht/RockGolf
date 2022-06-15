@@ -4,6 +4,7 @@ import java.util.*;
 import com.rock.golf.RockGolf;
 import com.rock.golf.Pathfinding.Graph;
 import com.rock.golf.Pathfinding.Node;
+import com.rock.golf.Physics.Engine.PhysicsEngine;
 
 public class randomMaze {
 
@@ -78,5 +79,11 @@ public class randomMaze {
         if (from.children.contains(to) && to.children.contains(from))
             return true;
         return false;
+    }
+
+    public void addWalls() {
+        for (int i = 0; i < edges.size(); i++) {
+            PhysicsEngine.rectangles.add(edges.get(i).wall);
+        }
     }
 }
