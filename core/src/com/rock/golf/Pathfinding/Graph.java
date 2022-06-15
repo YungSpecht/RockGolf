@@ -13,17 +13,19 @@ public class Graph implements Comparator {
     public static final int pixels = 10;
     int sizeX = (int) RockGolf.width;
     int sizeY = (int) RockGolf.height;
-    List<rectangleObstacle> rectangles;
+    public List<rectangleObstacle> rectangles;
     List<Tree> trees;
     float originX = sizeX / 2;
     float originY = sizeY / 2;
     float metertoPixelRatio = RockGolf.metertoPixelRatio;
     int counter = 0;
     Node[][] adjacencyMatrix;
+
     public int[] lowerCoordinates = new int[2];
     {
         Arrays.fill(lowerCoordinates, Integer.MAX_VALUE);
     }
+
     public int[] higherCoordinates = new int[2];
     {
         Arrays.fill(higherCoordinates, 0);
@@ -42,7 +44,6 @@ public class Graph implements Comparator {
             for (float j = 0; j <= sizeY; j += pixels) {
                 float x = (i - originX) / metertoPixelRatio;
                 float y = (j - originY) / metertoPixelRatio;
-
                 float n = (float) PhysicsEngine.derivative.compute(x, y);
 
                 if (n < 0) {
@@ -75,13 +76,11 @@ public class Graph implements Comparator {
     }
 
     private boolean thereisObastacle(float xPos, float yPos) {
-
         for (int i = 0; i < trees.size(); i++) {
             if (trees.get(i).collidedWithTree(xPos, yPos, 0.05)) {
                 return true;
             }
         }
-
         for (int i = 0; i < rectangles.size(); i++) {
             if (rectangles.get(i).obstacleCollision(xPos, yPos, 0.05)) {
                 return true;
@@ -100,19 +99,16 @@ public class Graph implements Comparator {
                 adjacencyMatrix[row][column + 1].parent = currentNode;
             neighbors.add(adjacencyMatrix[row][column + 1]);
         }
-
         if (column != 0 && adjacencyMatrix[row][column - 1].currentNodeValue == 1) {
             if (adjacencyMatrix[row][column - 1].parent == null)
                 adjacencyMatrix[row][column - 1].parent = currentNode;
             neighbors.add(adjacencyMatrix[row][column - 1]);
         }
-
         if (row + 1 < adjacencyMatrix.length && adjacencyMatrix[row + 1][column].currentNodeValue == 1) {
             if (adjacencyMatrix[row + 1][column].parent == null)
                 adjacencyMatrix[row + 1][column].parent = currentNode;
             neighbors.add(adjacencyMatrix[row + 1][column]);
         }
-
         if (row != 0 && adjacencyMatrix[row - 1][column].currentNodeValue == 1) {
             if (adjacencyMatrix[row - 1][column].parent == null)
                 adjacencyMatrix[row - 1][column].parent = currentNode;

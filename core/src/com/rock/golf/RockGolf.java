@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.swing.JOptionPane;
+
+import com.randomMaze;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -31,7 +33,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  */
 
 public class RockGolf extends ApplicationAdapter {
-
     public final static float metertoPixelRatio = 100;
     String state = "game";
     public static boolean winStatus;
@@ -76,6 +77,7 @@ public class RockGolf extends ApplicationAdapter {
     private SpriteBatch water;
     static Node[][] graph;
     Graph graphClass;
+    randomMaze maze;
     public boolean showGraph = false;
     private static ShapeRenderer graphNodes;
     private obstacleCreator obstacleCreate = new obstacleCreator(this);
@@ -121,7 +123,9 @@ public class RockGolf extends ApplicationAdapter {
         shotActive = false;
         newShotPossible = true;
         graphClass = new Graph();
-        graph = graphClass.generateMatrix();
+        // graph = graphClass.generateMatrix();
+        maze = new randomMaze(graphClass);
+        graph = maze.random_maze();
     }
 
     @Override
@@ -145,27 +149,21 @@ public class RockGolf extends ApplicationAdapter {
 
         generateObstacles();
         checkStuckStatus();
-
         target.begin(ShapeRenderer.ShapeType.Filled);
         target.setColor(Color.BLACK);
         target.circle(targetxPosition, targetyPosition, metersToPixel(targetRadius));
         target.end();
-
         ball.begin(ShapeRenderer.ShapeType.Filled);
         ball.circle(xPosition, yPosition, metersToPixel(ballRadius));
         ball.end();
-
         position.begin();
         font.draw(position, "X: " + (xPosition - originX) + " Y: " + (yPosition - originY), 20,
                 Gdx.graphics.getHeight() - 20);
         position.end();
-
         shot.begin();
         font.draw(shot, "Shots: " + shotCounter, Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 20);
         shot.end();
-
         checkLosingStatus();
-
         launchVector.begin(ShapeRenderer.ShapeType.Line);
         getIntensity(launchVector);
         launchVector.end();
@@ -178,7 +176,6 @@ public class RockGolf extends ApplicationAdapter {
      */
 
     private void checkStuckStatus() {
-
         if (!((PhysicsEngine) engine).stuck)
             return;
         water.begin();
@@ -509,7 +506,8 @@ public class RockGolf extends ApplicationAdapter {
             } else if (keycode == Input.Keys.G) {
                 showGraph = !showGraph;
                 if (showGraph) {
-                    graph = graphClass.generateMatrix();
+                    graph = maze.random_maze();
+                    // graph = graphClass.generateMatrix();
                     bfs.BFSSearch(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
                 }
             }

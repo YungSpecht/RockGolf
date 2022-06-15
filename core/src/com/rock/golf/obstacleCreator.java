@@ -33,7 +33,6 @@ public class obstacleCreator implements InputProcessor {
         if (keycode == Input.Keys.B) {
             golf.switchToObstacle();
         }
-
         if (keycode == Input.Keys.R && clickRectangleFlag) {
             horizontal = !horizontal;
         }

@@ -5,6 +5,7 @@ import com.rock.golf.RockGolf;
 import com.rock.golf.Pathfinding.Graph;
 import com.rock.golf.Pathfinding.Node;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
+import com.rock.golf.Physics.Engine.rectangleObstacle;
 
 public class randomMaze {
 
@@ -19,21 +20,20 @@ public class randomMaze {
     int sizeY = (int) RockGolf.height;
     LinkedList<Edge> edges;
     Node[][] grid;
+    Graph graph;
 
-    public randomMaze() {
-
+    public randomMaze(Graph graph) {
+        this.graph = graph;
+        grid = graph.generateMatrix();
+        edges = new LinkedList<>(); // Throw all of the edges in the graph into a big set
     }
 
     public Node[][] random_maze() {
-        Graph graph = new Graph();
-        grid = graph.generateMatrix();
-        edges = new LinkedList<>(); // Throw all of the edges in the graph into a big set
-
-        for (int i = 0; i < sizeX; i++) {
-            for (int j = 0; j < sizeY; j++) {
-                for (int j2 = 0; j2 < grid.length * grid[0].length; j2++) {
-                    grid[i][j].ID = j2;
-                }
+        int count = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                // grid[i][j].ID = count;
+                count++;
                 if (i > 0) {
                     Edge h = new Edge(grid[i - 1][j], grid[i][j], "horizontal");
                     edges.add(h);
@@ -46,25 +46,24 @@ public class randomMaze {
         }
 
         Collections.shuffle(edges);
-        Edge removed = edges.getLast();
-        edges.removeLast(); // remove the next edge from the list
-        recursive(removed);
-        return grid;
-    }
 
-    public void recursive(Edge removed) {
-        if (!connected(removed.from, removed.to) && removed.from.ID != removed.to.ID) {
-            removed.to.ID = removed.from.ID; // set their ID's as the same
-            connect(removed.from, removed.to); // connect the sets
+        while (!edges.isEmpty() && edges.getLast().from.children.size() != count) {
+            Edge removed = edges.getLast();
+            edges.removeLast(); // remove the next edge from the list
+            if (!connected(removed.from, removed.to)) { // && removed.from.ID != removed.to.ID
+                // removed.to.ID = removed.from.ID; // set their ID's as the same
+                connect(removed.from, removed.to); // connect the sets
+            }
         }
-        removed = edges.getLast();
-        edges.removeLast(); // remove the next edge from the list
-        recursive(removed);
+
+        graph.rectangles = addWalls();
+        return grid;
     }
 
     public void connect(Node from, Node to) {
         for (int index = 0; index < from.children.size(); index++) {
-            to.children.add(from.children.get(index));
+            if (!to.children.contains(from.children.get(index)))
+                to.children.add(from.children.get(index));
         }
         for (int i = 0; i < to.children.size(); i++) {
             if (!from.children.contains(to.children.get(i)))
@@ -78,9 +77,10 @@ public class randomMaze {
         return false;
     }
 
-    public void addWalls() {
+    public List<rectangleObstacle> addWalls() {
         for (int i = 0; i < edges.size(); i++) {
             PhysicsEngine.rectangles.add(edges.get(i).wall);
         }
+        return PhysicsEngine.rectangles;
     }
 }
