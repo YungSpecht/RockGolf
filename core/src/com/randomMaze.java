@@ -20,16 +20,12 @@ public class randomMaze {
 
     int sizeX = (int) RockGolf.width;
     int sizeY = (int) RockGolf.height;
-    Node startNode;
-    Node goalNode;
-    LinkedList<Node> merged;
     LinkedList<Edge> edges;
     Node[][] grid;
 
     public Node[][] random_maze() {
         Graph graph = new Graph();
         grid = graph.generateMatrix();
-        merged = new LinkedList<>();
         edges = new LinkedList<>(); // Throw all of the edges in the graph into a big set
 
         for (int i = 0; i < sizeX; i++) {
@@ -49,21 +45,23 @@ public class randomMaze {
         }
 
         Collections.shuffle(edges);
-        boolean noMaze = true;
-        
-        while(noMaze) {
-            Edge removed = edges.getLast();
-            edges.removeLast(); // remove the next edge from the list
-            if(connected(removed.from, removed.to)) {
-                noMaze = false;
-                break;
-            } 
-            if (removed.from.ID != removed.to.ID) {
-                removed.to.ID = removed.from.ID; // set their ID's as the same
-                connect(removed.from, removed.to); // connect the sets
-            }
-        }
+        Edge removed = edges.getLast();
+        edges.removeLast(); // remove the next edge from the list
+        recursive(removed);
         return grid;
+    }
+
+    public void recursive(Edge removed) {
+        if (connected(removed.from, removed.to)) {
+            return;
+        }
+        if (removed.from.ID != removed.to.ID) {
+            removed.to.ID = removed.from.ID; // set their ID's as the same
+            connect(removed.from, removed.to); // connect the sets
+        }
+        removed = edges.getLast();
+        edges.removeLast(); // remove the next edge from the list
+        recursive(removed);
     }
 
     public void connect(Node from, Node to) {
@@ -71,13 +69,13 @@ public class randomMaze {
             to.children.add(from.children.get(index));
         }
         for (int i = 0; i < to.children.size(); i++) {
-            if(!from.children.contains(to.children.get(i)))
+            if (!from.children.contains(to.children.get(i)))
                 from.children.add(to.children.get(i));
         }
     }
 
     public boolean connected(Node from, Node to) {
-        if(from.children.contains(to) && to.children.contains(from))
+        if (from.children.contains(to) && to.children.contains(from))
             return true;
         return false;
     }
