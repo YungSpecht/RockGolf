@@ -10,6 +10,8 @@ import com.rock.golf.Physics.Engine.StateVector;
 public class PathBot extends Bot {
     private ArrayList<Node> path;
     private NodeFinder finder;
+    private double[] currentShot;
+    private double[] currentShotCoords;
 
     public PathBot(PhysicsEngine engine, ArrayList<Node> path) {
         this.engine = engine;
@@ -20,7 +22,10 @@ public class PathBot extends Bot {
     @Override
     public double[] getMove() {
         StateVector current = engine.getVector();
-        Node angleOfAttack = finder.findNextTargetNode(current.getXPos(), current.getYPos());
+        Node furthestReach = finder.findNextTargetNode(current.getXPos(), current.getYPos());
+        double nodeAngle = convert(Math.atan2(furthestReach.row*10-current.getYPos(), furthestReach.column*10-current.getXPos()));
+        double[][][] shots = GenerateShotRange(nodeAngle, 3, 20, 2, 5, 10);
+        currentShot = processShotsNode(shots, path, finder);
         return null;
     }
 }

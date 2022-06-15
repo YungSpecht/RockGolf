@@ -28,8 +28,8 @@ public class NodeFinder {
     private boolean unobstructed(double ballX, double ballY, Node end){
         double startX = ballX;
         double startY = ballY;
-        double endX = end.column;
-        double endY = end.row;
+        double endX = end.column*10;
+        double endY = end.row*10;
 
         double distance = Math.sqrt(Math.pow(endX-startX, 2) + Math.pow(endY-startY, 2));
         double traceAngle = Math.atan2(endY-startY, endX-endY);
