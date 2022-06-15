@@ -1,6 +1,5 @@
 package com.rock.golf.Physics.Solvers;
 
-import com.rock.golf.Physics.Engine.Derivation;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.StateVector;
 
@@ -22,8 +21,8 @@ public abstract class Solver {
     public abstract StateVector computeStep(StateVector vector);
 
     protected StateVector function(StateVector vector) {
-        double xSlope = Derivation.derivativeX(vector.getXPos(), vector.getYPos(), golfCourse);
-        double ySlope = Derivation.derivativeY(vector.getXPos(), vector.getYPos(), golfCourse);
+        double xSlope = PhysicsEngine.derivative.derivativeX(vector.getXPos(), vector.getYPos());
+        double ySlope = PhysicsEngine.derivative.derivativeY(vector.getXPos(), vector.getYPos());
         double formulaX;
         double formulaY;
         if (vector.getXSpeed() == 0 && vector.getYSpeed() == 0) {

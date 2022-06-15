@@ -4,18 +4,22 @@ import java.util.Collections;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.rock.golf.Physics.Engine.rectangleObstacle;
+import com.rock.golf.Input.InputModule;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
+import org.mariuszgromada.math.mxparser.Function;
 
 public class obstacleCreator implements InputProcessor {
     private PhysicsEngine physics;
     private RockGolf golf;
+    private Function golfCourse = InputModule.getProfile();
     private double position[] = new double[2];
     private float[] defaultTree;
     private float[] defaultRectangle;
     private int treeRadius = 40;
     private boolean clickTreeFlag = false;
     private boolean clickRectangleFlag = false;
+    private boolean isInWater = false;
     static boolean horizontal = true;
 
     public obstacleCreator(RockGolf golf) {
@@ -56,13 +60,20 @@ public class obstacleCreator implements InputProcessor {
         }
 
         if (!clickTreeFlag && !golf.renderTextTree) {
-            PhysicsEngine.trees
-                    .add(new Tree(
-                            new double[] { (screenX - RockGolf.originX) / RockGolf.metertoPixelRatio,
-                                    ((RockGolf.height - screenY) - RockGolf.originY) / RockGolf.metertoPixelRatio },
-                            0.4));
-            golf.renderTextTree = true;
-            golf.treePosition = defaultTree;
+            if (!(PhysicsEngine.derivative.compute((screenX - RockGolf.originX) / RockGolf.metertoPixelRatio,
+                    ((RockGolf.height - screenY) - RockGolf.originY) / RockGolf.metertoPixelRatio) < 0)) {
+                PhysicsEngine.trees
+                        .add(new Tree(
+                                new double[] { (screenX - RockGolf.originX) / RockGolf.metertoPixelRatio,
+                                        ((RockGolf.height - screenY) - RockGolf.originY) / RockGolf.metertoPixelRatio },
+                                0.4));
+                golf.renderTextTree = true;
+                golf.treePosition = defaultTree;
+            } else {
+                golf.renderTextTree = true;
+                golf.treePosition = defaultTree;
+                golf.state = "game";
+            }
         }
         if (clickInsideRectangle(screenX, screenY)) {
             clickRectangleFlag = true;
@@ -72,10 +83,20 @@ public class obstacleCreator implements InputProcessor {
         }
 
         if (!clickRectangleFlag && !golf.renderTextRect) {
-            if (horizontal)
-                PhysicsEngine.rectangles.add(new rectangleObstacle((golf.rectanglePosition), 130, 20));
-            else
-                PhysicsEngine.rectangles.add(new rectangleObstacle((golf.rectanglePosition), 20, 130));
+            if (horizontal) {
+                float[] rectanglePosition = new float[] {
+                        (screenX - 60 - RockGolf.originX) / RockGolf.metertoPixelRatio,
+                        ((RockGolf.height - screenY) - RockGolf.originY) / RockGolf.metertoPixelRatio };
+
+                PhysicsEngine.rectangles.add(new rectangleObstacle(rectanglePosition, 130/ RockGolf.metertoPixelRatio, 20/ RockGolf.metertoPixelRatio));
+            } else {
+
+                float[] rectanglePosition = new float[] {
+                        (screenX - 10 - RockGolf.originX) / RockGolf.metertoPixelRatio,
+                        ((RockGolf.height - screenY) - RockGolf.originY) / RockGolf.metertoPixelRatio };
+                PhysicsEngine.rectangles.add(new rectangleObstacle(rectanglePosition, 20/ RockGolf.metertoPixelRatio, 130/ RockGolf.metertoPixelRatio));
+            }
+
             golf.renderTextRect = true;
             golf.rectanglePosition = defaultRectangle;
             horizontal = true;

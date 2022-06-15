@@ -10,19 +10,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.rock.golf.Bot.AStar1;
 import com.rock.golf.Input.*;
+import com.rock.golf.Pathfinding.AStar1;
 import com.rock.golf.Pathfinding.BFS;
 import com.rock.golf.Pathfinding.Graph;
 import com.rock.golf.Pathfinding.Node;
-import com.rock.golf.Physics.Engine.Derivation;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Sandpit;
 import com.rock.golf.Physics.Engine.StateVector;
 import com.rock.golf.Physics.Engine.Tree;
 import com.rock.golf.Physics.Engine.rectangleObstacle;
 
-import org.mariuszgromada.math.mxparser.Function;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -222,8 +220,9 @@ public class RockGolf extends ApplicationAdapter {
             double width = rectangles.get(i).getWidth();
             rectangle.begin(ShapeRenderer.ShapeType.Filled);
             rectangle.setColor(new Color(0.3f, 0, 0, 1f));
-            rectangle.rect(pos[0], pos[1], (float) width, (float) height);
+            rectangle.rect(metersToPixel(pos[0]) + originX, metersToPixel(pos[1]) + originY, metersToPixel((float) width), metersToPixel((float) height));
             rectangle.end();
+
         }
     }
 
@@ -375,7 +374,6 @@ public class RockGolf extends ApplicationAdapter {
 
     private void generateField() {
 
-        Function profile = InputModule.getProfile();
 
         int sizeX = (int) width;
         int sizeY = (int) height;
@@ -385,7 +383,7 @@ public class RockGolf extends ApplicationAdapter {
                 float x = (i - originX) / metertoPixelRatio;
                 float y = (j - originY) / metertoPixelRatio;
 
-                float n = (float) Derivation.compute(x, y, profile);
+                float n = (float) PhysicsEngine.derivative.compute(x, y);
 
                 if (n < 0) {
                     if (Math.abs(n) < 0.3f) {

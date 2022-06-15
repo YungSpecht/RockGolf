@@ -24,7 +24,12 @@ public class Tree{
      * @param h
      * @return x and y bounce-velocity components 
      */
-    public StateVector bounce(double radius, StateVector vector, double h){
+    public StateVector bounce(double radiusBall, StateVector vector, double h){
+        if(Math.atan2(position[1]-vector.getYPos(), position[0]-vector.getXPos())==0){
+            if(position[1]-vector.getYPos()==0) return new StateVector(vector.getXPos(), vector.getYPos(),-vector.getXSpeed(),vector.getYSpeed());
+            else return new StateVector(vector.getXPos(), vector.getYPos(),vector.getXSpeed(), -vector.getYSpeed());
+        }
+
         //Find previous ball position
         double xOriginal = vector.getXPos()- vector.getXSpeed()*h;
         double yOriginal = vector.getYPos() - vector.getYSpeed()*h;
@@ -40,7 +45,7 @@ public class Tree{
         //Decompose parallel and perpendicular to the tangent velocity components in terms of x/y velocities
         double[] velParallel = {xOriginal-xIntercept, yOriginal-yIntercept};
         double[] velPerpend = {vector.getXPos()-xIntercept,vector.getYPos()-yIntercept};
-
+        System.out.println(velParallel[0]-velPerpend[0]);
         return new StateVector(vector.getXPos(), vector.getYPos(),velParallel[0]-velPerpend[0],velParallel[1]-velPerpend[1]);
     }
 
