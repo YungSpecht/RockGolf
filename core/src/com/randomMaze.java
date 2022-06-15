@@ -14,14 +14,14 @@ public class randomMaze {
      * https://weblog.jamisbuck.org/2011/1/3/maze-generation-kruskal-s-algorithm
      */
 
-    public randomMaze() {
-
-    }
-
     int sizeX = (int) RockGolf.width;
     int sizeY = (int) RockGolf.height;
     LinkedList<Edge> edges;
     Node[][] grid;
+
+    public randomMaze() {
+
+    }
 
     public Node[][] random_maze() {
         Graph graph = new Graph();
