@@ -40,8 +40,4 @@ public class Node implements Comparable {
         else if (this.euclidean==node.euclidean) return 0;
         else return -1;
     }
-
-    public void birth(Node child) {
-        children.add(child);
-    }
 }

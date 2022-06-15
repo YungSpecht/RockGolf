@@ -4,6 +4,7 @@ import java.util.*;
 import com.rock.golf.RockGolf;
 import com.rock.golf.Pathfinding.Graph;
 import com.rock.golf.Pathfinding.Node;
+import com.rock.golf.Physics.Engine.PhysicsEngine;
 
 public class randomMaze {
 
@@ -14,21 +15,19 @@ public class randomMaze {
      * https://weblog.jamisbuck.org/2011/1/3/maze-generation-kruskal-s-algorithm
      */
 
+    int sizeX = (int) RockGolf.width;
+    int sizeY = (int) RockGolf.height;
+    LinkedList<Edge> edges;
+    Node[][] grid;
+
     public randomMaze() {
 
     }
 
-    int sizeX = (int) RockGolf.width;
-    int sizeY = (int) RockGolf.height;
-    Node startNode;
-    Node goalNode;
-    HashMap<Integer, Node> bucket;
-
     public Node[][] random_maze() {
         Graph graph = new Graph();
-        Node[][] grid = graph.generateMatrix();
-        bucket = new HashMap<Integer, Node>();
-        LinkedList<Edge> edges = new LinkedList<>(); // Throw all of the edges in the graph into a big set
+        grid = graph.generateMatrix();
+        edges = new LinkedList<>(); // Throw all of the edges in the graph into a big set
 
         for (int i = 0; i < sizeX; i++) {
             for (int j = 0; j < sizeY; j++) {
@@ -47,23 +46,44 @@ public class randomMaze {
         }
 
         Collections.shuffle(edges);
-
-        while (!edges.isEmpty()) {
-            Edge removed = edges.getLast();
-            edges.removeLast(); // remove the next edge from the list
-            // If cells don't already have the same ID: give them the same ID
-            if (removed.from.ID != removed.to.ID) {
-                removed.to.ID = removed.from.ID;
-                connect(removed.from, removed.to);
-            }
-        } // Repeat until there are no more edges left.
+        Edge removed = edges.getLast();
+        edges.removeLast(); // remove the next edge from the list
+        recursive(removed);
         return grid;
     }
 
+    public void recursive(Edge removed) {
+        if (connected(removed.from, removed.to)) {
+            return;
+        }
+        if (removed.from.ID != removed.to.ID) {
+            removed.to.ID = removed.from.ID; // set their ID's as the same
+            connect(removed.from, removed.to); // connect the sets
+        }
+        removed = edges.getLast();
+        edges.removeLast(); // remove the next edge from the list
+        recursive(removed);
+    }
+
     public void connect(Node from, Node to) {
-        // HashMap subset = new HashMap<>();
-        bucket.put(from.ID, from);
-        bucket.put(from.ID, to);
-        // TODO: cylce detection
+        for (int index = 0; index < from.children.size(); index++) {
+            to.children.add(from.children.get(index));
+        }
+        for (int i = 0; i < to.children.size(); i++) {
+            if (!from.children.contains(to.children.get(i)))
+                from.children.add(to.children.get(i));
+        }
+    }
+
+    public boolean connected(Node from, Node to) {
+        if (from.children.contains(to) && to.children.contains(from))
+            return true;
+        return false;
+    }
+
+    public void addWalls() {
+        for (int i = 0; i < edges.size(); i++) {
+            PhysicsEngine.rectangles.add(edges.get(i).wall);
+        }
     }
 }

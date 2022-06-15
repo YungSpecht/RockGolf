@@ -21,6 +21,7 @@ public class Crafter {
         .append("   public double derivativeX(double x, double y){\n")
         .append("       return (compute(x+h, y) - compute(x-h, y)) / (2*h);\n")
         .append("   }\n")
+        .append("   @Override\n")
         .append("   public double derivativeY(double x, double y){\n")
         .append("       return (compute(x, y+h) - compute(x, y-h)) / (2*h);\n")
         .append("   }\n")
