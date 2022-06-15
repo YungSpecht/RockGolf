@@ -53,10 +53,7 @@ public class randomMaze {
     }
 
     public void recursive(Edge removed) {
-        if (connected(removed.from, removed.to)) {
-            return;
-        }
-        if (removed.from.ID != removed.to.ID) {
+        if (!connected(removed.from, removed.to) && removed.from.ID != removed.to.ID) {
             removed.to.ID = removed.from.ID; // set their ID's as the same
             connect(removed.from, removed.to); // connect the sets
         }
