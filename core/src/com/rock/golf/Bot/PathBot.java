@@ -2,54 +2,40 @@ package com.rock.golf.Bot;
 
 import java.util.ArrayList;
 
+import com.rock.golf.RockGolf;
+import com.rock.golf.Pathfinding.Graph;
 import com.rock.golf.Pathfinding.Node;
-import com.rock.golf.Pathfinding.NodeFinder;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
-import com.rock.golf.Physics.Engine.StateVector;
 
 public class PathBot extends Bot {
     private ArrayList<Node> path;
-    private NodeFinder finder;
     private double[] currentShot;
     private Node furthestReach;
 
     public PathBot(PhysicsEngine engine, ArrayList<Node> path) {
         this.engine = engine;
         this.path = path;
-        finder = new NodeFinder(path, engine);
     }
 
     @Override
     public double[] getMove() {
         long checkpoint = System.currentTimeMillis();
-        StateVector current = engine.getVector();
-        if(finder.unobstructed(current.getXPos(), current.getYPos(), path.get(path.size()-1))){
+        if(wayIsFree(ballPos[0], ballPos[1], path.get(path.size()-1))){
             HillClimb helperBot = new HillClimb(engine, 1000, 200);
             return helperBot.getMove();
         }
-        furthestReach = finder.findNextTargetNode(current.getXPos(), current.getYPos());
-        double nodeAngle = convert(Math.atan2(furthestReach.row*10-current.getYPos(), furthestReach.column*10-current.getXPos()));
+        furthestReach = findNextTargetNode(ballPos[0], ballPos[1]);
+        double nodeAngle = convert(Math.atan2(furthestReach.yCoord()-ballPos[1], furthestReach.xCoord()-ballPos[0]));
         double[][][] shots = GenerateShotRange(nodeAngle, 3, 20, 2, 5, 10);
-        currentShot = processShotsNode(shots, path, finder);
+        currentShot = processShotsNode(shots, path);
         if (path.indexOf(furthestReach) == (path.size()-1) || EuclideanDistance(engine.getSimulatedShot(currentShot[0], currentShot[1])) < targetRadius) {
             time = System.currentTimeMillis() - checkpoint;
             return currentShot;
         }
+
         int counter = 0;
         while (path.indexOf(furthestReach) != (path.size()-1) && counter < 5) {
             mountainClimber(0.2 - (0.025 * counter));
-            ++counter;
-        }
-
-        counter = 0;
-        while (path.indexOf(furthestReach) != (path.size()-1) && counter < 4) {
-            mountainClimber(0.08 - (0.02 * counter));
-            ++counter;
-        }
-
-        counter = 0;
-        while (path.indexOf(furthestReach) != (path.size()-1) && counter < 5) {
-            mountainClimber(0.01 - (0.002 * counter));
             ++counter;
         }
         time = System.currentTimeMillis() - checkpoint;
@@ -118,9 +104,9 @@ public class PathBot extends Bot {
         int result = -1;
         for (int i = 0; i < successorCoords.length; i++) {
             if (successorCoords[i] != null && !engine.isInWater(successorCoords[i][0], successorCoords[i][1])
-                    && path.indexOf(finder.findNextTargetNode(successorCoords[i][0], successorCoords[i][1])) > path.indexOf(furthestReach)) {
+                    && path.indexOf(findNextTargetNode(successorCoords[i][0], successorCoords[i][1])) > path.indexOf(furthestReach)) {
                 result = i;
-                furthestReach = finder.findNextTargetNode(successorCoords[i][0], successorCoords[i][1]);
+                furthestReach = findNextTargetNode(successorCoords[i][0], successorCoords[i][1]);
                 if (path.indexOf(furthestReach) == (path.size()-1) || EuclideanDistance(successorCoords[i]) < targetRadius) {
                     return result;
                 }
@@ -129,5 +115,83 @@ public class PathBot extends Bot {
         return result;
     }
 
+    public Node findNextTargetNode(double ballX, double ballY){
+        Node result = null;
+        for(int i = 0; i < path.size(); i++){
+            Node thisNode = path.get(i);
+            if(wayIsFree(ballX , ballY, thisNode)){
+                result = thisNode;
+            }
+        }
+        return result;
+    }
+
+    public boolean wayIsFree(double ballX, double ballY, Node end){
+        double nodeX = end.xCoord();
+        double nodeY = end.yCoord();
+
+        double distance = Math.sqrt(Math.pow(nodeX-ballX, 2) + Math.pow(nodeY-ballY, 2));
+        double traceAngle = Math.atan2(nodeY-ballY, nodeX-ballX);
+        double xComponent = Math.cos(traceAngle);
+        double yComponent = Math.sin(traceAngle);
+        double currentDistance = Math.sqrt(Math.pow(xComponent, 2) + Math.pow(yComponent, 2));
+        double scalar = distance / currentDistance;
+        xComponent *= scalar;
+        yComponent *= scalar;
+        double steps = distance / 0.01;
+        xComponent /= steps;
+        yComponent /= steps;
+        for(int i = 1; i <= steps; i++){
+            if (engine.isInWater(ballX + (i * xComponent), ballY + (i * yComponent))
+            || engine.collidedWithTree(ballX + (i * xComponent), ballY + (i * yComponent))
+            || (engine.collidedWithObstacles(ballX + (i * xComponent), ballY + (i * yComponent))) != -1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public double[] processShotsNode(double[][][] shots, ArrayList<Node> path) {
+        int furthestReachIndex = -1;
+        double[] result = new double[2];
+        for (int i = 0; i < shots[0].length; i++) {
+            double[] shotCoords = engine.getSimulatedShot(shots[0][i][0], shots[0][i][1]);
+            iterationsCounter++;
+            Node reach = findNextTargetNode(shotCoords[0], shotCoords[1]);
+            if(path.indexOf(reach) > furthestReachIndex){
+                result = shots[0][i];
+                furthestReachIndex = path.indexOf(reach);
+            }
+            if (EuclideanDistance(shotCoords) < targetRadius || path.indexOf(reach) == path.size()-1) {
+                return result;
+            }
+        }
+        for (int i = 1; i < shots.length; i+=2) {
+            for (int j = 0; j < shots[0].length; j++) {
+                double[] shotCoords = engine.getSimulatedShot(shots[i][j][0], shots[i][j][1]);
+                iterationsCounter++;
+                Node reach = findNextTargetNode(shotCoords[0], shotCoords[1]);
+                if(path.indexOf(reach) > furthestReachIndex){
+                    result = shots[i][j];
+                    furthestReachIndex = path.indexOf(reach);
+                }
+                if (EuclideanDistance(shotCoords) < targetRadius || path.indexOf(reach) == path.size()-1) {
+                    return result;
+                }
+
+                shotCoords = engine.getSimulatedShot(shots[i + 1][j][0], shots[i + 1][j][1]);
+                iterationsCounter++;
+                reach = findNextTargetNode(shotCoords[0], shotCoords[1]);
+                if(path.indexOf(reach) > furthestReachIndex){
+                    result = shots[i+1][j];
+                    furthestReachIndex = path.indexOf(reach);
+                }
+                if (EuclideanDistance(shotCoords) < targetRadius || path.indexOf(reach) == path.size()-1) {
+                    return result;
+                }
+            }
+        }
+        return result;
+    }
  
 }

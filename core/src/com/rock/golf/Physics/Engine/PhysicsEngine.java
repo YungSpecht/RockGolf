@@ -7,6 +7,8 @@ import java.util.List;
 import com.rock.golf.RockGolf;
 import com.rock.golf.Input.Crafter;
 import com.rock.golf.Input.InputModule;
+import com.rock.golf.Physics.Solvers.AdamsBashforth2;
+import com.rock.golf.Physics.Solvers.EulerSolver;
 import com.rock.golf.Physics.Solvers.RK2Solver;
 import com.rock.golf.Physics.Solvers.RK4Solver;
 import com.rock.golf.Physics.Solvers.Solver;
@@ -45,6 +47,13 @@ public class PhysicsEngine implements Runnable {
         trees = new ArrayList<Tree>();
         // trees.add(new Tree(new double[] { 2, 2 }, 0.4));
         rectangles = new ArrayList<rectangleObstacle>();
+        rectangles.add(new rectangleObstacle(new float[]{0, -2}, 0.3, 4));
+        //rectangles.add(new rectangleObstacle(new float[]{-3, 2}, 6, 0.2));
+        //rectangles.add(new rectangleObstacle(new float[]{-2, (float) 0.5}, 5, 0.2));
+        //rectangles.add(new rectangleObstacle(new float[]{-3, (float) -2.5}, 0.2, 4.5));
+        //rectangles.add(new rectangleObstacle(new float[]{-2, (float) -1.5}, 0.2, 2));
+        //rectangles.add(new rectangleObstacle(new float[]{-3, (float) -2.5}, 6, 0.2));
+        //rectangles.add(new rectangleObstacle(new float[]{(float) 2.8, (float) -2.5}, 0.2, 3));
         // sandpits.add(new Sandpit(new double[] { -4, 4 }, 1, uK, uS));
     }
 
@@ -64,14 +73,7 @@ public class PhysicsEngine implements Runnable {
         RockGolf.shotActive = true;
         RockGolf.shotCounter++;
         setVariables();
-        switch (rkMode) {
-            case 'l':
-                solver = new RK2Solver(uK, uS, h, golfCourse);
-                break;
-            case 'h':
-                solver = new RK4Solver(uK, uS, h, golfCourse);
-                break;
-        }
+        solver = solverFactory();
         Double step = h * 1000;
         long timestep = step.longValue();
         long checkpoint = System.currentTimeMillis();
@@ -81,27 +83,27 @@ public class PhysicsEngine implements Runnable {
             tolerance = 0;
 
         while ((ballIsMoving() && !ballInTarget() || hillIsSteep() && !ballInTarget())
-                && !collidedWithTree(vector.getXPos(), vector.getXPos())
-                && !isInWater(vector.getXPos(), vector.getYPos())
-                && ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, tolerance)) {
-            int rectID = collidedWithObstacles(vector.getXPos(), vector.getYPos());
-            if (rectID != -1) {
-                rectangleObstacle obstacle = rectangles.get(rectID);
-                vector = obstacle.bounce(ballRadius, vector);
-            }
-
-            if (!ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, 0))
-                tolerance = 0.1;
-            else
-                tolerance = 0;
+        && !collidedWithTree(vector.getXPos(), vector.getXPos())
+        && !isInWater(vector.getXPos(), vector.getYPos())
+        && ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, tolerance)) {
 
             long currentTime = System.currentTimeMillis();
             if (currentTime - checkpoint > timestep) {
+                if (!ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, 0))
+                    tolerance = 0.1;
+                else
+                    tolerance = 0;
+
                 Sandpit currentSandpit = currentSandpit();
                 if (currentSandpit != null) {
                     solver.updateFriction(currentSandpit.getUK(), currentSandpit.getUS());
                 } else {
                     solver.updateFriction(uK, uS);
+                }
+                int rectID = collidedWithObstacles(vector.getXPos(), vector.getYPos());
+                if (rectID != -1) {
+                    rectangleObstacle obstacle = rectangles.get(rectID);
+                    vector = obstacle.bounce(ballRadius, vector);
                 }
                 vector = solver.computeStep(vector);
                 RockGolf.updatePosition(vector);
@@ -111,7 +113,6 @@ public class PhysicsEngine implements Runnable {
                 break;
             }
         }
-        System.out.println("out");
         if (!ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, -tolerance))
             tolerance = 0.1;
         else
@@ -140,25 +141,17 @@ public class PhysicsEngine implements Runnable {
         setVariables();
         vector.setXSpeed(velX);
         vector.setYSpeed(velY);
-        switch (rkMode) {
-            case 'l':
-                solver = new RK2Solver(uK, uS, h, golfCourse);
-                break;
-            case 'h':
-                solver = new RK4Solver(uK, uS, h, golfCourse);
-                break;
-        }
-        if (!ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, 0))
-            tolerance = 0.1;
-        else
-            tolerance = 0;
-        while ((ballIsMoving() && !ballInTarget() || hillIsSteep() && !ballInTarget())
-                // && !collidedWithTree(vector.getXPos(), vector.getYPos())
-                && !isInWater(vector.getXPos(), vector.getYPos())
-                && ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, tolerance))
-        // && !collidedWithObstacles(vector.getXPos(), vector.getYPos()))
-        {
+        solver = solverFactory();
 
+        while ((ballIsMoving() && !ballInTarget() || hillIsSteep() && !ballInTarget())
+        // && !collidedWithTree(vector.getXPos(), vector.getYPos())
+        && !isInWater(vector.getXPos(), vector.getYPos())
+        && ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, tolerance)) {
+
+            if (!ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, 0))
+                tolerance = 0.1;
+            else
+                tolerance = 0;
             if (!ballInScreen(new double[] { vector.getXPos(), vector.getYPos() }, 0))
                 tolerance = 0.1;
             else
@@ -169,6 +162,11 @@ public class PhysicsEngine implements Runnable {
                 solver.updateFriction(currentSandpit.getUK(), currentSandpit.getUS());
             } else {
                 solver.updateFriction(uK, uS);
+            }
+            int rectID = collidedWithObstacles(vector.getXPos(), vector.getYPos());
+            if (rectID != -1) {
+                rectangleObstacle obstacle = rectangles.get(rectID);
+                vector = obstacle.bounce(ballRadius, vector);
             }
             vector = solver.computeStep(vector);
             if (abort) {
@@ -322,6 +320,15 @@ public class PhysicsEngine implements Runnable {
 
     public StateVector getVector() {
         return vector;
+    }
+    
+    private Solver solverFactory(){
+        switch(rkMode){
+            case 'l' : return new RK2Solver(uK, uS, h, golfCourse);
+            case 'h' : return new RK4Solver(uK, uS, h, golfCourse);
+            case 'a' : return new AdamsBashforth2(uK, uS, h, golfCourse);
+            default : return new EulerSolver(uK, uS, h, golfCourse);
+        }
     }
 
     /**

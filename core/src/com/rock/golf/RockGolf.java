@@ -12,6 +12,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.rock.golf.Bot.PathBot;
 import com.rock.golf.Input.*;
 import com.rock.golf.Pathfinding.AStar1;
 import com.rock.golf.Pathfinding.BFS;
@@ -212,7 +213,7 @@ public class RockGolf extends ApplicationAdapter {
             double height = rectangles.get(i).getHeight();
             double width = rectangles.get(i).getWidth();
             rectangle.begin(ShapeRenderer.ShapeType.Filled);
-            rectangle.setColor(new Color(0.3f, 0, 0, 1f));
+            rectangle.setColor(Color.GRAY);
             rectangle.rect(metersToPixel(pos[0]) + originX, metersToPixel(pos[1]) + originY,
                     metersToPixel((float) width), metersToPixel((float) height));
             rectangle.end();
@@ -501,12 +502,13 @@ public class RockGolf extends ApplicationAdapter {
             } else if (keycode == Input.Keys.P) {
                 // BFS.BFSSearch(graphClass,graph[1][1], graph[60][40]);
             } else if (keycode == Input.Keys.A) {
-                currentAstarPath = AStar1.findPath(graph[1][1], graph[60][40], graphClass);
+                currentAstarPath = AStar1.findPath(graph[ballX][ballY], graph[targetX][targetY], graphClass);
             } else if (keycode == Input.Keys.G) {
                 showGraph = !showGraph;
                 if (showGraph) {
                     graph = graphClass.generateMatrix();
-                    bfs.BFSSearch(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
+                    currentAstarPath = AStar1.findPath(graph[ballX][ballY], graph[targetX][targetY], graphClass);
+                    //bfs.BFSSearch(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
                 }
             }
 

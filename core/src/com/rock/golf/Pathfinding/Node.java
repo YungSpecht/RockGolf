@@ -2,6 +2,8 @@ package com.rock.golf.Pathfinding;
 
 import java.util.ArrayList;
 
+import com.rock.golf.RockGolf;
+
 public class Node implements Comparable {
     public boolean isPath;
     // position in array
@@ -39,5 +41,13 @@ public class Node implements Comparable {
         if(this.euclidean>node.euclidean) return 1;
         else if (this.euclidean==node.euclidean) return 0;
         else return -1;
+    }
+
+    public double xCoord(){
+        return (row - (RockGolf.originX/Graph.pixels)) / Graph.pixels;
+    }
+
+    public double yCoord(){
+        return (column- (RockGolf.originY/Graph.pixels)) / Graph.pixels;
     }
 }
