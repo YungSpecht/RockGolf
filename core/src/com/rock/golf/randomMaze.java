@@ -5,6 +5,7 @@ import com.rock.golf.Pathfinding.Graph;
 import com.rock.golf.Pathfinding.Node;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.StateVector;
+import com.rock.golf.Physics.Engine.rectangleObstacle;
 
 public class randomMaze {
     // if the node is water, don't remove the wall
@@ -18,18 +19,21 @@ public class randomMaze {
     LinkedList<Cell> walls;
     Cell[][] wallGrid;
     Graph graph;
+    PhysicsEngine physics;
 
     int startX;
     int startY;
     int goalX;
     int goalY;
 
-    public randomMaze(Graph graph, float startX, float startY, float goalX, float goalY) {
+    public randomMaze(Graph graph, float startX, float startY, float goalX, float goalY, PhysicsEngine physics) {
         this.graph = graph;
         walls = new LinkedList<>();
         int rows = (int) sizeX / pixels;
         int columns = (int) sizeY / pixels;
         wallGrid = new Cell[rows + 1][columns + 1];
+        this.physics = physics;
+
         this.startX = (int) startX;
         this.startY = (int) startY;
         this.goalX = (int) goalX;
@@ -42,29 +46,45 @@ public class randomMaze {
         for (int i = 0; i <= sizeX; i += pixels) {
             for (int j = 0; j <= sizeY; j += pixels) {
                 wallGrid[counterI][counterJ] = new Cell(counterI, counterJ);
+                wallGrid[counterI][counterJ].isMaze=false;
                 counterJ++;
             }
             counterJ = 0;
             counterI++;
         }
 
+        HashSet<Cell> visited = new HashSet<>();
+        // visited.add(wallGrid[startX / pixels][startY / pixels]);
+        // visited.add(wallGrid[goalX / pixels][goalY / pixels]);
         wallGrid[startX / pixels][startY / pixels].isMaze = false;
         wallGrid[goalX / pixels][goalY / pixels].isMaze = false;
 
         // int cellX = rn.nextInt(wallGrid.length);
         // int cellY = rn.nextInt(wallGrid[0].length);
         // wallGrid[cellX][cellY].isMaze = true;
+        setNeighbours(startX / pixels, startY / pixels);
         setNeighbours(goalX / pixels, goalY / pixels);
 
         while (!walls.isEmpty()) {
             int element = rn.nextInt(walls.size());
             Cell wall = walls.get(element);
-            if (!hasUnvisitedCell(wall)) {
-                wall.isMaze = false;
-                setNeighbours(wall.row, wall.column);
-            }
             walls.remove(element);
+
+            if (!visited.contains(wall) && !hasUnvisitedCell(wall)) {
+                rectangleObstacle anotherWall = wall.wall;
+                double tempX = (wall.wall.getPosition()[0] - RockGolf.originX - 0.5) / RockGolf.metertoPixelRatio;
+                double tempY = (wall.wall.getPosition()[1] - RockGolf.originY - 0.5) / RockGolf.metertoPixelRatio;
+                setNeighbours(wall.row, wall.column);
+
+                if (physics.isInWater(tempX, tempY)) {
+                    visited.add(wall);
+                    continue;
+                }
+
+                wall.isMaze = false;
+            }
         }
+
         return wallGrid;
     }
 
@@ -84,6 +104,7 @@ public class randomMaze {
     }
 
     public boolean hasUnvisitedCell(Cell wall) {
+
         int counter = 0;
 
         if (wall.row + 1 < wallGrid.length) {
@@ -105,7 +126,7 @@ public class randomMaze {
             if (!wallGrid[wall.row][wall.column - 1].isMaze) {
                 counter++;
             }
-            ;
+            
         }
         if (counter >= 2)
             return true;

@@ -51,7 +51,7 @@ public class RockGolf extends ApplicationAdapter {
 
     static float xPosition;
     static float yPosition;
-    
+
     private float targetxPosition;
     private float targetyPosition;
     private List<Sandpit> sandpits;
@@ -71,6 +71,7 @@ public class RockGolf extends ApplicationAdapter {
 
     double[] initialState;
     public static Runnable engine;
+    PhysicsEngine physics;
     ExecutorService executor;
     private SpriteBatch position, shot, endGame;
     private BitmapFont font;
@@ -96,7 +97,7 @@ public class RockGolf extends ApplicationAdapter {
 
     private static ShapeRenderer graphNodes;
     private List<rectangleObstacle> rectangles;
-    
+
     public static ArrayList<Node> currentAstarPath;
 
     @Override
@@ -121,6 +122,7 @@ public class RockGolf extends ApplicationAdapter {
         launchVector = new ShapeRenderer();
 
         engine = new PhysicsEngine(0.01, 'h');
+        physics = new PhysicsEngine(0.01, 'h');
         executor = Executors.newFixedThreadPool(1);
         Gdx.input.setInputProcessor(in);
 
@@ -136,10 +138,10 @@ public class RockGolf extends ApplicationAdapter {
         xPosition = metersToPixel(convert(input[5])) + originX;
         yPosition = metersToPixel(convert(input[6])) + originY;
 
-        float xStart = (convert(input[5])) + originX;
-        float yStart = (convert(input[6])) + originY;
-        float xGoal = (convert(input[2])) + originX;
-        float yGoal = (convert(input[3])) + originY;
+        float xStart = (convert(input[5])) * metertoPixelRatio + originX;
+        float yStart = (convert(input[6])) * metertoPixelRatio + originY;
+        float xGoal = (convert(input[2])) * metertoPixelRatio + originX;
+        float yGoal = (convert(input[3])) * metertoPixelRatio + originY;
 
         initialState = new double[] { input[5], input[6] };
         generateField();
@@ -150,7 +152,7 @@ public class RockGolf extends ApplicationAdapter {
         newShotPossible = true;
         graphClass = new Graph();
         graph = graphClass.generateMatrix();
-        mazeClass = new randomMaze(graphClass, xStart, yStart, xGoal, yGoal);
+        mazeClass = new randomMaze(graphClass, xStart, yStart, xGoal, yGoal, physics);
         maze = mazeClass.generateMaze();
     }
 
@@ -160,7 +162,7 @@ public class RockGolf extends ApplicationAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        createMap();    
+        createMap();
         renderMaze(maze);
 
         if (state.equals("menu")) {
@@ -199,7 +201,7 @@ public class RockGolf extends ApplicationAdapter {
         launchVector.begin(ShapeRenderer.ShapeType.Line);
         getIntensity(launchVector);
         launchVector.end();
-        
+
     }
 
     /**
@@ -535,7 +537,7 @@ public class RockGolf extends ApplicationAdapter {
             } else if (keycode == Input.Keys.P) {
                 // BFS.BFSSearch(graphClass,graph[1][1], graph[60][40]);
             } else if (keycode == Input.Keys.A) {
-                currentAstarPath = AStar1.findPath(graph[1][1], graph[60][40], graphClass);
+                currentAstarPath = AStar1.findPath(graph[ballX][ballY], graph[targetX][targetY], graphClass);
             } else if (keycode == Input.Keys.G) {
                 showGraph = !showGraph;
                 if (showGraph) {
@@ -679,19 +681,27 @@ public class RockGolf extends ApplicationAdapter {
         graphNodes.end();
     }
 
-
     public void renderMaze(Cell[][] grid) {
         graphNodes.begin(ShapeRenderer.ShapeType.Filled);
 
-        for(int i = 0; i < grid.length; i++) {
-            for(int j = 0; j < grid[0].length; j++) {
-                if(grid[i][j].isMaze) {
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (grid[i][j].isMaze) {
                     rectangleObstacle wall = grid[i][j].wall;
-                    float[] recPos = new float[]{(wall.getPosition()[0] - originX) / metertoPixelRatio, (wall.getPosition()[1] - originY) / metertoPixelRatio};
-                    PhysicsEngine.rectangles.add(new rectangleObstacle(recPos, wall.getWidth() / RockGolf.metertoPixelRatio,
-                        wall.getHeight() / RockGolf.metertoPixelRatio));
+                    double tempX = (wall.getPosition()[0] - originX - 0.5) / metertoPixelRatio;
+                    double tempY = (wall.getPosition()[1] - originY - 0.5) / metertoPixelRatio;
+                    if (physics.isInWater(tempX, tempY)) {
+                        continue;
+                    }
+
+                    float[] recPos = new float[] { (wall.getPosition()[0] - originX) / metertoPixelRatio,
+                            (wall.getPosition()[1] - originY) / metertoPixelRatio };
+                    PhysicsEngine.rectangles
+                            .add(new rectangleObstacle(recPos, wall.getWidth() / RockGolf.metertoPixelRatio,
+                                    wall.getHeight() / RockGolf.metertoPixelRatio));
                     graphNodes.setColor(Color.BROWN);
-                    graphNodes.rect(wall.getPosition()[0], wall.getPosition()[1], convert(wall.getWidth()), convert(wall.getHeight()));
+                    graphNodes.rect(wall.getPosition()[0], wall.getPosition()[1], convert(wall.getWidth()),
+                            convert(wall.getHeight()));
                 }
             }
         }
