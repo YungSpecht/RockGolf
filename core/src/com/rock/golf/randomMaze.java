@@ -28,9 +28,9 @@ public class randomMaze {
     public Cell[][] generateMaze() {
         int counterI = 0;
         int counterJ = 0;
-        for (int i = 0; i <= sizeX; i +=pixels) {
-            for (int j = 0; j <= sizeY; j +=pixels) {
-                wallGrid[counterI][counterJ] = new Cell(counterI,counterJ);
+        for (int i = 0; i <= sizeX; i += pixels) {
+            for (int j = 0; j <= sizeY; j += pixels) {
+                wallGrid[counterI][counterJ] = new Cell(counterI, counterJ);
                 counterJ++;
             }
             counterJ = 0;
@@ -42,10 +42,10 @@ public class randomMaze {
         wallGrid[cellX][cellY].isMaze = true;
         setNeighbours(cellX, cellY);
 
-        while(!walls.isEmpty()) {
+        while (!walls.isEmpty()) {
             int element = rn.nextInt(walls.size());
             Cell wall = walls.get(element);
-            if(!hasUnvisitedCell(wall)) {
+            if (!hasUnvisitedCell(wall)) {
                 wall.isMaze = false;
                 setNeighbours(wall.row, wall.column);
             }
@@ -56,19 +56,19 @@ public class randomMaze {
     }
 
     public void setNeighbours(int cellX, int cellY) {
-        if(cellX + 1 < wallGrid.length && wallGrid[cellX + 1][cellY].isMaze ) {
+        if (cellX + 1 < wallGrid.length && wallGrid[cellX + 1][cellY].isMaze) {
             walls.add(wallGrid[cellX + 1][cellY]);
         }
 
-        if(cellX - 1 >= 0 && wallGrid[cellX - 1][cellY].isMaze ) {
+        if (cellX - 1 >= 0 && wallGrid[cellX - 1][cellY].isMaze) {
             walls.add(wallGrid[cellX - 1][cellY]);
         }
 
-        if(cellY + 1 < wallGrid[0].length && wallGrid[cellX][cellY + 1].isMaze) {
+        if (cellY + 1 < wallGrid[0].length && wallGrid[cellX][cellY + 1].isMaze) {
             walls.add(wallGrid[cellX][cellY + 1]);
         }
 
-        if(cellY - 1 >= 0 && wallGrid[cellX][cellY - 1].isMaze) {
+        if (cellY - 1 >= 0 && wallGrid[cellX][cellY - 1].isMaze) {
             walls.add(wallGrid[cellX][cellY - 1]);
         }
     }
@@ -76,31 +76,34 @@ public class randomMaze {
     public boolean hasUnvisitedCell(Cell wall) {
         int counter = 0;
 
-        if(wall.row + 1 < wallGrid.length) {
-            if(!wallGrid[wall.row + 1][wall.column].isMaze) {
+        if (wall.row + 1 < wallGrid.length) {
+            if (!wallGrid[wall.row + 1][wall.column].isMaze) {
                 counter++;
             }
         }
 
-        if(wall.row - 1 >= 0) {
-            if(!wallGrid[wall.row - 1][wall.column].isMaze) {
-                counter++; 
-            }
-        }
-
-        if(wall.column + 1 < wallGrid[0].length) {
-            if(!wallGrid[wall.row][wall.column + 1].isMaze) {
+        if (wall.row - 1 >= 0) {
+            if (!wallGrid[wall.row - 1][wall.column].isMaze) {
                 counter++;
             }
         }
 
-        if(wall.column - 1 >= 0) {
-            if(!wallGrid[wall.row][wall.column - 1].isMaze) {
+        if (wall.column + 1 < wallGrid[0].length) {
+            if (!wallGrid[wall.row][wall.column + 1].isMaze) {
                 counter++;
-            };
+            }
         }
 
-        if(counter >= 2) return true;
-        else return false;
+        if (wall.column - 1 >= 0) {
+            if (!wallGrid[wall.row][wall.column - 1].isMaze) {
+                counter++;
+            }
+            ;
+        }
+
+        if (counter >= 2)
+            return true;
+        else
+            return false;
     }
 }
