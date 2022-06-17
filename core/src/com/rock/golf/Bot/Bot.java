@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Random;
 import com.rock.golf.Input.InputModule;
 import com.rock.golf.Pathfinding.Node;
-import com.rock.golf.Pathfinding.NodeFinder;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 
 /**

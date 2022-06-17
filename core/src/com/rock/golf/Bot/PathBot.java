@@ -15,6 +15,7 @@ public class PathBot extends Bot {
     public PathBot(PhysicsEngine engine, ArrayList<Node> path) {
         this.engine = engine;
         this.path = path;
+        furthestReach = path.get(0);
     }
 
     @Override
@@ -26,22 +27,23 @@ public class PathBot extends Bot {
         }
         furthestReach = findNextTargetNode(ballPos[0], ballPos[1]);
         double nodeAngle = convert(Math.atan2(furthestReach.yCoord()-ballPos[1], furthestReach.xCoord()-ballPos[0]));
-        double[][][] shots = GenerateShotRange(nodeAngle, 3, 20, 2, 5, 10);
+        double[][][] shots = GenerateShotRange(nodeAngle, 10, 35, 0, 5, 20);
         currentShot = processShotsNode(shots, path);
         if (path.indexOf(furthestReach) == (path.size()-1) || EuclideanDistance(engine.getSimulatedShot(currentShot[0], currentShot[1])) < targetRadius) {
             time = System.currentTimeMillis() - checkpoint;
             return currentShot;
         }
-
+        /* 
         int counter = 0;
         while (path.indexOf(furthestReach) != (path.size()-1) && counter < 5) {
             mountainClimber(0.2 - (0.025 * counter));
             ++counter;
         }
+        */
         time = System.currentTimeMillis() - checkpoint;
         return currentShot;
     }
-
+    
     /**
      *
      * This method performs the hill climbing algorithm by generating the successor
@@ -145,10 +147,10 @@ public class PathBot extends Bot {
             if (engine.isInWater(ballX + (i * xComponent), ballY + (i * yComponent))
             || engine.collidedWithTree(ballX + (i * xComponent), ballY + (i * yComponent))
             || (engine.collidedWithObstacles(ballX + (i * xComponent), ballY + (i * yComponent))) != -1) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     public double[] processShotsNode(double[][][] shots, ArrayList<Node> path) {

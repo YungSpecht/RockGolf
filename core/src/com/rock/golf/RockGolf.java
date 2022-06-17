@@ -133,7 +133,7 @@ public class RockGolf extends ApplicationAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 0);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         createMap();
-        renderMaze(maze);
+        //renderMaze(maze);
         if (state.equals("menu")) {
             renderMenu();
             generateObstacles();

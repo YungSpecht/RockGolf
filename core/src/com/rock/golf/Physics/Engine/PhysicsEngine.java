@@ -47,13 +47,12 @@ public class PhysicsEngine implements Runnable {
         trees = new ArrayList<Tree>();
         // trees.add(new Tree(new double[] { 2, 2 }, 0.4));
         rectangles = new ArrayList<rectangleObstacle>();
-        rectangles.add(new rectangleObstacle(new float[]{0, -2}, 0.3, 4));
-        //rectangles.add(new rectangleObstacle(new float[]{-3, 2}, 6, 0.2));
-        //rectangles.add(new rectangleObstacle(new float[]{-2, (float) 0.5}, 5, 0.2));
-        //rectangles.add(new rectangleObstacle(new float[]{-3, (float) -2.5}, 0.2, 4.5));
-        //rectangles.add(new rectangleObstacle(new float[]{-2, (float) -1.5}, 0.2, 2));
-        //rectangles.add(new rectangleObstacle(new float[]{-3, (float) -2.5}, 6, 0.2));
-        //rectangles.add(new rectangleObstacle(new float[]{(float) 2.8, (float) -2.5}, 0.2, 3));
+        rectangles.add(new rectangleObstacle(new float[]{-3, 2}, 6, 0.2));
+        rectangles.add(new rectangleObstacle(new float[]{-2, (float) 0.5}, 5, 0.2));
+        rectangles.add(new rectangleObstacle(new float[]{-3, (float) -2.5}, 0.2, 4.5));
+        rectangles.add(new rectangleObstacle(new float[]{-2, (float) -1.5}, 0.2, 2));
+        rectangles.add(new rectangleObstacle(new float[]{-3, (float) -2.5}, 6, 0.2));
+        rectangles.add(new rectangleObstacle(new float[]{(float) 2.8, (float) -2.5}, 0.2, 3));
         // sandpits.add(new Sandpit(new double[] { -4, 4 }, 1, uK, uS));
     }
 
