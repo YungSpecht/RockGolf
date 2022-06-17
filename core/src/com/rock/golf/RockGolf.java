@@ -541,7 +541,7 @@ public class RockGolf extends ApplicationAdapter {
             } else if (keycode == Input.Keys.G) {
                 showGraph = !showGraph;
                 if (showGraph) {
-                    graph = graphClass.generateMatrix();
+                    //graph = graphClass.generateMatrix();
                     bfs.BFSSearch(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
                 }
             }

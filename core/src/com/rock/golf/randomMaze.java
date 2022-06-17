@@ -46,7 +46,8 @@ public class randomMaze {
         for (int i = 0; i <= sizeX; i += pixels) {
             for (int j = 0; j <= sizeY; j += pixels) {
                 wallGrid[counterI][counterJ] = new Cell(counterI, counterJ);
-                wallGrid[counterI][counterJ].isMaze=false;
+                // Comment this back in to prevent the maze from being generated:
+                // wallGrid[counterI][counterJ].isMaze=false;
                 counterJ++;
             }
             counterJ = 0;
@@ -104,7 +105,6 @@ public class randomMaze {
     }
 
     public boolean hasUnvisitedCell(Cell wall) {
-
         int counter = 0;
 
         if (wall.row + 1 < wallGrid.length) {
@@ -126,7 +126,6 @@ public class randomMaze {
             if (!wallGrid[wall.row][wall.column - 1].isMaze) {
                 counter++;
             }
-            
         }
         if (counter >= 2)
             return true;
