@@ -11,7 +11,6 @@ public class Cell {
     boolean isMaze = true;
 
     public Cell(int row, int column) {
-
         this.row = row;
         this.column = column;
         float x = row * 20;

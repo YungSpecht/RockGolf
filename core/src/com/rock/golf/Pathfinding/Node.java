@@ -13,7 +13,6 @@ public class Node implements Comparable {
     public int row;
     public int column;
     public double euclidean;
-    public int ID;
     public ArrayList<Node> children;
 
     public Node(int value, Node parent) {

@@ -29,6 +29,7 @@ public class AStar1 {
         PriorityQueue<Node> open = new PriorityQueue<Node>(graph);
         HashMap<Node, Double> costMap = new HashMap<Node, Double>();
         HashMap<Node, Node> predecessors = new HashMap<Node, Node>();
+        
         open.add(start);
         predecessors.put(start, null);
         costMap.put(start, 0.0);
