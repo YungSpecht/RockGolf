@@ -51,9 +51,9 @@ public class RockGolf extends ApplicationAdapter {
 
     static float xPosition;
     static float yPosition;
+    static float targetxPosition;
+    static float targetyPosition;
 
-    private float targetxPosition;
-    private float targetyPosition;
     private List<Sandpit> sandpits;
     public static List<Tree> trees;
 
@@ -99,6 +99,7 @@ public class RockGolf extends ApplicationAdapter {
     private List<rectangleObstacle> rectangles;
 
     public static ArrayList<Node> currentAstarPath;
+    // public static ArrayList<Node> currentbfsPath;
 
     @Override
     public void create() {
@@ -541,8 +542,19 @@ public class RockGolf extends ApplicationAdapter {
             } else if (keycode == Input.Keys.G) {
                 showGraph = !showGraph;
                 if (showGraph) {
-                    //graph = graphClass.generateMatrix();
-                    bfs.BFSSearch(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
+                    graph = graphClass.generateMatrix();
+                    boolean threwException = true;
+                while (threwException) {
+                    threwException = false;
+                    try {
+                        bfs.BFSSearch(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
+                        // AStar1.findPath(graph[ballX][ballY], graph[targetX][targetY], graphClass);
+                    } catch (Exception e) {
+                        threwException = true;
+                        System.out.println("The ball n hole ain't on the damn path");
+                        maze = mazeClass.generateMaze();
+                    }
+                }
                 }
             }
             return false;
@@ -688,10 +700,10 @@ public class RockGolf extends ApplicationAdapter {
             for (int j = 0; j < grid[0].length; j++) {
                 if (grid[i][j].isMaze) {
                     rectangleObstacle wall = grid[i][j].wall;
-                    double tempX = (wall.getPosition()[0] - originX - 0.5) / metertoPixelRatio;
-                    double tempY = (wall.getPosition()[1] - originY - 0.5) / metertoPixelRatio;
+                    double tempX = (wall.getPosition()[0] - originX) / metertoPixelRatio;
+                    double tempY = (wall.getPosition()[1] - originY) / metertoPixelRatio;
                     if (physics.isInWater(tempX, tempY)) {
-                        continue;
+                        // continue;
                     }
 
                     float[] recPos = new float[] { (wall.getPosition()[0] - originX) / metertoPixelRatio,

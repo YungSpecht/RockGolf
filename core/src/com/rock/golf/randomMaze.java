@@ -1,6 +1,10 @@
 package com.rock.golf;
 
 import java.util.*;
+
+import com.rock.golf.Pathfinding.AStar1;
+import com.rock.golf.Pathfinding.Astar;
+import com.rock.golf.Pathfinding.BFS;
 import com.rock.golf.Pathfinding.Graph;
 import com.rock.golf.Pathfinding.Node;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
@@ -8,7 +12,6 @@ import com.rock.golf.Physics.Engine.StateVector;
 import com.rock.golf.Physics.Engine.rectangleObstacle;
 
 public class randomMaze {
-    // if the node is water, don't remove the wall
 
     int pixels = 20;
     Random rn = new Random();
@@ -85,7 +88,7 @@ public class randomMaze {
                 wall.isMaze = false;
             }
         }
-
+        
         return wallGrid;
     }
 
