@@ -157,7 +157,7 @@ public class RockGolf extends ApplicationAdapter {
         graph = graphClass.generateMatrix();
         mazeClass = new randomMaze(graphClass, xStart, yStart, xGoal, yGoal, physics);
         maze = mazeClass.generateMaze();
-        //instantiateMaze(maze);
+        instantiateMaze(maze);
     }
 
     @Override

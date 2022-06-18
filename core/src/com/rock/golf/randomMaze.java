@@ -53,7 +53,7 @@ public class randomMaze {
         int tY = (int) RockGolf.targetyPosition / 20;
 
         BFS bfs = new BFS();
-        bfs.BFSSearch(graph, graphArray[cellX][cellY], graphArray[tX][tY]);
+        bfs.BFSWalkSearch(graph, graphArray[cellX][cellY], graphArray[tX][tY]);
 
         int counterI = 0;
         int counterJ = 0;
