@@ -98,6 +98,7 @@ public class RockGolf extends ApplicationAdapter {
 
     private static ShapeRenderer graphNodes;
     private List<rectangleObstacle> rectangles;
+    private boolean showMaze = false;
 
     public static ArrayList<Node> currentAstarPath;
     // public static ArrayList<Node> currentbfsPath;
@@ -156,6 +157,7 @@ public class RockGolf extends ApplicationAdapter {
         graph = graphClass.generateMatrix();
         mazeClass = new randomMaze(graphClass, xStart, yStart, xGoal, yGoal, physics);
         maze = mazeClass.generateMaze();
+        //instantiateMaze(maze);
     }
 
     @Override
@@ -165,7 +167,7 @@ public class RockGolf extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         createMap();
-        //renderMaze(maze);
+        
         if (state.equals("menu")) {
             generateObstacles();
             renderMenu();
@@ -451,6 +453,9 @@ public class RockGolf extends ApplicationAdapter {
                 }
                 if (showGraph)
                     createNode(i, j);
+                    
+                if (showMaze)
+                    instantiateMaze(maze);
             }
         }
     }
@@ -536,26 +541,21 @@ public class RockGolf extends ApplicationAdapter {
             } else if (keycode == Input.Keys.B) {
                 switchToObstacle();
             } else if (keycode == Input.Keys.P) {
-                // BFS.BFSSearch(graphClass,graph[1][1], graph[60][40]);
+                double[] shot = bfs.BFSBot(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
+                InputModule.setNewVelocity(shot[0], shot[1]);
+                prepareNewShot();
+                executor.execute(engine);
+
             } else if (keycode == Input.Keys.A) {
                 currentAstarPath = AStar1.findPath(graph[ballX][ballY], graph[targetX][targetY], graphClass);
             } else if (keycode == Input.Keys.G) {
                 showGraph = !showGraph;
                 if (showGraph) {
                     graph = graphClass.generateMatrix();
-                    boolean threwException = true;
-                while (threwException) {
-                    threwException = false;
-                    try {
-                        bfs.BFSSearch(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
-                        // AStar1.findPath(graph[ballX][ballY], graph[targetX][targetY], graphClass);
-                    } catch (Exception e) {
-                        threwException = true;
-                        System.out.println("The ball n hole ain't on the damn path");
-                        maze = mazeClass.generateMaze();
-                    }
+                    bfs.BFSSearch(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
                 }
-                }
+            } else if (keycode == Input.Keys.K) {
+                showMaze = !showMaze;
             }
             return false;
         }
@@ -693,27 +693,17 @@ public class RockGolf extends ApplicationAdapter {
         graphNodes.end();
     }
 
-    public void renderMaze(Cell[][] grid) {
-        graphNodes.begin(ShapeRenderer.ShapeType.Filled);
-
+    public void instantiateMaze(Cell[][] grid) {
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
                 if (grid[i][j].isMaze) {
                     rectangleObstacle wall = grid[i][j].wall;
-                    double tempX = (wall.getPosition()[0] - originX) / metertoPixelRatio;
-                    double tempY = (wall.getPosition()[1] - originY) / metertoPixelRatio;
-                    if (physics.isInWater(tempX, tempY)) {
-                        // continue;
-                    }
 
                     float[] recPos = new float[] { (wall.getPosition()[0] - originX) / metertoPixelRatio,
                             (wall.getPosition()[1] - originY) / metertoPixelRatio };
                     PhysicsEngine.rectangles
                             .add(new rectangleObstacle(recPos, wall.getWidth() / RockGolf.metertoPixelRatio,
                                     wall.getHeight() / RockGolf.metertoPixelRatio));
-                    graphNodes.setColor(Color.BROWN);
-                    graphNodes.rect(wall.getPosition()[0], wall.getPosition()[1], convert(wall.getWidth()),
-                            convert(wall.getHeight()));
                 }
             }
         }

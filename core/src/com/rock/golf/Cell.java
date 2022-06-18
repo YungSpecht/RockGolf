@@ -9,6 +9,7 @@ public class Cell {
     int column;
     rectangleObstacle wall;
     boolean isMaze = true;
+    boolean immutable = false;
 
     public Cell(int row, int column) {
         this.row = row;

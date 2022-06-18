@@ -21,6 +21,7 @@ public class randomMaze {
     int columns = (int) sizeY / pixels;
     LinkedList<Cell> walls;
     Cell[][] wallGrid;
+    Node[][] graphArray;
     Graph graph;
     PhysicsEngine physics;
 
@@ -31,6 +32,7 @@ public class randomMaze {
 
     public randomMaze(Graph graph, float startX, float startY, float goalX, float goalY, PhysicsEngine physics) {
         this.graph = graph;
+        graphArray = graph.generateMatrix();
         walls = new LinkedList<>();
         int rows = (int) sizeX / pixels;
         int columns = (int) sizeY / pixels;
@@ -44,6 +46,15 @@ public class randomMaze {
     }
 
     public Cell[][] generateMaze() {
+
+        int cellX = (int) RockGolf.xPosition / 20;
+        int cellY = (int) RockGolf.yPosition / 20;
+        int tX = (int) RockGolf.targetxPosition / 20;
+        int tY = (int) RockGolf.targetyPosition / 20;
+
+        BFS bfs = new BFS();
+        bfs.BFSSearch(graph, graphArray[cellX][cellY], graphArray[tX][tY]);
+
         int counterI = 0;
         int counterJ = 0;
         for (int i = 0; i <= sizeX; i += pixels) {
@@ -58,14 +69,8 @@ public class randomMaze {
         }
 
         HashSet<Cell> visited = new HashSet<>();
-        // visited.add(wallGrid[startX / pixels][startY / pixels]);
-        // visited.add(wallGrid[goalX / pixels][goalY / pixels]);
         wallGrid[startX / pixels][startY / pixels].isMaze = false;
         wallGrid[goalX / pixels][goalY / pixels].isMaze = false;
-
-        // int cellX = rn.nextInt(wallGrid.length);
-        // int cellY = rn.nextInt(wallGrid[0].length);
-        // wallGrid[cellX][cellY].isMaze = true;
         setNeighbours(startX / pixels, startY / pixels);
         setNeighbours(goalX / pixels, goalY / pixels);
 
@@ -75,7 +80,6 @@ public class randomMaze {
             walls.remove(element);
 
             if (!visited.contains(wall) && !hasUnvisitedCell(wall)) {
-                rectangleObstacle anotherWall = wall.wall;
                 double tempX = (wall.wall.getPosition()[0] - RockGolf.originX - 0.5) / RockGolf.metertoPixelRatio;
                 double tempY = (wall.wall.getPosition()[1] - RockGolf.originY - 0.5) / RockGolf.metertoPixelRatio;
                 setNeighbours(wall.row, wall.column);
@@ -85,6 +89,9 @@ public class randomMaze {
                     continue;
                 }
 
+                wall.isMaze = false;
+
+            } else if(graphArray[wall.row][wall.column].isPath) {
                 wall.isMaze = false;
             }
         }
@@ -107,7 +114,7 @@ public class randomMaze {
         }
     }
 
-    public boolean hasUnvisitedCell(Cell wall) {
+     public boolean hasUnvisitedCell(Cell wall) {
         int counter = 0;
 
         if (wall.row + 1 < wallGrid.length) {

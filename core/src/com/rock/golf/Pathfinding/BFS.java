@@ -3,12 +3,14 @@ package com.rock.golf.Pathfinding;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+
+import com.rock.golf.Cell;
 import com.rock.golf.RockGolf;
 import com.rock.golf.Bot.StochasticBot;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 
 public class BFS {
-    StochasticBot bot = new StochasticBot((PhysicsEngine) RockGolf.engine, 10);
+    StochasticBot bot = new StochasticBot((PhysicsEngine) RockGolf.engine, 1000);
     int sizeX = (int) RockGolf.width;
     int sizeY = (int) RockGolf.height;
     float originX = sizeX / 2;
@@ -37,6 +39,7 @@ public class BFS {
         
         Node parentNode = stopnode;
         ArrayList<Node> path = new ArrayList<>();
+        
         while (!(parentNode.parent == startnode)) {
             path.add(parentNode);
             parentNode.isPath = true;
@@ -58,7 +61,7 @@ public class BFS {
             double nodeY = (path.get(i).column * 10 - originY) / metertoPixelRatio;
             double[] nodePosition = new double[] { nodeX, nodeY };
             double[] move = bot.getMoveTarget(nodePosition);
-            if (move[2] < 2) {
+            if (move[2] < 0.05) {
                 return move;
             } else {
                 System.out.println("Node " + (i + 1) + " not shootable. Retrying...");
