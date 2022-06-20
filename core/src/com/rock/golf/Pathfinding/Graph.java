@@ -7,13 +7,13 @@ import java.util.List;
 import com.rock.golf.RockGolf;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
-import com.rock.golf.Physics.Engine.rectangleObstacle;
+import com.rock.golf.Physics.Engine.RectangleObstacle;
 
 public class Graph implements Comparator {
     public static final int pixels = 10;
     int sizeX = (int) RockGolf.width;
     int sizeY = (int) RockGolf.height;
-    public List<rectangleObstacle> rectangles;
+    public List<RectangleObstacle> rectangles;
     List<Tree> trees;
     float originX = sizeX / 2;
     float originY = sizeY / 2;

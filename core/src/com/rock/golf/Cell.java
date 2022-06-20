@@ -1,13 +1,12 @@
 package com.rock.golf;
 
-import com.rock.golf.Pathfinding.Node;
-import com.rock.golf.Physics.Engine.rectangleObstacle;
+import com.rock.golf.Physics.Engine.RectangleObstacle;
 
 public class Cell {
 
     int row;
     int column;
-    rectangleObstacle wall;
+    RectangleObstacle wall;
     boolean isMaze = true;
     boolean immutable = false;
 
@@ -16,6 +15,6 @@ public class Cell {
         this.column = column;
         float x = row * 20;
         float y = column * 20;
-        wall = new rectangleObstacle(new float[]{x,y}, 20, 20);
+        wall = new RectangleObstacle(new float[]{x,y}, 20, 20);
     }
 }

@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
-
-import com.rock.golf.Cell;
 import com.rock.golf.RockGolf;
 import com.rock.golf.Bot.StochasticBot;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 
 public class BFS {
-    StochasticBot bot = new StochasticBot((PhysicsEngine) RockGolf.engine, 200);
+    
     int sizeX = (int) RockGolf.width;
     int sizeY = (int) RockGolf.height;
     float originX = sizeX / 2;
@@ -57,6 +55,7 @@ public class BFS {
     }
 
     public double[] BFSBot(Graph graph, Node startnode, Node stopnode) {
+        StochasticBot bot = new StochasticBot((PhysicsEngine) RockGolf.engine, 200);
         ArrayList<Node> path = BFSSearch(graph, startnode, stopnode);
         for (int i = 0; i < path.size(); i++) {
             double nodeX = (path.get(i).row * 10 - originX) / metertoPixelRatio;

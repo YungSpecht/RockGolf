@@ -1,6 +1,6 @@
 package com.rock.golf.Physics.Engine;
 
-public class rectangleObstacle {
+public class RectangleObstacle {
     private float[] position;
     private double width;
     private double height;
@@ -13,7 +13,7 @@ public class rectangleObstacle {
      * @param length   specifies length of sides
      */
 
-    public rectangleObstacle(float[] position, double width, double height) {
+    public RectangleObstacle(float[] position, double width, double height) {
         this.width = width;
         this.height = height;
         this.position = position;

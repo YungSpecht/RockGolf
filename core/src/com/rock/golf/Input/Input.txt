@@ -4,10 +4,10 @@ friction-coefficient-static: 0.2
 target-x-position: 4
 target-y-position: 1    
 target-radius: 0.15
-ball-x-position: -3.0
-ball-y-position: -1.3513630923241913
-x-velocity: 3.1922842435199827
-y-velocity: -3.848288101035843
+ball-x-position: 0.3150057824133924
+ball-y-position: 1.7513683267383375
+x-velocity: -3.7350683561680955
+y-velocity: -3.3240433773872082
 maze: true
 
 ((1/20)*(x^2+y^2))-0.1 t[2,2] b[-3,-3]

@@ -27,7 +27,7 @@ public class PhysicsEngine implements Runnable {
     private double[] input;
     private boolean abort;
     private List<Sandpit> sandpits;
-    public static List<rectangleObstacle> rectangles;
+    public static List<RectangleObstacle> rectangles;
     public static List<Tree> trees;
     private Solver solver;
     private char rkMode = 'h';
@@ -46,7 +46,7 @@ public class PhysicsEngine implements Runnable {
         sandpits = new ArrayList<Sandpit>();
         trees = new ArrayList<Tree>();
         // trees.add(new Tree(new double[] { 2, 2 }, 0.4));
-        rectangles = new ArrayList<rectangleObstacle>();
+        rectangles = new ArrayList<RectangleObstacle>();
         // rectangles.add(new rectangleObstacle(new float[]{-2, (float) 0.5}, 5, 0.2));
         // rectangles.add(new rectangleObstacle(new float[]{-3, (float) -2.5}, 0.2, 4.5));
         // rectangles.add(new rectangleObstacle(new float[]{-2, (float) -1.5}, 0.2, 2));
@@ -100,7 +100,7 @@ public class PhysicsEngine implements Runnable {
                 }
                 int rectID = collidedWithObstacles(vector.getXPos(), vector.getYPos());
                 if (rectID != -1) {
-                    rectangleObstacle obstacle = rectangles.get(rectID);
+                    RectangleObstacle obstacle = rectangles.get(rectID);
                     vector = obstacle.bounce(ballRadius, vector);
                 }
                 vector = solver.computeStep(vector);
@@ -163,7 +163,7 @@ public class PhysicsEngine implements Runnable {
             }
             int rectID = collidedWithObstacles(vector.getXPos(), vector.getYPos());
             if (rectID != -1) {
-                rectangleObstacle obstacle = rectangles.get(rectID);
+                RectangleObstacle obstacle = rectangles.get(rectID);
                 vector = obstacle.bounce(ballRadius, vector);
             }
             vector = solver.computeStep(vector);
@@ -195,7 +195,7 @@ public class PhysicsEngine implements Runnable {
         return null;
     }
 
-    public List<Sandpit> get_sandpits() {
+    public List<Sandpit> getSandpits() {
         return sandpits;
     }
 
@@ -341,15 +341,11 @@ public class PhysicsEngine implements Runnable {
         abort = false;
     }
 
-    public List<Sandpit> getSandpits() {
-        return sandpits;
-    }
-
-    public List<Tree> get_trees() {
+    public List<Tree> getTrees() {
         return trees;
     }
 
-    public List<rectangleObstacle> get_rectangles() {
+    public List<RectangleObstacle> getRectangles() {
         return rectangles;
     }
 }

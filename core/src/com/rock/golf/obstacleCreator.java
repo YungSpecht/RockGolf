@@ -1,25 +1,19 @@
 package com.rock.golf;
 
-import java.util.Collections;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.rock.golf.Physics.Engine.rectangleObstacle;
-import com.rock.golf.Input.InputModule;
+import com.rock.golf.Physics.Engine.RectangleObstacle;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
-import org.mariuszgromada.math.mxparser.Function;
 
 public class obstacleCreator implements InputProcessor {
-    private PhysicsEngine physics;
     private RockGolf golf;
-    private Function golfCourse = InputModule.getProfile();
     private double position[] = new double[2];
     private float[] defaultTree;
     private float[] defaultRectangle;
     private int treeRadius = 40;
     private boolean clickTreeFlag = false;
     private boolean clickRectangleFlag = false;
-    private boolean isInWater = false;
     static boolean horizontal = true;
 
     public obstacleCreator(RockGolf golf) {
@@ -87,14 +81,14 @@ public class obstacleCreator implements InputProcessor {
                         (screenX - 60 - RockGolf.originX) / RockGolf.metertoPixelRatio,
                         ((RockGolf.height - screenY) - RockGolf.originY) / RockGolf.metertoPixelRatio };
 
-                PhysicsEngine.rectangles.add(new rectangleObstacle(rectanglePosition, 130 / RockGolf.metertoPixelRatio,
+                PhysicsEngine.rectangles.add(new RectangleObstacle(rectanglePosition, 130 / RockGolf.metertoPixelRatio,
                         20 / RockGolf.metertoPixelRatio));
             } else {
 
                 float[] rectanglePosition = new float[] {
                         (screenX - 10 - RockGolf.originX) / RockGolf.metertoPixelRatio,
                         ((RockGolf.height - screenY) - RockGolf.originY) / RockGolf.metertoPixelRatio };
-                PhysicsEngine.rectangles.add(new rectangleObstacle(rectanglePosition, 20 / RockGolf.metertoPixelRatio,
+                PhysicsEngine.rectangles.add(new RectangleObstacle(rectanglePosition, 20 / RockGolf.metertoPixelRatio,
                         130 / RockGolf.metertoPixelRatio));
             }
 

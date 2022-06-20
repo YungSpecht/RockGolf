@@ -1,7 +1,6 @@
 package com.rock.golf;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,9 +11,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.rock.golf.Bot.PathBot;
 import com.rock.golf.Input.*;
-import com.rock.golf.Pathfinding.AStar1;
+import com.rock.golf.Pathfinding.AStar;
 import com.rock.golf.Pathfinding.BFS;
 import com.rock.golf.Pathfinding.Graph;
 import com.rock.golf.Pathfinding.Node;
@@ -22,7 +20,7 @@ import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Sandpit;
 import com.rock.golf.Physics.Engine.StateVector;
 import com.rock.golf.Physics.Engine.Tree;
-import com.rock.golf.Physics.Engine.rectangleObstacle;
+import com.rock.golf.Physics.Engine.RectangleObstacle;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -93,11 +91,11 @@ public class RockGolf extends ApplicationAdapter {
     static Node[][] graph;
     static Cell[][] maze;
     Graph graphClass;
-    public randomMaze mazeClass;
+    public RandomMaze mazeClass;
     public boolean showGraph = false;
 
     private static ShapeRenderer graphNodes;
-    private List<rectangleObstacle> rectangles;
+    private List<RectangleObstacle> rectangles;
     private boolean showMaze = false;
 
     public static ArrayList<Node> currentAstarPath;
@@ -148,15 +146,15 @@ public class RockGolf extends ApplicationAdapter {
 
         initialState = new double[] { input[5], input[6] };
         generateField();
-        sandpits = ((PhysicsEngine) engine).get_sandpits();
-        rectangles = ((PhysicsEngine) engine).get_rectangles();
-        trees = ((PhysicsEngine) engine).get_trees();
+        sandpits = ((PhysicsEngine) engine).getSandpits();
+        rectangles = ((PhysicsEngine) engine).getRectangles();
+        trees = ((PhysicsEngine) engine).getTrees();
         shotActive = false;
         newShotPossible = true;
         graphClass = new Graph();
         graph = graphClass.generateMatrix();
         if(InputModule.getIfMaze()) {
-            mazeClass = new randomMaze(graphClass, xStart, yStart, xGoal, yGoal, physics);
+            mazeClass = new RandomMaze(graphClass, xStart, yStart, xGoal, yGoal, physics);
             maze = mazeClass.generateMaze();
             instantiateMaze(maze);
         }
@@ -547,9 +545,10 @@ public class RockGolf extends ApplicationAdapter {
                 InputModule.setNewVelocity(shot[0], shot[1]);
                 prepareNewShot();
                 executor.execute(engine);
+                graph = graphClass.generateMatrix();
 
             } else if (keycode == Input.Keys.A) {
-                currentAstarPath = AStar1.findPath(graph[ballX][ballY], graph[targetX][targetY], graphClass);
+                currentAstarPath = AStar.findPath(graph[ballX][ballY], graph[targetX][targetY], graphClass);
             } else if (keycode == Input.Keys.G) {
                 showGraph = !showGraph;
                 if (showGraph) {
@@ -699,12 +698,12 @@ public class RockGolf extends ApplicationAdapter {
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[0].length; j++) {
                 if (grid[i][j].isMaze) {
-                    rectangleObstacle wall = grid[i][j].wall;
+                    RectangleObstacle wall = grid[i][j].wall;
 
                     float[] recPos = new float[] { (wall.getPosition()[0] - originX) / metertoPixelRatio,
                             (wall.getPosition()[1] - originY) / metertoPixelRatio };
                     PhysicsEngine.rectangles
-                            .add(new rectangleObstacle(recPos, wall.getWidth() / RockGolf.metertoPixelRatio,
+                            .add(new RectangleObstacle(recPos, wall.getWidth() / RockGolf.metertoPixelRatio,
                                     wall.getHeight() / RockGolf.metertoPixelRatio));
                 }
             }

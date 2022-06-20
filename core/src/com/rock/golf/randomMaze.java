@@ -7,7 +7,7 @@ import com.rock.golf.Pathfinding.Graph;
 import com.rock.golf.Pathfinding.Node;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 
-public class randomMaze {
+public class RandomMaze {
 
     int pixels = 20;
     Random rn = new Random();
@@ -26,7 +26,7 @@ public class randomMaze {
     int goalX;
     int goalY;
 
-    public randomMaze(Graph graph, float startX, float startY, float goalX, float goalY, PhysicsEngine physics) {
+    public RandomMaze(Graph graph, float startX, float startY, float goalX, float goalY, PhysicsEngine physics) {
         this.graph = graph;
         graphArray = graph.generateMatrix();
         walls = new LinkedList<>();
