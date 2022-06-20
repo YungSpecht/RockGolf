@@ -21,13 +21,13 @@ public class AdamsBashforth2 extends Solver{
         
         if(counter == 0) {
             StateVector initialV = solve.computeStep(current);
-            previousState = initialV;
+            previousState = current;
             counter++;
             return initialV;
         } else {
             StateVector predictor = StateVector.substract(StateVector.add(current, StateVector.multiply(function(current), (3.0 * h / 2.0))),  StateVector.multiply(function(previousState), (1.0 *h / 2.0)));
             StateVector corrector = StateVector.substract(StateVector.add(StateVector.add(current, StateVector.multiply(function(predictor), (5.0 *h / 12.0))), StateVector.multiply(function(current), (8.0 *h/12.0))),  StateVector.multiply(function(previousState), (1.0 * h / 12.0)));
-            previousState = corrector;
+            previousState = current;
             return corrector;
         }
     }
