@@ -5,8 +5,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 import com.rock.golf.RockGolf;
-import com.rock.golf.Bot.StochasticBot;
-import com.rock.golf.Physics.Engine.PhysicsEngine;
 
 public class BFS {
     
@@ -52,23 +50,6 @@ public class BFS {
         startnode.isPath = true;
 
         return path;
-    }
-
-    public double[] BFSBot(Graph graph, Node startnode, Node stopnode) {
-        StochasticBot bot = new StochasticBot((PhysicsEngine) RockGolf.engine, 200);
-        ArrayList<Node> path = BFSSearch(graph, startnode, stopnode);
-        for (int i = 0; i < path.size(); i++) {
-            double nodeX = (path.get(i).row * 10 - originX) / metertoPixelRatio;
-            double nodeY = (path.get(i).column * 10 - originY) / metertoPixelRatio;
-            double[] nodePosition = new double[] { nodeX, nodeY };
-            double[] move = bot.getMoveTarget(nodePosition);
-            if (move[2] < 0.05) {
-                return move;
-            } else {
-                System.out.println("Node " + (i + 1) + " not shootable. Retrying...");
-            }
-        }
-        return new double[] { 0, 0 };
     }
 
     public ArrayList<Node> BFSWalkSearch(Graph graph, Node startnode, Node stopnode) {

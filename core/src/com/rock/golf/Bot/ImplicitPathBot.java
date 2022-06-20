@@ -17,6 +17,7 @@ public class ImplicitPathBot extends Bot{
 
     @Override
     public double[] getMove() {
+        long checkpoint = System.currentTimeMillis();
         StochasticBot bot = new StochasticBot((PhysicsEngine) RockGolf.engine, 200);
         for (int i = 0; i < path.size(); i++) {
             double nodeX = (path.get(i).row * 10 - RockGolf.originX) / RockGolf.metertoPixelRatio;
@@ -29,6 +30,7 @@ public class ImplicitPathBot extends Bot{
                 System.out.println("Node " + (i + 1) + " not shootable. Retrying...");
             }
         }
+        time = System.currentTimeMillis() - checkpoint;
         return new double[] { 0, 0 };
     }
     
