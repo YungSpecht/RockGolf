@@ -59,31 +59,31 @@ public class randomMaze {
         int counterJ = 0;
         for (int i = 0; i <= sizeX; i += pixels) {
             for (int j = 0; j <= sizeY; j += pixels) {
-                if(graphArray[counterI * 2][counterJ *2].isPath) {
-                    wallGrid[counterI][counterJ] = new Cell(counterI, counterJ);
-                    wallGrid[counterI][counterJ].isMaze = false;
-                    counterJ++;
-                    continue;
-                }
+                // if(graphArray[counterI * 2][counterJ *2].isPath) {
+                //     wallGrid[counterI][counterJ] = new Cell(counterI, counterJ);
+                //     wallGrid[counterI][counterJ].isMaze = false;
+                //     counterJ++;
+                //     continue;
+                // }
 
-                if(counterI != 0 && counterJ != 0 && graphArray[(counterI * 2) - 1][counterJ*2 - 1].isPath) {
-                    wallGrid[counterI][counterJ] = new Cell(counterI, counterJ);
-                    wallGrid[counterI][counterJ].isMaze = false;
-                    counterJ++;
-                    continue;
-                }
-                if(counterI != 0  && graphArray[(counterI * 2) - 1][counterJ*2 ].isPath) {
-                    wallGrid[counterI][counterJ] = new Cell(counterI, counterJ);
-                    wallGrid[counterI][counterJ].isMaze = false;
-                    counterJ++;
-                    continue;
-                }
-                if( counterJ != 0 && graphArray[(counterI * 2) ][counterJ*2 - 1].isPath) {
-                    wallGrid[counterI][counterJ] = new Cell(counterI, counterJ);
-                    wallGrid[counterI][counterJ].isMaze = false;
-                    counterJ++;
-                    continue;
-                }
+                // if(counterI != 0 && counterJ != 0 && graphArray[(counterI * 2) - 1][counterJ*2 - 1].isPath) {
+                //     wallGrid[counterI][counterJ] = new Cell(counterI, counterJ);
+                //     wallGrid[counterI][counterJ].isMaze = false;
+                //     counterJ++;
+                //     continue;
+                // }
+                // if(counterI != 0  && graphArray[(counterI * 2) - 1][counterJ*2 ].isPath) {
+                //     wallGrid[counterI][counterJ] = new Cell(counterI, counterJ);
+                //     wallGrid[counterI][counterJ].isMaze = false;
+                //     counterJ++;
+                //     continue;
+                // }
+                // if( counterJ != 0 && graphArray[(counterI * 2) ][counterJ*2 - 1].isPath) {
+                //     wallGrid[counterI][counterJ] = new Cell(counterI, counterJ);
+                //     wallGrid[counterI][counterJ].isMaze = false;
+                //     counterJ++;
+                //     continue;
+                // }
                 wallGrid[counterI][counterJ] = new Cell(counterI, counterJ);
 
                 // Comment this back in to prevent the maze from being generated:
@@ -118,9 +118,15 @@ public class randomMaze {
 
                 wall.isMaze = false;
 
-            } else if(graphArray[wall.row*2][wall.column*2].isPath) {
-                wall.isMaze = false;
-            }
+            } else if(graphArray[wall.row * 2][wall.column *2].isPath) {
+                    wall.isMaze = false;
+            } else if(wall.row != 0 && wall.column != 0 && graphArray[wall.row- 1][wall.column*2 - 1].isPath) {
+                    wall.isMaze = false;
+            } else if(wall.row != 0  && graphArray[(wall.row * 2) - 1][wall.column*2 ].isPath) {
+                    wall.isMaze = false;
+            } else if( wall.column != 0 && graphArray[(wall.row * 2) ][wall.column*2 - 1].isPath) {
+                    wall.isMaze = false;
+                }
         }
         
         wallGrid[(startX / pixels)-1][startY / pixels].isMaze = false;
