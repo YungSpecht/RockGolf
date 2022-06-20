@@ -15,6 +15,7 @@ public class AStar {
      * @return
      */
     
+     
     private static double heuristic(Node current, Node goal) {
         return current.calculateEuclidean(goal);
     }
