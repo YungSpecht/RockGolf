@@ -17,7 +17,7 @@ it fall into a hole. This simple task was later expanded and bots to automatical
 
 <h2 align="center">Game</h2><br>
 
-<p>The game uses a key-based interaction, with the possibility of shooting the ball with the mouse. In fact, by dragging the mouse in the opposite side of where you want to shoot it, you will be able to shoot the ball with controlled velocity. To use the different bots, you can open the menu by pressing M. Here, all the keybinds to activate the other bots are shown. Note that to use the pathfinding bot, it is necessary to first press I or A to find a path. Back to the game, by pressing B a menu with an Obstacle Creator opens, and you will be able to click and place different kind of obstacles.</p><br>
+<p>The game uses a key-based interaction, with the possibility of shooting the ball with the mouse. In fact, by dragging the mouse in the opposite side of where you want to shoot it, you will be able to shoot the ball with controlled velocity. To use the different bots, you can open the menu by pressing M. Here, all the keybinds to activate the other bots are shown. Note that to use the pathfinding bot, it is necessary to first press I or A to find a path. Back to the game, by pressing B a menu with an Obstacle Creator opens, and you will be able to click and place different kind of obstacles. Inside the Input.txt file you can set all sorts of starting parameters, including a flag to decide whether to generate a random maze upon program start or not.</p><br>
 
 <h2 align="center">Bots</h2><br>
 <p> At the current state of the project we have seven major bots implemented:<br><br>
