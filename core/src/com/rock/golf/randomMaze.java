@@ -53,13 +53,39 @@ public class randomMaze {
         int tY = (int) RockGolf.targetyPosition / 20;
 
         BFS bfs = new BFS();
-        bfs.BFSWalkSearch(graph, graphArray[cellX][cellY], graphArray[tX][tY]);
+        bfs.BFSWalkSearch(graph, graphArray[startX / 10][startY/10], graphArray[goalX/10][goalY/10]);
 
         int counterI = 0;
         int counterJ = 0;
         for (int i = 0; i <= sizeX; i += pixels) {
             for (int j = 0; j <= sizeY; j += pixels) {
+                if(graphArray[counterI * 2][counterJ *2].isPath) {
+                    wallGrid[counterI][counterJ] = new Cell(counterI, counterJ);
+                    wallGrid[counterI][counterJ].isMaze = false;
+                    counterJ++;
+                    continue;
+                }
+
+                if(counterI != 0 && counterJ != 0 && graphArray[(counterI * 2) - 1][counterJ*2 - 1].isPath) {
+                    wallGrid[counterI][counterJ] = new Cell(counterI, counterJ);
+                    wallGrid[counterI][counterJ].isMaze = false;
+                    counterJ++;
+                    continue;
+                }
+                if(counterI != 0  && graphArray[(counterI * 2) - 1][counterJ*2 ].isPath) {
+                    wallGrid[counterI][counterJ] = new Cell(counterI, counterJ);
+                    wallGrid[counterI][counterJ].isMaze = false;
+                    counterJ++;
+                    continue;
+                }
+                if( counterJ != 0 && graphArray[(counterI * 2) ][counterJ*2 - 1].isPath) {
+                    wallGrid[counterI][counterJ] = new Cell(counterI, counterJ);
+                    wallGrid[counterI][counterJ].isMaze = false;
+                    counterJ++;
+                    continue;
+                }
                 wallGrid[counterI][counterJ] = new Cell(counterI, counterJ);
+
                 // Comment this back in to prevent the maze from being generated:
                 // wallGrid[counterI][counterJ].isMaze=false;
                 counterJ++;
@@ -80,6 +106,7 @@ public class randomMaze {
             walls.remove(element);
 
             if (!visited.contains(wall) && !hasUnvisitedCell(wall)) {
+
                 double tempX = (wall.wall.getPosition()[0] - RockGolf.originX - 0.5) / RockGolf.metertoPixelRatio;
                 double tempY = (wall.wall.getPosition()[1] - RockGolf.originY - 0.5) / RockGolf.metertoPixelRatio;
                 setNeighbours(wall.row, wall.column);
@@ -91,10 +118,19 @@ public class randomMaze {
 
                 wall.isMaze = false;
 
-            } else if(graphArray[wall.row][wall.column].isPath) {
+            } else if(graphArray[wall.row*2][wall.column*2].isPath) {
                 wall.isMaze = false;
             }
         }
+        
+        wallGrid[(startX / pixels)-1][startY / pixels].isMaze = false;
+        wallGrid[startX / pixels][(startY / pixels)-1].isMaze = false;
+        wallGrid[startX / pixels][(startY / pixels)+1].isMaze = false;
+        wallGrid[(startX / pixels)+1][startY / pixels].isMaze = false;
+        wallGrid[(goalX / pixels)+1][goalY / pixels].isMaze = false;
+        wallGrid[goalX / pixels][(goalY / pixels)+1].isMaze = false;
+        wallGrid[goalX / pixels][(goalY / pixels)-1].isMaze = false;
+        wallGrid[(goalX / pixels)-1][goalY / pixels].isMaze = false;
         
         return wallGrid;
     }

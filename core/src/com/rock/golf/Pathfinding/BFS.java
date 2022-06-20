@@ -86,7 +86,6 @@ public class BFS {
             if(!visited.contains(currentNode)){
                 visited.add(currentNode);
                 for (Node node : graph.neighbors(currentNode)) {
-                    queue.add(node);
                     if (!visited.contains(node))
                         queue.add(node);
                 }
