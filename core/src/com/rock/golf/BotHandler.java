@@ -8,6 +8,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.rock.golf.Bot.Bruteforce;
 import com.rock.golf.Bot.RuleBasedBot;
 import com.rock.golf.Bot.HillClimb;
+import com.rock.golf.Bot.ImplicitPathBot;
 import com.rock.golf.Bot.PathBot;
 import com.rock.golf.Bot.StochasticBot;
 import com.rock.golf.Input.InputModule;
@@ -47,7 +48,17 @@ public class BotHandler implements InputProcessor {
             bot = new RuleBasedBot(botEngine);
 
         } else if(keycode == Input.Keys.P){
-            bot = new PathBot(botEngine, RockGolf.currentAstarPath);
+            if(RockGolf.currentAstarPath == null){
+                System.out.println("ERROR: You haven't searched for a path yet");
+            } else{
+                bot = new PathBot(botEngine, RockGolf.currentAstarPath);
+            }
+        } else if(keycode == Input.Keys.I){
+            if(RockGolf.currentBFSPath == null){
+                System.out.println("ERROR: You haven't searched for a path yet");
+            } else{
+                bot = new ImplicitPathBot(botEngine, RockGolf.currentBFSPath);
+            }
         }
 
 

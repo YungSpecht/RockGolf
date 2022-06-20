@@ -88,9 +88,9 @@ public class RockGolf extends ApplicationAdapter {
     public float[] rectanglePosition;
     private SpriteBatch water;
 
-    static Node[][] graph;
+    public static Node[][] graph;
     static Cell[][] maze;
-    Graph graphClass;
+    public static Graph graphClass;
     public RandomMaze mazeClass;
     public boolean showGraph = false;
 
@@ -99,7 +99,7 @@ public class RockGolf extends ApplicationAdapter {
     private boolean showMaze = false;
 
     public static ArrayList<Node> currentAstarPath;
-    // public static ArrayList<Node> currentbfsPath;
+    public static ArrayList<Node> currentBFSPath;
 
     @Override
     public void create() {
@@ -292,7 +292,7 @@ public class RockGolf extends ApplicationAdapter {
         background.end();
         shot.begin();
         font.draw(shot,
-                "Select the bot:\n\n S: Stochastic\n B: Bruteforce\n H: HillClimb\n A: AngleBot\n R: Rule-based\n P: Pathfinder",
+                "Select the bot:\n\n S: Stochastic\n B: Bruteforce\n H: HillClimb\n A: AngleBot\n R: Rule-based\n P: Pathfinder\n I: Implicit Pathfinder",
                 originX - 50, originY + 100);
         shot.end();
     }
@@ -540,20 +540,14 @@ public class RockGolf extends ApplicationAdapter {
                 System.out.println(((PhysicsEngine) engine).tolerance);
             } else if (keycode == Input.Keys.B) {
                 switchToObstacle();
-            } else if (keycode == Input.Keys.P) {
-                double[] shot = bfs.BFSBot(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
-                InputModule.setNewVelocity(shot[0], shot[1]);
-                prepareNewShot();
-                executor.execute(engine);
-                graph = graphClass.generateMatrix();
-
             } else if (keycode == Input.Keys.A) {
                 currentAstarPath = AStar.findPath(graph[ballX][ballY], graph[targetX][targetY], graphClass);
+            } else if(keycode == Input.Keys.I){
+                currentBFSPath = bfs.BFSSearch(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
             } else if (keycode == Input.Keys.G) {
                 showGraph = !showGraph;
                 if (showGraph) {
                     graph = graphClass.generateMatrix();
-                    bfs.BFSSearch(graphClass, graph[ballX][ballY], graph[targetX][targetY]);
                 }
             } else if (keycode == Input.Keys.K) {
                 showMaze = !showMaze;

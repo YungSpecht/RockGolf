@@ -1,13 +1,13 @@
-height-profile: h(x,y)=0.4*(0.9-Math.pow(Math.E, (-((Math.pow(x, 2)+Math.pow(y, 2))/8))))
+height-profile: h(x,y)=0
 friction-coefficient-kinetic: 0.08
 friction-coefficient-static: 0.2
 target-x-position: 4
 target-y-position: 1    
 target-radius: 0.15
-ball-x-position: 0.3150057824133924
-ball-y-position: 1.7513683267383375
-x-velocity: -3.7350683561680955
-y-velocity: -3.3240433773872082
+ball-x-position: 0.0
+ball-y-position: 0.0
+x-velocity: 4.5591661724626915
+y-velocity: 2.0528038902612917
 maze: true
 
 ((1/20)*(x^2+y^2))-0.1 t[2,2] b[-3,-3]
