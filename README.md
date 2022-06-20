@@ -1,54 +1,39 @@
-<h1 align="center"> Project 1-2: Crazy Putting | Phase 21</h1>
+<h1 align="center"> Project 1-2: Crazy Putting | Phase 3</h1>
 <p align="center">Made by Group 02 - The Rockers</p><br>
-<p align="center"><img src="https://i.imgur.com/sVwhinv.png"></p>
+<p align="center"><img src="https://i.imgur.com/EkfClq5.png"></p>
 
 <hr>
 <h2 align="center">Introduction</h2><br>
-<p> This project was created with the idea of simulating Putting, a part of Golf where players aim to strike a ball across a grassy green field to have
-it fall into a hole. In order to compute the physics, a physics engine was created based on some equations provided by our department, more information in the project manual and/or our report.
+<p> CrazyPutting is the second project of the academic Y1 2021-2022.
+This project was created with the idea of simulating Putting, a part of Golf where players aim to strike a ball across a grassy green field to have
+it fall into a hole. This simple task was later expanded and bots to automatically shoot the ball were added. In the final phase, a maze inside the field is created, and different pathfinding bots are able to solve these mazes. This project involves different fields of Science, such as Calculus, Physics, Artificial Intelligence, Numerical Mathematics, Computer Science and many others.
 <br><br>
 <h2 align="center"> Game Engine </h2><br>
-<p>The Game Engine was created using libGDX, a game development framework based on OpenGL. Three methods are used to create the scenary, render it and destroy it once the application is closed. Here different methods to compute collisions, height maps and the general game logic are created. More will be discussed in the main Game section.</p>
+<p>The Game Engine was created using libGDX, a game development framework based on OpenGL. Three methods are used to create the scenary, render it and destroy it once the application is closed. This is used as basis to display what we're doing, but all the computations are not based on pixels, but on meters. These computations are done in the Physics Engine.</p>
 <br><br></p>
 <h2 align="center">Physics Engine</h2><br>
 
-<p>Each time it is hit, the golf ball is set in motion in a given direction. The speed is determined by how hard the ball is hit, up to some given maximum speed vmax.
-To simplify the physics we assume that the ball is always sliding on top of the terrain, and is always hit along the surface (not upwards).
-
-The motion of the ball across the course is governed by three forces:
-1. The force of gravity. The gravitational force is constant, and is directed downwards.
-2. The normal force. As the name indicates, this force is directed normal to the
-surface. Thus, its magnitude depends on the slopes of the terrain. Due to sum of
-the gravitational and normal force, the ball accelerates when it moves downhill, and
-decelerates if it slides uphill.
-3. The force of friction. When the ball is moving, we speak of kinetic friction. The
-kinetic friction is always directed opposite to the direction of motion. The magnitude
-of the kinetic friction is proportional to the normal force, with a proportionality
-constant μK .
-When the ball comes to rest (on a slope), we speak of static friction. The static
-friction force might prevent the ball from sliding down - this happens when the
-friction compensates for the downhill force. The maximal static friction force is also
-proportional to the normal force, the proportionality constant μS (the static friction
-coefficient) is larger than the kinetic friction coefficient μK < μS.<br>
-<br>
-We  implemented three numerical solvers in order to solve the differential equations that solved these differential equations, namely Euler, RK2 (Ralston's Method) and RK4 (Generic).
-                                                                    </p><br>
+<p>The physics engine is responsable of making the ball move, through the equations given in the project manual. These equations fall under the ODE categories, and there are different solvers (such as RK4 and Euler) able to approximate these equations at a given time. Besides this, the Physics Engine is also responsable of generating water and handling obstacles.</p><br>
 
 <h2 align="center">Game</h2><br>
 
-<p>The game consists of circles of different sizes: a ball, a hole and different other part that makes the field, namely trees, water and sandpits. The goal is hitting the ball in the goal, while avoiding water and trees. To do so the player has to drag the ball on the opposite way of where he wants it to end up, like a sling. Alternatively, for lazy players, a vast gamma of bots able to play the game are implemented :)</p><br>
+<p>The game uses a key-based interaction, with the possibility of shooting the ball with the mouse. In fact, by dragging the mouse in the opposite side of where you want to shoot it, you will be able to shoot the ball with controlled velocity. To use the different bots, you can open the menu by pressing M. Here, all the keybinds to activate the other bots are shown. Note that to use the pathfinding bot, it is necessary to first press I or A to find a path. Back to the game, by pressing B a menu with an Obstacle Creator opens, and you will be able to click and place different kind of obstacles.</p><br>
+
 <h2 align="center">Bots</h2><br>
-<p> At the current state of the project we have five major bots implemented:<br><br>
+<p> At the current state of the project we have seven major bots implemented:<br><br>
 -Rule-based bot, the simpliest of them all. It takes a shot based on an heuristic, and cannot simulate shots.<br>
 - Bruteforce, that will try every possible combination with a recursively smaller precision in order to get the perfect shot. <br>
 - Hillclimb, that improved with Simulated Annealing manages to escape the local minima and find the local optimum with great consistency.<br>
 - Stochastic bot, simple yet impressive. Considering this very narrow search space, the stochastic bot utilise an heuristic to classify each shot and takes the best out of n iterations.<br>
-- AngleBot, an experimental AI that uses trigonometry to optimize the shot each iteration.
-  
-  To open the menu used to select these bots, you just have to press "M".</p>
+- AngleBot, an experimental AI that uses trigonometry to optimize the shot each iteration.<br>
+- Pathfinding Bot, bip bop<br>
+- Implicit Pathfinding Bot, uses BFS to find a path inside a maze and shoot to the globally optimal node.<br><br>
+
+For more information about how these work, please refer to the report.
+</p>
   <br>
- <h2 align="center">Trees and Sandpit</h2><br>
- <p> Trees and Sandpit are not included by default, yet they're implemented. To add them to the game, you have to add them manually to the dedicated lists inside the constructor of the PhysicsEngine class. An example on how to add both is already commented out to provide guidance.</p>
+ <h2 align="center">Obstacles</h2><br>
+ <p>Obstacles are generated by the obstacle creator, and added to the PhysicsEngine. Colliding with a tree will instantly result in a lose, while colliding with a rectangle will just make the ball bounce. This allows the user to create complex, creative fields that really challenge the player.</p>
  <br>
 <h2 align="center">Additional documentation</h2><br>
 <p> Additional information about the details of the methods and the algorithms can be found in the report submitted. The code is provided with JavaDoc support, so additional documentation can be found by running the following command:</p>

@@ -18,7 +18,7 @@ public class ImplicitPathBot extends Bot{
     @Override
     public double[] getMove() {
         long checkpoint = System.currentTimeMillis();
-        StochasticBot bot = new StochasticBot((PhysicsEngine) RockGolf.engine, 200);
+        StochasticBot bot = new StochasticBot((PhysicsEngine) RockGolf.engine, 100);
         for (int i = 0; i < path.size(); i++) {
             double nodeX = (path.get(i).row * 10 - RockGolf.originX) / RockGolf.metertoPixelRatio;
             double nodeY = (path.get(i).column * 10 - RockGolf.originY) / RockGolf.metertoPixelRatio;
