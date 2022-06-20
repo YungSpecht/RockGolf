@@ -320,7 +320,7 @@ public class RockGolf extends ApplicationAdapter {
 
         rectangle.begin(ShapeRenderer.ShapeType.Filled);
         rectangle.setColor(new Color(0.3f, 0, 0, 0.5f));
-        if (obstacleCreator.horizontal)
+        if (ObstacleCreator.horizontal)
             rectangle.rect(positionRectangle[0], positionRectangle[1], (float) 130, (float) 20);
         else
             rectangle.rect(positionRectangle[0], positionRectangle[1], (float) 20, (float) 130);
@@ -641,7 +641,7 @@ public class RockGolf extends ApplicationAdapter {
             Gdx.input.setInputProcessor(in);
         } else {
             state = "OBS menu";
-            Gdx.input.setInputProcessor(new obstacleCreator(this));
+            Gdx.input.setInputProcessor(new ObstacleCreator(this));
         }
     }
 
