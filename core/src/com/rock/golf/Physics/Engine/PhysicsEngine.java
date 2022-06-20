@@ -47,7 +47,6 @@ public class PhysicsEngine implements Runnable {
         trees = new ArrayList<Tree>();
         // trees.add(new Tree(new double[] { 2, 2 }, 0.4));
         rectangles = new ArrayList<rectangleObstacle>();
-        // rectangles.add(new rectangleObstacle(new float[]{-3, 2}, 6, 0.2));
         // rectangles.add(new rectangleObstacle(new float[]{-2, (float) 0.5}, 5, 0.2));
         // rectangles.add(new rectangleObstacle(new float[]{-3, (float) -2.5}, 0.2, 4.5));
         // rectangles.add(new rectangleObstacle(new float[]{-2, (float) -1.5}, 0.2, 2));
