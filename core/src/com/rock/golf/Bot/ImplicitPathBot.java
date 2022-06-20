@@ -25,6 +25,7 @@ public class ImplicitPathBot extends Bot{
             double[] nodePosition = new double[] { nodeX, nodeY };
             double[] move = bot.getMoveTarget(nodePosition);
             if (move[2] < 0.05) {
+                time = System.currentTimeMillis() - checkpoint;
                 return move;
             } else {
                 System.out.println("Node " + (i + 1) + " not shootable. Retrying...");

@@ -6,8 +6,8 @@ target-y-position: 1
 target-radius: 0.15
 ball-x-position: 0.0
 ball-y-position: 0.0
-x-velocity: 4.5591661724626915
-y-velocity: 2.0528038902612917
+x-velocity: -3.928534758747857
+y-velocity: -2.633038564417438
 maze: true
 
 ((1/20)*(x^2+y^2))-0.1 t[2,2] b[-3,-3]
