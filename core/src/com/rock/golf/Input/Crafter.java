@@ -11,7 +11,7 @@ public class Crafter {
         .append("public class Derivative implements Der{\n")
         .append("   private double h;")
         .append("   public Derivative(){\n")
-        .append("       h = 0.0000001;\n")
+        .append("       h = 0.001;\n")
         .append("   }\n")
         .append("   @Override\n")
         .append("    public double compute(double x, double y){\n")

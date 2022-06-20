@@ -17,6 +17,13 @@ public class PlotTests {
     double[] test = new double[]{0.5, 0.3, 0.25, 0.125, 0.1, 0.05, 0.01, 0.005, 0.001};
     public static void main(String[] args) {
         PlotTests test = new PlotTests();
+        test.Test_RK4();
+        System.out.println();
+        test.Test_RK2();
+        System.out.println();
+        test.Test_Euler();
+        System.out.println();
+        System.out.println();
         test.Test_AB();
     }
     
