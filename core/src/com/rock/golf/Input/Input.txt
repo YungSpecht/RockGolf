@@ -1,10 +1,10 @@
-height-profile: h(x,y)=0
+height-profile: h(x,y)=0.4*(0.9-Math.pow(Math.E, (-((Math.pow(x, 2)+Math.pow(y, 2))/8))))
 friction-coefficient-kinetic: 0.08
 friction-coefficient-static: 0.2
 target-x-position: 4
 target-y-position: 1    
 target-radius: 0.15
-ball-x-position: 0.0
+ball-x-position: -3
 ball-y-position: 0.0
 x-velocity: -3.928534758747857
 y-velocity: -2.633038564417438

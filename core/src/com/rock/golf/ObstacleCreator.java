@@ -6,7 +6,7 @@ import com.rock.golf.Physics.Engine.RectangleObstacle;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
 import com.rock.golf.Physics.Engine.Tree;
 
-public class obstacleCreator implements InputProcessor {
+public class ObstacleCreator implements InputProcessor {
     private RockGolf golf;
     private double position[] = new double[2];
     private float[] defaultTree;
@@ -16,7 +16,7 @@ public class obstacleCreator implements InputProcessor {
     private boolean clickRectangleFlag = false;
     static boolean horizontal = true;
 
-    public obstacleCreator(RockGolf golf) {
+    public ObstacleCreator(RockGolf golf) {
         this.golf = golf;
         this.defaultTree = golf.treePosition;
         this.defaultRectangle = golf.rectanglePosition;
