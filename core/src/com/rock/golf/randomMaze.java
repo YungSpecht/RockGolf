@@ -111,11 +111,6 @@ public class randomMaze {
                 double tempY = (wall.wall.getPosition()[1] - RockGolf.originY - 0.5) / RockGolf.metertoPixelRatio;
                 setNeighbours(wall.row, wall.column);
 
-                if (physics.isInWater(tempX, tempY)) {
-                    visited.add(wall);
-                    continue;
-                }
-
                 wall.isMaze = false;
 
             } else if(graphArray[wall.row * 2][wall.column *2].isPath) {
