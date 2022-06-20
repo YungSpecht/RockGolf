@@ -72,6 +72,24 @@ public class InputModule {
         }
     }
 
+    public static boolean getIfMaze() {
+        FileReader reader;
+        boolean maze = false;
+        try {
+            File file = new File("core/src/com/rock/golf/Input/Input.txt");
+            reader = new FileReader(file);
+            Scanner in = new Scanner(reader);
+            List<String> lines = Files.readAllLines(file.toPath());
+            maze = Boolean.parseBoolean(lines.get(10).split(":")[1].strip());
+            in.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return maze;
+    }
+
     public static Function getProfile() {
         FileReader reader;
         try {

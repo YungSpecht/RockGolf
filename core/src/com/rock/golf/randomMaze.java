@@ -2,14 +2,10 @@ package com.rock.golf;
 
 import java.util.*;
 
-import com.rock.golf.Pathfinding.AStar1;
-import com.rock.golf.Pathfinding.Astar;
 import com.rock.golf.Pathfinding.BFS;
 import com.rock.golf.Pathfinding.Graph;
 import com.rock.golf.Pathfinding.Node;
 import com.rock.golf.Physics.Engine.PhysicsEngine;
-import com.rock.golf.Physics.Engine.StateVector;
-import com.rock.golf.Physics.Engine.rectangleObstacle;
 
 public class randomMaze {
 
@@ -47,13 +43,15 @@ public class randomMaze {
 
     public Cell[][] generateMaze() {
 
-        int cellX = (int) RockGolf.xPosition / 20;
-        int cellY = (int) RockGolf.yPosition / 20;
-        int tX = (int) RockGolf.targetxPosition / 20;
-        int tY = (int) RockGolf.targetyPosition / 20;
-
         BFS bfs = new BFS();
-        bfs.BFSWalkSearch(graph, graphArray[startX / 10][startY/10], graphArray[goalX/10][goalY/10]);
+
+        while(true) {
+            try {
+                bfs.BFSWalkSearch(graph, graphArray[startX / 10][startY/10], graphArray[goalX/10][goalY/10]);
+                break;
+            } catch(Exception e) {}
+        }
+        
 
         int counterI = 0;
         int counterJ = 0;
@@ -107,8 +105,6 @@ public class randomMaze {
 
             if (!visited.contains(wall) && !hasUnvisitedCell(wall)) {
 
-                double tempX = (wall.wall.getPosition()[0] - RockGolf.originX - 0.5) / RockGolf.metertoPixelRatio;
-                double tempY = (wall.wall.getPosition()[1] - RockGolf.originY - 0.5) / RockGolf.metertoPixelRatio;
                 setNeighbours(wall.row, wall.column);
 
                 wall.isMaze = false;
